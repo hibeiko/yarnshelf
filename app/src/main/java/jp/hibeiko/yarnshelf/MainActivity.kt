@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import jp.hibeiko.yarnshelf.ui.HomeScreen
+import jp.hibeiko.yarnshelf.ui.YarnShelfApp
 import jp.hibeiko.yarnshelf.ui.theme.YarnShelfTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,7 +18,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             YarnShelfTheme {
-                HomeScreen()
+                YarnShelfApp()
             }
         }
     }
@@ -27,6 +28,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun YarnShelfPreview() {
     YarnShelfTheme {
-        HomeScreen()
+        YarnShelfApp()
     }
 }

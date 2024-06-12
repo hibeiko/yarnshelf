@@ -1,7 +1,6 @@
 package jp.hibeiko.yarnshelf.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,88 +8,60 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import jp.hibeiko.yarnshelf.R
-import jp.hibeiko.yarnshelf.data.DataSource
 import jp.hibeiko.yarnshelf.data.YarnData
 import java.text.SimpleDateFormat
 
-@Preview
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(){
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-        ) {
-        Scaffold(
-            topBar = {
-                CenterAlignedTopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                        titleContentColor = MaterialTheme.colorScheme.primary,
-                    ),
-                    title = {
-                        Text(
-                            stringResource(id = R.string.app_name),
-                            style = MaterialTheme.typography.displayLarge,
-                        )
-                    }
-                )
-            }
-        ) { innerPadding ->
-            HomeScreenBody(
-                DataSource().loadData(),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(innerPadding)
-            )
-        }
-    }
-}
-
-@Composable
-fun HomeScreenBody(yarnDataList: List<YarnData>,modifier: Modifier = Modifier) {
+fun HomeScreen(
+    homeScreenUiState: HomeScreenUiState,
+    cardOnClick: (String) -> Unit,
+    dialogOnClick: (String) -> Unit,
+    onEditButtonClicked: () -> Unit,
+    modifier: Modifier = Modifier) {
     LazyColumn( modifier = modifier) {
-        items(yarnDataList) {
+        items(homeScreenUiState.yarnDataList) {
             YarnCard(
                 it,
+                cardOnClick = cardOnClick,
                 modifier = Modifier.padding(8.dp)
             )
         }
     }
+    if( homeScreenUiState.cardClickedFlag ){
+        YarnDialog(
+            homeScreenUiState.yarnDataList[homeScreenUiState.cardClickedYarnNumber],
+            dialogOnClick,
+            onEditButtonClicked,
+        )
+    }
 }
 
 @Composable
-fun YarnCard(yarnData: YarnData, modifier: Modifier = Modifier){
+fun YarnCard(
+    yarnData: YarnData,
+    cardOnClick: (String) -> Unit,
+    modifier: Modifier = Modifier){
     Card(
         modifier = modifier
             .fillMaxWidth()
             .height(140.dp),
 //            .padding(10.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer) ,
-        onClick = { /*TODO*/ },
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer) ,
+        onClick = { cardOnClick(yarnData.yarnName) },
     ) {
         val formatter = SimpleDateFormat("yyyy/MM/dd")
         Row{
@@ -108,7 +79,7 @@ fun YarnCard(yarnData: YarnData, modifier: Modifier = Modifier){
             ) {
                 Text(
                     text = yarnData.yarnName,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     style = MaterialTheme.typography.displayMedium,
                     modifier = Modifier.padding(bottom = 2.dp)
                 )
@@ -128,5 +99,63 @@ fun YarnCard(yarnData: YarnData, modifier: Modifier = Modifier){
             }
         }
     }
+}
+
+@Composable
+fun YarnDialog(
+    yarnData: YarnData,
+    dialogOnClick: (String) -> Unit,
+    onEditButtonClicked: () -> Unit,
+    modifier: Modifier = Modifier){
+    AlertDialog(
+        onDismissRequest = {
+            dialogOnClick(yarnData.yarnName)
+        },
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        title = {
+            Text(
+                text = yarnData.yarnName,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                style = MaterialTheme.typography.displayLarge
+            ) },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(yarnData.drawableResourceId),
+                    contentDescription = null,
+//                modifier = Modifier.padding(10.dp),
+                    contentScale = ContentScale.Crop
+                )
+                Text(
+                    text = yarnData.yarnDescription,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(2.dp)
+                    )
+            }
+               },
+        modifier = modifier,
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onEditButtonClicked()
+                }
+            ) {
+                Text(text ="編集")
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    dialogOnClick(yarnData.yarnName)
+                }
+            ) {
+                Text(text ="OK")
+            }
+        }
+    )
 
 }

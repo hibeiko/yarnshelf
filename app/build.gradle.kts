@@ -64,6 +64,9 @@ dependencies {
 
     // ViewModelを利用するのに必要。ユニット4「アーキテクチャコンポーネント」より。
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1")
+    // NavHostを利用するのに必要。ユニット4「Jetpack Composeでのナビゲーション」より。
+    implementation(libs.androidx.navigation.compose)
+//    implementation(libs.androidx.navigation.runtime.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

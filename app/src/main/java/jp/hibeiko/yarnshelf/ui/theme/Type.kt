@@ -24,6 +24,16 @@ val BIZUDPGothic_Regular = FontFamily(
     Font(R.font.bizudpgothic_regular)
 )
 val YarnShelfTypography = Typography(
+    headlineLarge = TextStyle(
+        fontFamily = YasashisaGothic,
+        fontWeight = FontWeight.Normal,
+        fontSize = 36.sp
+    ),
+    headlineMedium = TextStyle(
+        fontFamily = YasashisaGothic,
+        fontWeight = FontWeight.Normal,
+        fontSize = 10.sp
+    ),
     displayLarge = TextStyle(
         fontFamily = BIZUDPGothic_Regular,
         fontWeight = FontWeight.Normal,
