@@ -24,7 +24,7 @@ class HomeScreenViewModel: ViewModel() {
     val homeScreenUiState: StateFlow<HomeScreenUiState> = _homeScreenUiState.asStateFlow()
 
     fun cardOnClick(yarnName: String){
-        Log.d(TAG,"yarnName = $yarnName, ${_homeScreenUiState.value}")
+//        Log.d(TAG,"yarnName = $yarnName, ${_homeScreenUiState.value}")
         _homeScreenUiState.update { it ->
             it.copy(
                 cardClickedFlag = !it.cardClickedFlag,
@@ -32,19 +32,17 @@ class HomeScreenViewModel: ViewModel() {
                 yarnEditData = it.yarnDataList.first { it.yarnName == yarnName }
             )
         }
-        Log.d(TAG,"yarnName = $yarnName, ${_homeScreenUiState.value}")
+//        Log.d(TAG,"yarnName = $yarnName, ${_homeScreenUiState.value}")
     }
 
     fun dialogOnClick(){
-        Log.d(TAG,"${_homeScreenUiState.value}")
-        _homeScreenUiState.update {
-            it.copy(
-                cardClickedFlag = !it.cardClickedFlag,
-                cardClickedYarnNumber = 0,
-                yarnEditData = YarnData("","", Date(),0)
+//        Log.d(TAG,"${_homeScreenUiState.value}")
+        _homeScreenUiState.update { currentState ->
+            currentState.copy(
+                cardClickedFlag = !currentState.cardClickedFlag,
             )
         }
-        Log.d(TAG,"${_homeScreenUiState.value}")
+//        Log.d(TAG,"${_homeScreenUiState.value}")
     }
 
     fun yarnNameUpdate(yarnName: String){

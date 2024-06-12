@@ -4,8 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -15,21 +19,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import jp.hibeiko.yarnshelf.R
 
 // 画面間移動のためのルート定義
-enum class YarnScreenRoot {
-    Home,           // ホーム画面
-    YarnInfoEdit,   // 毛糸情報編集画面
-    YarnInfoConfirm,    // 毛糸情報確認画面
+enum class YarnScreenRoot(val title: String) {
+    Home(title = "けいとのたな"),           // ホーム画面
+    YarnInfoEdit(title = "毛糸情報編集画面"),   // 毛糸情報編集画面
+    YarnInfoConfirm(title = "毛糸情報確認画面"),    // 毛糸情報確認画面
 }
 
 @Preview
@@ -42,6 +44,14 @@ fun YarnShelfApp(
 ) {
     // 共通で使うUiStateの作成
     val homeScreenUiState by homeScreenViewModel.homeScreenUiState.collectAsState()
+
+    // 現在の画面を取得するために利用。
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    // 戻り先画面を取得。戻り先画面がない場合はホーム画面をデフオルト設定する。
+    val currentScreen = YarnScreenRoot.valueOf(
+        backStackEntry?.destination?.route ?: YarnScreenRoot.Home.name
+    )
+
 
     // 画面トップ
     Surface(
@@ -59,9 +69,16 @@ fun YarnShelfApp(
                     ),
                     title = {
                         Text(
-                            stringResource(id = R.string.app_name),
+                            text = currentScreen.title,
                             style = MaterialTheme.typography.headlineLarge,
                         )
+                    },
+                    navigationIcon = {
+                        if (navController.previousBackStackEntry != null) {
+                            IconButton(onClick = { navController.navigateUp() }) {
+                                Icon(Icons.Filled.ArrowBack, contentDescription = "戻る", tint = MaterialTheme.colorScheme.primary)
+                            }
+                        }
                     }
                 )
             }
@@ -84,8 +101,11 @@ fun YarnShelfApp(
                     HomeScreen(
                         homeScreenUiState,
                         cardOnClick = homeScreenViewModel::cardOnClick,
-                        dialogOnClick = homeScreenViewModel::cardOnClick,
-                        onEditButtonClicked = { navController.navigate(YarnScreenRoot.YarnInfoEdit.name) },
+                        dialogOnClick = homeScreenViewModel::dialogOnClick,
+                        onEditButtonClicked = {
+//                            homeScreenViewModel.dialogOnClick()
+                            navController.navigate(YarnScreenRoot.YarnInfoEdit.name)
+                        },
                         modifier = Modifier
                             .fillMaxSize()
                             .background(MaterialTheme.colorScheme.surface)
@@ -93,22 +113,44 @@ fun YarnShelfApp(
                     )
                 }
                 // 毛糸情報編集画面
+                // Nextボタン→確認画面へ
+                // Cancelボタン→ホーム画面ダイアログ表示状態へ
                 composable(route = YarnScreenRoot.YarnInfoEdit.name) {
                     // Context は Android システムによって実装が提供される抽象クラスです。アプリケーション固有のリソースとクラスだけでなく、アプリケーション レベルのオペレーション（例: アクティビティの起動）のアップコールへのアクセスを可能にします。
-                    val context = LocalContext.current
+//                    val context = LocalContext.current
                     YarnEditScreen(
                         homeScreenUiState,
                         yarnNameOnValueChange = homeScreenViewModel::yarnNameUpdate,
                         yarnDescriptionOnValueChange = homeScreenViewModel::yarnDescriptionUpdate,
                         nextButtonOnClick = { navController.navigate(YarnScreenRoot.YarnInfoConfirm.name) },
-                        cancelButtonOnClick = { navController.navigateUp() },
+                        cancelButtonOnClick = {
+//                            homeScreenViewModel.dialogOnClick()
+                            navController.navigateUp()
+                        },
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.surface)
+                            .padding(innerPadding)
                     )
                 }
                 // 毛糸情報確認画面
+                // OKボタン→ホーム画面へ
+                // Cancelボタン→ホーム画面初期状態へ
                 composable(route = YarnScreenRoot.YarnInfoConfirm.name) {
-                    val context = LocalContext.current
                     YarnConfirmScreen(
-
+                        homeScreenUiState,
+                        // システムの「戻る」ボタンとは異なり、[Cancel] ボタンを押しても前の画面に戻りません。バックスタックからすべての画面をポップ（削除）して、開始画面に戻る必要があります。
+                        // route: 戻るデスティネーションのルートを表す文字列。
+                        // inclusive: ブール値。true の場合、指定したルートもポップ（削除）します。false の場合、popBackStack() は開始デスティネーションより上にあるデスティネーションをすべて削除し、ユーザーが目にする一番上の画面として開始デスティネーションを残します。
+                        okButtonOnClick = {
+                            homeScreenViewModel.dialogOnClick()
+                            navController.popBackStack(YarnScreenRoot.Home.name, false)
+                        },
+                        cancelButtonOnClick = { navController.navigateUp() },
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.surface)
+                            .padding(innerPadding)
                     )
                 }
             }

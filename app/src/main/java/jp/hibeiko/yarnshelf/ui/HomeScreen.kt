@@ -29,7 +29,7 @@ import java.text.SimpleDateFormat
 fun HomeScreen(
     homeScreenUiState: HomeScreenUiState,
     cardOnClick: (String) -> Unit,
-    dialogOnClick: (String) -> Unit,
+    dialogOnClick: () -> Unit,
     onEditButtonClicked: () -> Unit,
     modifier: Modifier = Modifier) {
     LazyColumn( modifier = modifier) {
@@ -104,12 +104,12 @@ fun YarnCard(
 @Composable
 fun YarnDialog(
     yarnData: YarnData,
-    dialogOnClick: (String) -> Unit,
+    dialogOnClick: () -> Unit,
     onEditButtonClicked: () -> Unit,
     modifier: Modifier = Modifier){
     AlertDialog(
         onDismissRequest = {
-            dialogOnClick(yarnData.yarnName)
+            dialogOnClick()
         },
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
         title = {
@@ -150,7 +150,7 @@ fun YarnDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    dialogOnClick(yarnData.yarnName)
+                    dialogOnClick()
                 }
             ) {
                 Text(text ="OK")
