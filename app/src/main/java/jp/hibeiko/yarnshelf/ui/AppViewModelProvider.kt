@@ -1,6 +1,7 @@
 package jp.hibeiko.yarnshelf.ui
 
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -8,29 +9,35 @@ import jp.hibeiko.yarnshelf.YarnShelfApplication
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
-        // Initializer for ItemEditViewModel
-//        initializer {
-//            YarnEditScreenViewModel(
-//                this.createSavedStateHandle(),
-//                yarnShelfApplication().container.yarnDataRepository
-//            )
-//        }
-        // Initializer for ItemEntryViewModel
+
+        // Home
+        initializer {
+            HomeScreenViewModel(yarnShelfApplication().container.yarnDataRepository)
+        }
+        // 毛糸情報登録画面
         initializer {
             YarnEntryScreenViewModel(yarnShelfApplication().container.yarnDataRepository)
         }
-
-//         Initializer for ItemDetailsViewModel
-//        initializer {
-//            ItemDetailsViewModel(
-//                this.createSavedStateHandle(),
-//                inventoryApplication().container.itemsRepository
-//            )
-//        }
-
-        // Initializer for HomeViewModel
+        // 毛糸情報詳細画面
         initializer {
-            HomeScreenViewModel(yarnShelfApplication().container.yarnDataRepository)
+            YarnDetailScreenViewModel(
+                this.createSavedStateHandle(),
+                yarnShelfApplication().container.yarnDataRepository
+            )
+        }
+        // 毛糸情報編集画面
+        initializer {
+            YarnEditScreenViewModel(
+                this.createSavedStateHandle(),
+                yarnShelfApplication().container.yarnDataRepository
+            )
+        }
+        // 毛糸情報確認画面
+        initializer {
+            YarnConfirmScreenViewModel(
+                this.createSavedStateHandle(),
+                yarnShelfApplication().container.yarnDataRepository
+            )
         }
     }
 }

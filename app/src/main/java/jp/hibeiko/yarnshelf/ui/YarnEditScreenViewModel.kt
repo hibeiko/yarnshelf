@@ -1,42 +1,67 @@
 package jp.hibeiko.yarnshelf.ui
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import jp.hibeiko.yarnshelf.data.YarnData
+import jp.hibeiko.yarnshelf.data.YarnDataRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.Date
 
 private const val TAG = "HomeScreen"
 data class YarnEditScreenUiState(
     val yarnEditData: YarnData = YarnData(0,"","", Date(),0) // DataSource().loadData().first { it.yarnId == 0 }
     )
-class YarnEditScreenViewModel: ViewModel() {
-    //StateFlow は、現在の状態や新しい状態更新の情報を出力するデータ保持用の監視可能な Flow です。その value プロパティは、現在の状態値を反映します。状態を更新してこの Flow に送信するには、MutableStateFlow クラスの value プロパティに新しい値を割り当てます。
-    private val _yarnEditScreenUiState = MutableStateFlow(YarnEditScreenUiState())
-    //_home...を直接publicにしてしまうと外部からset可能となるため、home...をpublicにして読み取り専用としてasStateFlow()経由で利用するように制御する。
-    val yarnEditScreenUiState: StateFlow<YarnEditScreenUiState> = _yarnEditScreenUiState.asStateFlow()
+class YarnEditScreenViewModel(
+    savedStateHandle: SavedStateHandle,
+    private val yarnDataRepository: YarnDataRepository
+): ViewModel() {
+    // 前画面からのリクエストパラメータ
+//    private val yarnId: Int = checkNotNull(savedStateHandle[YarnEditDestination.yarnIdArg])
+    private val yarnId: Int = checkNotNull( savedStateHandle[YarnEditDestination.yarnIdArg])
+    var yarnEditScreenUiState by mutableStateOf(YarnEditScreenUiState())
+        private set
 
-    fun yarnNameUpdate(yarnName: String){
-        _yarnEditScreenUiState.update {
-            it.copy(
-                yarnEditData = YarnData(it.yarnEditData.yarnId,yarnName,it.yarnEditData.yarnDescription,it.yarnEditData.lastUpdateDate,it.yarnEditData.drawableResourceId)
-            )
+    init {
+            viewModelScope.launch {
+                yarnEditScreenUiState = YarnEditScreenUiState(
+                    yarnDataRepository.select(yarnId)
+                        .filterNotNull()
+                        .first()
+                )
+            }
+    }
+    companion object {
+        private const val TIMEOUT_MILLIS = 5_000L
+    }
+
+    fun updateYarnName(yarnName: String){
+        yarnEditScreenUiState = yarnEditScreenUiState.copy(yarnEditScreenUiState.yarnEditData.copy(yarnName = yarnName))
+    }
+    fun updateYarnDescription(yarnDescription: String){
+        yarnEditScreenUiState = yarnEditScreenUiState.copy(yarnEditScreenUiState.yarnEditData.copy(yarnDescription = yarnDescription))
+    }
+    suspend fun updateYarnData(yarnEditData: YarnData) {
+        if(validateInput()) {
+            yarnDataRepository.update(yarnEditData)
         }
     }
-    fun yarnDescriptionUpdate(yarnDescription: String){
-        _yarnEditScreenUiState.update {
-            it.copy(
-                yarnEditData = YarnData(it.yarnEditData.yarnId,it.yarnEditData.yarnName,yarnDescription,it.yarnEditData.lastUpdateDate,it.yarnEditData.drawableResourceId)
-            )
-        }
-    }
-    fun yarnLastUpdateDateUpdate(lastUpdateDate: Date){
-        _yarnEditScreenUiState.update {
-            it.copy(
-                yarnEditData = YarnData(it.yarnEditData.yarnId,it.yarnEditData.yarnName,it.yarnEditData.yarnDescription,lastUpdateDate,it.yarnEditData.drawableResourceId)
-            )
+
+    fun validateInput(): Boolean {
+        return with(yarnEditScreenUiState) {
+            this.yarnEditData.yarnName.isNotBlank() && this.yarnEditData.yarnDescription.isNotBlank()
         }
     }
 

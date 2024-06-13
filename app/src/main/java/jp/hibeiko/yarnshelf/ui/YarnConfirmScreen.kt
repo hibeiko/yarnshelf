@@ -1,5 +1,6 @@
 package jp.hibeiko.yarnshelf.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -24,6 +26,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -35,6 +38,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusModifier
@@ -54,21 +58,77 @@ import jp.hibeiko.yarnshelf.R
 import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.ui.navigation.NavigationDestination
 import jp.hibeiko.yarnshelf.ui.theme.YarnShelfTheme
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 object YarnConfirmDestination : NavigationDestination {
     override val route = "YarnConfirmEdit"
     override val title = "毛糸情報確認画面"
+    const val yarnIdArg = "yarnId"
+    const val yarnNameArg = "yarnName"
+    const val yarnDescriptionArg = "yarnDescription"
+    val routeWithArgs = "${route}/{$yarnIdArg}?{$yarnNameArg}?{$yarnDescriptionArg}"
 }
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun YarnConfirmScreen(
     // ViewModel(UiStateを使うため)
-    yarnEditScreenViewModel: YarnEditScreenViewModel = viewModel(),
-    okButtonOnClick: () -> Unit,
+    yarnConfirmScreenViewModel: YarnConfirmScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    nextButtonOnClick: () -> Unit,
     cancelButtonOnClick: () -> Unit,
     modifier: Modifier = Modifier){
-    // UiStateを取得
-    val yarnEditScreenUiState by yarnEditScreenViewModel.yarnEditScreenUiState.collectAsState()
+    // 画面トップ
+    Surface(
+        modifier = modifier
+    ) {
+        Scaffold(
+            // トップバー
+            topBar = {
+                CenterAlignedTopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        titleContentColor = MaterialTheme.colorScheme.primary,
+                    ),
+                    title = {
+                        Text(
+                            text = YarnEditDestination.title,
+                            style = MaterialTheme.typography.headlineMedium,
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = cancelButtonOnClick) {
+                            Icon(
+                                Icons.Filled.ArrowBack,
+                                contentDescription = "戻る",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                )
+            },
+        ) { innerPadding ->
+            YarnConfirmBodyScreen(
+                yarnConfirmScreenViewModel,
+                nextButtonOnClick,
+                cancelButtonOnClick,
+                modifier.padding(innerPadding)
+            )
+        }
+    }
+}
+@Composable
+fun YarnConfirmBodyScreen(
+    // ViewModel(UiStateを使うため)
+    yarnConfirmScreenViewModel: YarnConfirmScreenViewModel,
+    nextButtonOnClick: () -> Unit,
+    cancelButtonOnClick: () -> Unit,
+    modifier: Modifier = Modifier){
+
+    // DB処理実行のためのコルーチン
+    // rememberCoroutineScope() は、呼び出されたコンポジションにバインドされた CoroutineScope を返すコンポーズ可能な関数です。コンポーザブルの外部でコルーチンを開始し、スコープがコンポジションから離れた後にコルーチンがキャンセルされるようにする場合、コンポーズ可能な関数 rememberCoroutineScope() を使用できます。この関数は、コルーチンのライフサイクルを手動で制御する必要がある場合（ユーザー イベントが発生するたびにアニメーションをキャンセルする場合など）に使用できます。
+    val coroutineScope = rememberCoroutineScope()
+    Log.d("YarnConfirmScreen","${yarnConfirmScreenViewModel.yarnConfirmScreenUiState.yarnConfirmData}")
+
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
@@ -84,7 +144,7 @@ fun YarnConfirmScreen(
                 modifier = Modifier.padding(10.dp)
             )
             Text(
-                text = yarnEditScreenUiState.yarnEditData.yarnName,
+                text = yarnConfirmScreenViewModel.yarnConfirmScreenUiState.yarnConfirmData.yarnName,
                 style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier.padding(10.dp)
             )
@@ -100,7 +160,7 @@ fun YarnConfirmScreen(
                 modifier = Modifier.padding(10.dp)
             )
             Text(
-                text = yarnEditScreenUiState.yarnEditData.yarnDescription,
+                text = yarnConfirmScreenViewModel.yarnConfirmScreenUiState.yarnConfirmData.yarnDescription,
                 style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier.padding(10.dp)
             )
@@ -115,7 +175,12 @@ fun YarnConfirmScreen(
             ) {
                 Text(text = "Cancel", style = MaterialTheme.typography.labelSmall)
             }
-            Button(onClick = okButtonOnClick,) {
+            Button(onClick ={
+                coroutineScope.launch {
+                    yarnConfirmScreenViewModel.updateYarnData(yarnConfirmScreenViewModel.yarnConfirmScreenUiState.yarnConfirmData)
+                    nextButtonOnClick()
+                }
+                }) {
                 Text(text = "OK", style = MaterialTheme.typography.labelSmall)
             }
         }
@@ -127,7 +192,7 @@ fun YarnConfirmScreen(
 fun YarnConfirmScreenPreview() {
     YarnShelfTheme {
         YarnConfirmScreen(
-            okButtonOnClick = {},
+            nextButtonOnClick = {},
             cancelButtonOnClick = {},
             modifier = Modifier
                 .fillMaxSize()

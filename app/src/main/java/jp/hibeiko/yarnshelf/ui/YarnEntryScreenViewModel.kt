@@ -67,7 +67,9 @@ class YarnEntryScreenViewModel(private val yarnDataRepository: YarnDataRepositor
     }
 
     suspend fun saveYarnData() {
-        yarnDataRepository.insert(yarnData = yarnEntryScreenUiState.value.yarnEntryData)
+        if(validateInput()) {
+            yarnDataRepository.insert(yarnData = yarnEntryScreenUiState.value.yarnEntryData)
+        }
     }
 
     fun validateInput(): Boolean {

@@ -168,7 +168,9 @@ fun YarnCard(
         onClick = { cardOnClick(yarnData.yarnId) },
     ) {
         val formatter = SimpleDateFormat("yyyy/MM/dd")
-        Log.d("HomeScreen","${yarnData}")
+
+//        Log.d("HomeScreen","${yarnData}")
+
         Row{
             Image(
                 painter = painterResource(
@@ -260,10 +262,11 @@ fun YarnDialog(
         dismissButton = {
             TextButton(
                 onClick = {
+                    dialogOnClick()
                     editButtonOnClicked(yarnData.yarnId)
                 }
             ) {
-                Text(text ="編集")
+                Text(text ="詳細")
             }
         },
         confirmButton = {
