@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.devtools.ksp") version "1.9.20-1.0.14"
 }
 
 android {
@@ -67,6 +68,11 @@ dependencies {
     // NavHostを利用するのに必要。ユニット4「Jetpack Composeでのナビゲーション」より。
     implementation(libs.androidx.navigation.compose)
 //    implementation(libs.androidx.navigation.runtime.ktx)
+
+    // Roomを利用するのに必要。ユニット６「データの永続化」より。
+    implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
+    ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
+    implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

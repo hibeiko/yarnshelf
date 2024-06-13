@@ -32,7 +32,7 @@ val YarnShelfTypography = Typography(
     headlineMedium = TextStyle(
         fontFamily = YasashisaGothic,
         fontWeight = FontWeight.Normal,
-        fontSize = 10.sp
+        fontSize = 20.sp
     ),
     displayLarge = TextStyle(
         fontFamily = BIZUDPGothic_Regular,

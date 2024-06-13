@@ -19,26 +19,41 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import jp.hibeiko.yarnshelf.R
 import jp.hibeiko.yarnshelf.data.YarnData
+import jp.hibeiko.yarnshelf.ui.navigation.NavigationDestination
 import jp.hibeiko.yarnshelf.ui.theme.YarnShelfTheme
 import java.util.Date
+
+object YarnEditDestination : NavigationDestination {
+    override val route = "YarnInfoEdit"
+    override val title = "毛糸情報編集画面"
+    const val yarnIdArg = "yarnId"
+    val routeWithArgs = "$route/{$yarnIdArg}"
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun YarnEditScreen(
-    homeScreenUiState: HomeScreenUiState,
-    yarnNameOnValueChange: (String) -> Unit,
-    yarnDescriptionOnValueChange: (String) -> Unit,
+    // ViewModel(UiStateを使うため)
+    yarnEditScreenViewModel: YarnEditScreenViewModel = viewModel(),
+//    yarnNameOnValueChange: (String) -> Unit,
+//    yarnDescriptionOnValueChange: (String) -> Unit,
     nextButtonOnClick: () -> Unit,
     cancelButtonOnClick: () -> Unit,
     modifier: Modifier = Modifier){
+    // UiStateを取得
+    val yarnEditScreenUiState by yarnEditScreenViewModel.yarnEditScreenUiState.collectAsState()
+
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -47,8 +62,8 @@ fun YarnEditScreen(
         TextField(
             label = { Text("名前", style = MaterialTheme.typography.labelSmall)},
             leadingIcon = {Icon(Icons.Default.Edit, contentDescription = null)},
-            value = homeScreenUiState.yarnEditData.yarnName,
-            onValueChange = {yarnNameOnValueChange(it)},
+            value = yarnEditScreenUiState.yarnEditData.yarnName,
+            onValueChange = {yarnEditScreenViewModel.yarnNameUpdate(it)},
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
@@ -59,8 +74,8 @@ fun YarnEditScreen(
         TextField(
             label = { Text("メモ", style = MaterialTheme.typography.labelSmall)},
             leadingIcon = {Icon(Icons.Default.Edit, contentDescription = null)},
-            value = homeScreenUiState.yarnEditData.yarnDescription,
-            onValueChange = {yarnDescriptionOnValueChange((it))},
+            value = yarnEditScreenUiState.yarnEditData.yarnDescription,
+            onValueChange = {yarnEditScreenViewModel.yarnDescriptionUpdate(it)},
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Done
@@ -91,9 +106,6 @@ fun YarnEditScreen(
 fun YarnEditScreenPreview() {
     YarnShelfTheme {
         YarnEditScreen(
-            homeScreenUiState = HomeScreenUiState(listOf(),YarnData("Seabright","1010 Seabright", Date(), R.drawable.spin_1010_crpd_1625196651766_400),true,0),
-            yarnNameOnValueChange = {},
-            yarnDescriptionOnValueChange = {},
             nextButtonOnClick = {},
             cancelButtonOnClick = {},
             modifier = Modifier

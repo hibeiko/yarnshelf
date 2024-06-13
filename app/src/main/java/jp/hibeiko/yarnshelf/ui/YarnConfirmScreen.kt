@@ -52,16 +52,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import jp.hibeiko.yarnshelf.R
 import jp.hibeiko.yarnshelf.data.YarnData
+import jp.hibeiko.yarnshelf.ui.navigation.NavigationDestination
 import jp.hibeiko.yarnshelf.ui.theme.YarnShelfTheme
 import java.text.SimpleDateFormat
 import java.util.Date
-
+object YarnConfirmDestination : NavigationDestination {
+    override val route = "YarnConfirmEdit"
+    override val title = "毛糸情報確認画面"
+}
 @Composable
 fun YarnConfirmScreen(
-    homeScreenUiState: HomeScreenUiState,
+    // ViewModel(UiStateを使うため)
+    yarnEditScreenViewModel: YarnEditScreenViewModel = viewModel(),
     okButtonOnClick: () -> Unit,
     cancelButtonOnClick: () -> Unit,
     modifier: Modifier = Modifier){
+    // UiStateを取得
+    val yarnEditScreenUiState by yarnEditScreenViewModel.yarnEditScreenUiState.collectAsState()
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
@@ -77,7 +84,7 @@ fun YarnConfirmScreen(
                 modifier = Modifier.padding(10.dp)
             )
             Text(
-                text = homeScreenUiState.yarnEditData.yarnName,
+                text = yarnEditScreenUiState.yarnEditData.yarnName,
                 style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier.padding(10.dp)
             )
@@ -93,7 +100,7 @@ fun YarnConfirmScreen(
                 modifier = Modifier.padding(10.dp)
             )
             Text(
-                text = homeScreenUiState.yarnEditData.yarnDescription,
+                text = yarnEditScreenUiState.yarnEditData.yarnDescription,
                 style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier.padding(10.dp)
             )
@@ -120,7 +127,6 @@ fun YarnConfirmScreen(
 fun YarnConfirmScreenPreview() {
     YarnShelfTheme {
         YarnConfirmScreen(
-            homeScreenUiState = HomeScreenUiState(listOf(),YarnData("Seabright","1010 Seabright", Date(), R.drawable.spin_1010_crpd_1625196651766_400),true,0),
             okButtonOnClick = {},
             cancelButtonOnClick = {},
             modifier = Modifier
