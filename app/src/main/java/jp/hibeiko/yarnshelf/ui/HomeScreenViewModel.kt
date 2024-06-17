@@ -3,7 +3,7 @@ package jp.hibeiko.yarnshelf.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import jp.hibeiko.yarnshelf.data.YarnData
-import jp.hibeiko.yarnshelf.data.YarnDataRepository
+import jp.hibeiko.yarnshelf.repository.YarnDataRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

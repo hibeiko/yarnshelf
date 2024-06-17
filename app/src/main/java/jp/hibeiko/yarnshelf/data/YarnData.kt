@@ -4,18 +4,17 @@ import androidx.annotation.DrawableRes
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
-import jp.hibeiko.yarnshelf.R
-import java.text.SimpleDateFormat
-import java.time.Instant
 import java.util.Date
 
 @Entity
 data class YarnData(
     @PrimaryKey(autoGenerate = true)
     val yarnId: Int = 0,
+    val janCode: String,
     val yarnName: String,
     val yarnDescription: String,
     val lastUpdateDate: Date,
+    val imageUrl: String,
     @DrawableRes val drawableResourceId: Int
 )
 class Converters {

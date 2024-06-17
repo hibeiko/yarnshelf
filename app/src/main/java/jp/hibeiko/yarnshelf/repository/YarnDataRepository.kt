@@ -1,11 +1,7 @@
-package jp.hibeiko.yarnshelf.data
+package jp.hibeiko.yarnshelf.repository
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import jp.hibeiko.yarnshelf.data.YarnData
+import jp.hibeiko.yarnshelf.data.YarnDataDAO
 import kotlinx.coroutines.flow.Flow
 
 interface YarnDataRepository {
@@ -17,7 +13,7 @@ interface YarnDataRepository {
     fun selectAll() : Flow<List<YarnData>>
 }
 
-class OfflineYarnDataRepository(private val yarnDataDAO: YarnDataDAO) : YarnDataRepository {
+class YarnDataRepositoryImpl(private val yarnDataDAO: YarnDataDAO) : YarnDataRepository {
     override suspend fun insert(yarnData: YarnData) = yarnDataDAO.insert(yarnData)
     override suspend fun update(yarnData: YarnData) = yarnDataDAO.update(yarnData)
     override suspend fun delete(yarnData: YarnData) = yarnDataDAO.delete(yarnData)

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.devtools.ksp") version "1.9.20-1.0.14"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
 }
 
 android {
@@ -64,15 +65,36 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.2.1")
 
     // ViewModelを利用するのに必要。ユニット4「アーキテクチャコンポーネント」より。
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     // NavHostを利用するのに必要。ユニット4「Jetpack Composeでのナビゲーション」より。
     implementation(libs.androidx.navigation.compose)
 //    implementation(libs.androidx.navigation.runtime.ktx)
 
     // Roomを利用するのに必要。ユニット６「データの永続化」より。
-    implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
-    ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
-    implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
+    // APIを利用するのに必要。ユニット５「インターネットに接続する」より。
+    // Retrofit
+    implementation(libs.retrofit)
+    // Retrofit with Scalar Converter
+    // Retrofit は JSON 結果を String として返すことができます。
+    // Serialization Converterを使うのでこちらはコメントアウト
+//    implementation(libs.converter.scalars)
+    // JSON解析をするのに必要。
+    // Kotlin serialization
+    implementation(libs.kotlinx.serialization.json)
+    // Retrofit with Kotlin serialization Converter
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.okhttp)
+
+    //Coilを利用するのに必要。Coil は、基本的に次の 2 つのものを必要とします。
+    //
+    //読み込んで表示する画像の URL。
+    //実際に画像を表示するための AsyncImage コンポーザブル。
+    // Coil
+    implementation(libs.coil.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

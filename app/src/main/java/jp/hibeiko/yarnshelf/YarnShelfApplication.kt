@@ -2,8 +2,8 @@ package jp.hibeiko.yarnshelf
 
 
 import android.app.Application
-import jp.hibeiko.yarnshelf.data.AppContainer
-import jp.hibeiko.yarnshelf.data.AppDataContainer
+import jp.hibeiko.yarnshelf.repository.AppContainer
+import jp.hibeiko.yarnshelf.repository.AppDataContainer
 
 class YarnShelfApplication : Application() {
 

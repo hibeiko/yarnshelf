@@ -1,5 +1,6 @@
 package jp.hibeiko.yarnshelf.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,10 +9,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -37,7 +40,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -114,6 +119,7 @@ fun YarnEntryScreenBody(
     modifier: Modifier = Modifier){
     // UiStateを取得
     val yarnEntryScreenUiState by yarnEntryScreenViewModel.yarnEntryScreenUiState.collectAsState()
+
     // DB処理実行のためのコルーチン
     // rememberCoroutineScope() は、呼び出されたコンポジションにバインドされた CoroutineScope を返すコンポーズ可能な関数です。コンポーザブルの外部でコルーチンを開始し、スコープがコンポジションから離れた後にコルーチンがキャンセルされるようにする場合、コンポーズ可能な関数 rememberCoroutineScope() を使用できます。この関数は、コルーチンのライフサイクルを手動で制御する必要がある場合（ユーザー イベントが発生するたびにアニメーションをキャンセルする場合など）に使用できます。
     val coroutineScope = rememberCoroutineScope()
@@ -123,6 +129,18 @@ fun YarnEntryScreenBody(
         horizontalAlignment = Alignment.Start,
         modifier = modifier.padding(start = 20.dp)
     ) {
+        TextField(
+            label = {Text("JANコード *", style = MaterialTheme.typography.labelSmall)},
+            leadingIcon = {Icon(Icons.Default.Edit, contentDescription = null)},
+            value = yarnEntryScreenUiState.yarnEntryData.janCode,
+            onValueChange = {yarnEntryScreenViewModel.yarnJanCodeUpdate(it)},
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            ),
+            singleLine = true,
+            textStyle = MaterialTheme.typography.displayMedium
+        )
         TextField(
             label = {Text("名前 *", style = MaterialTheme.typography.labelSmall)},
             leadingIcon = {Icon(Icons.Default.Edit, contentDescription = null)},
@@ -145,7 +163,12 @@ fun YarnEntryScreenBody(
                 imeAction = ImeAction.Done
             ),
             textStyle = MaterialTheme.typography.displayMedium,
-            singleLine = false,
+            maxLines = 5,
+            modifier = Modifier.padding(top = 10.dp)
+        )
+        Text(
+            "76×76サイズの画像URL${yarnEntryScreenUiState.yarnEntryData.imageUrl}",
+            style = MaterialTheme.typography.displayMedium,
             modifier = Modifier.padding(top = 10.dp)
         )
         Text(
@@ -154,10 +177,37 @@ fun YarnEntryScreenBody(
             modifier = Modifier.padding(top = 10.dp)
         )
         Spacer(modifier = Modifier.weight(1.0F))
+        when(yarnEntryScreenViewModel.searchItemUiState){
+            is SearchItemUiState.Success ->
+                Text(
+                    text = (yarnEntryScreenViewModel.searchItemUiState as SearchItemUiState.Success).responseItem.hits.first().name ?: "",
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.padding(top = 10.dp)
+                )
+
+            is SearchItemUiState.Error ->
+                Text(
+                    text = "商品検索に失敗しました。インターネット接続を確認してください。",
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.padding(top = 10.dp)
+                )
+            is SearchItemUiState.Loading ->
+            Image(
+                painter = painterResource(R.drawable.loading_img),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+            )
+
+        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
+            OutlinedButton(
+                onClick = { yarnEntryScreenViewModel.searchItem("4981769205126") }
+            ) {
+                Text(text = "商品検索", style = MaterialTheme.typography.labelSmall)
+            }
             OutlinedButton(
                 onClick = cancelButtonOnClick
             ) {

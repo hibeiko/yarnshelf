@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+<!--    アプリがインターネットにアクセスするには、INTERNET 権限が必要です。-->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".YarnShelfApplication"
         android:allowBackup="true"

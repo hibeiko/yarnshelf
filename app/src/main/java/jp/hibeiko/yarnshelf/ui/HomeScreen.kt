@@ -42,11 +42,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.Coil
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import jp.hibeiko.yarnshelf.R
 import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.ui.navigation.NavigationDestination
@@ -66,7 +70,8 @@ fun HomeScreen(
     homeScreenViewModel: HomeScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
     editButtonOnClicked: (Int) -> Unit,
     addButtonOnClicked: () -> Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     // 画面トップ
     Surface(
         modifier = modifier
@@ -123,12 +128,14 @@ fun HomeScreen(
         }
     }
 }
+
 @Composable
 fun HomeScreenBody(
     // ViewModel(UiStateを使うため)
     homeScreenViewModel: HomeScreenViewModel,
     editButtonOnClicked: (Int) -> Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
 
     // UiStateを取得
     val homeScreenUiState by homeScreenViewModel.homeScreenUiState.collectAsState()
@@ -136,7 +143,7 @@ fun HomeScreenBody(
     val dialogViewYarnId by homeScreenViewModel.dialogViewYarnId.collectAsState()
 
 
-    LazyColumn( modifier = modifier) {
+    LazyColumn(modifier = modifier) {
         items(homeScreenUiState.yarnDataList) { it ->
             YarnCard(
                 it,
@@ -145,7 +152,7 @@ fun HomeScreenBody(
             )
         }
     }
-    if( dialogViewFlag ){
+    if (dialogViewFlag) {
         YarnDialog(
             homeScreenUiState.yarnDataList.first { it.yarnId == dialogViewYarnId },
             homeScreenViewModel::dialogOnClick,
@@ -158,33 +165,50 @@ fun HomeScreenBody(
 fun YarnCard(
     yarnData: YarnData,
     cardOnClick: (Int) -> Unit,
-    modifier: Modifier = Modifier){
+    modifier: Modifier = Modifier
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(140.dp)
             .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer) ,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         onClick = { cardOnClick(yarnData.yarnId) },
     ) {
         val formatter = SimpleDateFormat("yyyy/MM/dd")
 
 //        Log.d("HomeScreen","${yarnData}")
 
-        Row{
-            Image(
-                painter = painterResource(
-                    when (yarnData.drawableResourceId) {
-                        0 -> R.drawable.not_found
-                        else -> yarnData.drawableResourceId
-                    }
-                ),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(140.dp),
+        Row {
+            when (yarnData.imageUrl) {
+                "" ->
+                    Image(
+                        painter = painterResource(
+                            when (yarnData.drawableResourceId) {
+                                0 -> R.drawable.not_found
+                                else -> yarnData.drawableResourceId
+                            }
+                        ),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .width(140.dp),
+                    )
+
+                else -> AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(yarnData.imageUrl)
+                        .crossfade(true)
+                        .build(),
+//    placeholder = painterResource(R.drawable.placeholder),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(140.dp),
                 )
+            }
             Column(
                 horizontalAlignment = Alignment.Start,
                 modifier = Modifier
@@ -220,7 +244,8 @@ fun YarnDialog(
     yarnData: YarnData,
     dialogOnClick: () -> Unit,
     editButtonOnClicked: (Int) -> Unit,
-    modifier: Modifier = Modifier){
+    modifier: Modifier = Modifier
+) {
     AlertDialog(
         onDismissRequest = {
             dialogOnClick()
@@ -231,33 +256,50 @@ fun YarnDialog(
                 text = yarnData.yarnName,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.displayLarge
-            ) },
+            )
+        },
         text = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(
-                    painter = painterResource(
-                        when (yarnData.drawableResourceId) {
-                            0 -> R.drawable.not_found
-                            else -> yarnData.drawableResourceId
-                        }
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .height(140.dp)
-                        .width(140.dp),
-                    contentScale = ContentScale.Crop
-                )
+                when (yarnData.imageUrl) {
+                    "" ->
+                        Image(
+                            painter = painterResource(
+                                when (yarnData.drawableResourceId) {
+                                    0 -> R.drawable.not_found
+                                    else -> yarnData.drawableResourceId
+                                }
+                            ),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .height(140.dp)
+                                .width(140.dp),
+                        )
+
+                    else -> AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(yarnData.imageUrl)
+                            .crossfade(true)
+                            .build(),
+//    placeholder = painterResource(R.drawable.placeholder),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .height(140.dp)
+                            .width(140.dp),
+                    )
+                }
                 Text(
                     text = yarnData.yarnDescription,
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(2.dp)
-                    )
+                )
             }
-               },
+        },
         modifier = modifier,
         dismissButton = {
             TextButton(
@@ -266,7 +308,7 @@ fun YarnDialog(
                     editButtonOnClicked(yarnData.yarnId)
                 }
             ) {
-                Text(text ="詳細")
+                Text(text = "詳細")
             }
         },
         confirmButton = {
@@ -275,12 +317,13 @@ fun YarnDialog(
                     dialogOnClick()
                 }
             ) {
-                Text(text ="OK")
+                Text(text = "OK")
             }
         }
     )
 
 }
+
 @Preview
 @Composable
 fun HomeScreenPreview() {
