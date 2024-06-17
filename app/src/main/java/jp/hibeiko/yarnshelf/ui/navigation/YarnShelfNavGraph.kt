@@ -1,42 +1,18 @@
 package jp.hibeiko.yarnshelf.ui.navigation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import jp.hibeiko.yarnshelf.ui.HomeDestination
 import jp.hibeiko.yarnshelf.ui.HomeScreen
-import jp.hibeiko.yarnshelf.ui.HomeScreenViewModel
 import jp.hibeiko.yarnshelf.ui.YarnConfirmDestination
 import jp.hibeiko.yarnshelf.ui.YarnConfirmScreen
 import jp.hibeiko.yarnshelf.ui.YarnDetailDestination
@@ -95,7 +71,7 @@ fun YarnShelfNavHost(
         ) {
             // content: ここで、所定のルートに対して表示するコンポーザブルを呼び出すことができます。
             YarnEntryScreen(
-                nextButtonOnClick = { navController.navigate(YarnConfirmDestination.route) },
+//                nextButtonOnClick = { navController.navigate(YarnConfirmDestination.route) },
                 cancelButtonOnClick = {
                     navController.navigateUp()
                 },
@@ -147,14 +123,23 @@ fun YarnShelfNavHost(
             route = YarnConfirmDestination.routeWithArgs,
             arguments = listOf(
                 navArgument(YarnConfirmDestination.yarnIdArg) {
-                type = NavType.IntType
-            },
-                        navArgument(YarnConfirmDestination.yarnNameArg) {
+                    type = NavType.IntType
+                },
+                navArgument(YarnConfirmDestination.yarnNameArg) {
                     type = NavType.StringType
                 },
                 navArgument(YarnConfirmDestination.yarnDescriptionArg) {
                     type = NavType.StringType
-                }
+                },
+                navArgument(YarnConfirmDestination.janCodeArg) {
+                    type = NavType.StringType
+                },
+                navArgument(YarnConfirmDestination.imageUrlArg) {
+                    type = NavType.StringType
+                },
+                navArgument(YarnConfirmDestination.drawableResourceIdArg) {
+                    type = NavType.IntType
+                },
             )
         ) {
             YarnConfirmScreen(

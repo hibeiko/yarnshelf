@@ -18,11 +18,11 @@ interface AppContainer {
 }
 
 /**
- * [AppContainer] implementation that provides instance of [OfflineItemsRepository]
+ * [AppContainer] implementation that provides instance of [YarnDataRepositoryImpl]
  */
 class AppDataContainer(private val context: Context) : AppContainer {
     /**
-     * Implementation for [ItemsRepository]
+     * Implementation for [YarnDataRepository]
      */
     override val yarnDataRepository: YarnDataRepository by lazy {
         YarnDataRepositoryImpl(YarnShelfDatabase.getDatabase(context).yarnDataDAO())

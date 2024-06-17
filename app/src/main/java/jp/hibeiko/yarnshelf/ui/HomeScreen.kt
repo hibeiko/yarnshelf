@@ -15,13 +15,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -29,7 +27,6 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -48,15 +45,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.Coil
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import jp.hibeiko.yarnshelf.R
 import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.ui.navigation.NavigationDestination
 import jp.hibeiko.yarnshelf.ui.theme.YarnShelfTheme
-import kotlinx.coroutines.flow.update
 import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 object HomeDestination : NavigationDestination {
     override val route = "Home"
@@ -72,6 +69,11 @@ fun HomeScreen(
     addButtonOnClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // UiStateを取得
+    val homeScreenUiState by homeScreenViewModel.homeScreenUiState.collectAsState()
+    val dialogViewFlag by homeScreenViewModel.dialogViewFlag.collectAsState()
+    val dialogViewYarnId by homeScreenViewModel.dialogViewYarnId.collectAsState()
+
     // 画面トップ
     Surface(
         modifier = modifier
@@ -121,7 +123,11 @@ fun HomeScreen(
             },
         ) { innerPadding ->
             HomeScreenBody(
-                homeScreenViewModel,
+                homeScreenUiState,
+                dialogViewFlag,
+                dialogViewYarnId,
+                homeScreenViewModel::cardOnClick,
+                homeScreenViewModel::dialogOnClick,
                 editButtonOnClicked,
                 modifier.padding(innerPadding)
             )
@@ -131,23 +137,21 @@ fun HomeScreen(
 
 @Composable
 fun HomeScreenBody(
-    // ViewModel(UiStateを使うため)
-    homeScreenViewModel: HomeScreenViewModel,
+    homeScreenUiState: HomeScreenUiState,
+    dialogViewFlag: Boolean,
+    dialogViewYarnId: Int,
+    cardOnClick: (Int) -> Unit,
+    dialogOnClick: () -> Unit,
     editButtonOnClicked: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
-    // UiStateを取得
-    val homeScreenUiState by homeScreenViewModel.homeScreenUiState.collectAsState()
-    val dialogViewFlag by homeScreenViewModel.dialogViewFlag.collectAsState()
-    val dialogViewYarnId by homeScreenViewModel.dialogViewYarnId.collectAsState()
-
 
     LazyColumn(modifier = modifier) {
-        items(homeScreenUiState.yarnDataList) { it ->
+        items(homeScreenUiState.yarnDataList) {
             YarnCard(
                 it,
-                cardOnClick = homeScreenViewModel::cardOnClick,
+                cardOnClick = cardOnClick,
                 modifier = Modifier.padding(8.dp)
             )
         }
@@ -155,7 +159,7 @@ fun HomeScreenBody(
     if (dialogViewFlag) {
         YarnDialog(
             homeScreenUiState.yarnDataList.first { it.yarnId == dialogViewYarnId },
-            homeScreenViewModel::dialogOnClick,
+            dialogOnClick,
             editButtonOnClicked,
         )
     }
@@ -175,9 +179,9 @@ fun YarnCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         onClick = { cardOnClick(yarnData.yarnId) },
     ) {
-        val formatter = SimpleDateFormat("yyyy/MM/dd")
+        val formatter = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
 
-//        Log.d("HomeScreen","${yarnData}")
+        Log.d("HomeScreen","$yarnData")
 
         Row {
             when (yarnData.imageUrl) {
@@ -201,7 +205,7 @@ fun YarnCard(
                         .data(yarnData.imageUrl)
                         .crossfade(true)
                         .build(),
-//    placeholder = painterResource(R.drawable.placeholder),
+                    placeholder = painterResource(R.drawable.loading_img),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -328,9 +332,98 @@ fun YarnDialog(
 @Composable
 fun HomeScreenPreview() {
     YarnShelfTheme {
-        HomeScreen(
+        HomeScreenBody(
+            HomeScreenUiState(
+                yarnDataList =
+                listOf(
+                    YarnData(
+                        0,
+                        "10001",
+                        "Seabright",
+                        "1010 Seabright",
+                        Date(),
+                        "",
+                        R.drawable.spin_1010_crpd_1625196651766_400
+                    ),
+                    YarnData(
+                        1,
+                        "10002",
+                        "Shaela",
+                        "102 Shaela",
+                        Date(),
+                        "",
+                        R.drawable.spin_102_crpd_1625194839510_400
+                    ),
+                    YarnData(
+                        2,
+                        "10003",
+                        "Night Hawk",
+                        "1020 Night Hawk",
+                        Date(),
+                        "",
+                        R.drawable.spin_1020_crpd_1625196650659_400
+                    ),
+                    YarnData(
+                        3,
+                        "10004",
+                        "Sholmit",
+                        "103 Sholmit",
+                        Date(),
+                        "",
+                        R.drawable.spin_103_crpd_1625194837544_400
+                    ),
+                    YarnData(
+                        4,
+                        "10005",
+                        "Natural White",
+                        "104 Natural White",
+                        Date(),
+                        "",
+                        R.drawable.spin_104_crpd_1625194838195_400
+                    ),
+                    YarnData(
+                        5,
+                        "10006",
+                        "Eesit",
+                        "105 Eesit",
+                        Date(),
+                        "",
+                        R.drawable.spin_105_crpd_1625194836934_400
+                    ),
+                    YarnData(
+                        6,
+                        "10007",
+                        "Mooskit",
+                        "106 Mooskit",
+                        Date(),
+                        "",
+                        R.drawable.spin_106_crpd_1625194835979_400
+                    ),
+                    YarnData(
+                        7,
+                        "10008",
+                        "Mogit",
+                        "107 Mogit",
+                        Date(),
+                        "",
+                        R.drawable.spin_107_crpd_1625194834874_400
+                    ),
+                    YarnData(
+                        8,
+                        "10009",
+                        "Natural Black",
+                        "101 Natural Black(Shetland Black)",
+                        Date(),
+                        "",
+                        R.drawable.spin_101_crpd_1625194841231_400
+                    ),
+                )
+            ),
+            dialogViewFlag = false,
+            dialogViewYarnId = 0,
+            cardOnClick = {},
+            dialogOnClick = {},
             editButtonOnClicked = {},
-            addButtonOnClicked = {},
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)

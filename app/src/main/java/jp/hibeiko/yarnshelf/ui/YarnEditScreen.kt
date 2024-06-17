@@ -1,6 +1,5 @@
 package jp.hibeiko.yarnshelf.ui
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -26,8 +25,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
@@ -35,11 +32,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import jp.hibeiko.yarnshelf.R
 import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.ui.navigation.NavigationDestination
 import jp.hibeiko.yarnshelf.ui.theme.YarnShelfTheme
-import java.util.Date
 
 object YarnEditDestination : NavigationDestination {
     override val route = "YarnInfoEdit"
@@ -55,7 +50,8 @@ fun YarnEditScreen(
     yarnEditScreenViewModel: YarnEditScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
     nextButtonOnClick: (String) -> Unit,
     cancelButtonOnClick: () -> Unit,
-    modifier: Modifier = Modifier){
+    modifier: Modifier = Modifier
+) {
     // 画面トップ
     Surface(
         modifier = modifier
@@ -77,7 +73,7 @@ fun YarnEditScreen(
                     navigationIcon = {
                         IconButton(onClick = cancelButtonOnClick) {
                             Icon(
-                                Icons.Filled.ArrowBack,
+                                Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "戻る",
                                 tint = MaterialTheme.colorScheme.primary
                             )
@@ -86,23 +82,30 @@ fun YarnEditScreen(
                 )
             },
         ) { innerPadding ->
-            YarnEditHomeScreen(
-                yarnEditScreenViewModel,
+            YarnEditScreenBody(
+                yarnEditScreenViewModel.yarnEditScreenUiState,
                 nextButtonOnClick,
                 cancelButtonOnClick,
+                yarnEditScreenViewModel::updateYarnName,
+                yarnEditScreenViewModel::updateYarnDescription,
+                yarnEditScreenViewModel::validateInput,
                 modifier.padding(innerPadding)
             )
         }
     }
 }
+
 @Composable
-fun YarnEditHomeScreen(
-    // ViewModel(UiStateを使うため)
-    yarnEditScreenViewModel: YarnEditScreenViewModel,
+fun YarnEditScreenBody(
+    yarnEditScreenUiState: YarnEditScreenUiState,
     nextButtonOnClick: (String) -> Unit,
     cancelButtonOnClick: () -> Unit,
-    modifier: Modifier = Modifier){
-    Log.d("YarnEditScreen","${yarnEditScreenViewModel.yarnEditScreenUiState.yarnEditData}")
+    updateYarnName: (String) -> Unit,
+    updateYarnDescription: (String) -> Unit,
+    validateInput: () -> Boolean,
+    modifier: Modifier = Modifier
+) {
+//    Log.d("YarnEditScreen","${yarnEditScreenUiState.yarnEditData}")
 
 
     Column(
@@ -111,10 +114,10 @@ fun YarnEditHomeScreen(
         modifier = modifier
     ) {
         TextField(
-            label = { Text("名前", style = MaterialTheme.typography.labelSmall)},
-            leadingIcon = {Icon(Icons.Default.Edit, contentDescription = null)},
-            value = yarnEditScreenViewModel.yarnEditScreenUiState.yarnEditData.yarnName,
-            onValueChange = {yarnEditScreenViewModel.updateYarnName(it)},
+            label = { Text("名前", style = MaterialTheme.typography.labelSmall) },
+            leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
+            value = yarnEditScreenUiState.yarnEditData.yarnName,
+            onValueChange = { updateYarnName(it) },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
@@ -123,10 +126,10 @@ fun YarnEditHomeScreen(
             textStyle = MaterialTheme.typography.displayMedium
         )
         TextField(
-            label = { Text("メモ", style = MaterialTheme.typography.labelSmall)},
-            leadingIcon = {Icon(Icons.Default.Edit, contentDescription = null)},
-            value = yarnEditScreenViewModel.yarnEditScreenUiState.yarnEditData.yarnDescription,
-            onValueChange = {yarnEditScreenViewModel.updateYarnDescription(it)},
+            label = { Text("メモ", style = MaterialTheme.typography.labelSmall) },
+            leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
+            value = yarnEditScreenUiState.yarnEditData.yarnDescription,
+            onValueChange = { updateYarnDescription(it) },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Done
@@ -145,9 +148,13 @@ fun YarnEditHomeScreen(
             ) {
                 Text(text = "Cancel", style = MaterialTheme.typography.labelSmall)
             }
-            Button(onClick = {nextButtonOnClick(
-                "${yarnEditScreenViewModel.yarnEditScreenUiState.yarnEditData.yarnId}?${yarnEditScreenViewModel.yarnEditScreenUiState.yarnEditData.yarnName}?${yarnEditScreenViewModel.yarnEditScreenUiState.yarnEditData.yarnDescription}",
-                )}) {
+            Button(
+                onClick = {
+                nextButtonOnClick(
+                    "${yarnEditScreenUiState.yarnEditData.yarnId}?${yarnEditScreenUiState.yarnEditData.yarnName}?${yarnEditScreenUiState.yarnEditData.yarnDescription}?${yarnEditScreenUiState.yarnEditData.janCode}?${yarnEditScreenUiState.yarnEditData.imageUrl}?${yarnEditScreenUiState.yarnEditData.drawableResourceId}",
+                )},
+                enabled =validateInput()
+            ) {
                 Text(text = "Next", style = MaterialTheme.typography.labelSmall)
             }
         }
@@ -158,9 +165,13 @@ fun YarnEditHomeScreen(
 @Composable
 fun YarnEditScreenPreview() {
     YarnShelfTheme {
-        YarnEditScreen(
+        YarnEditScreenBody(
+            YarnEditScreenUiState(YarnData()),
             nextButtonOnClick = {},
             cancelButtonOnClick = {},
+            updateYarnName = {},
+            updateYarnDescription = {},
+            validateInput = {true},
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)

@@ -5,34 +5,57 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.repository.YarnDataRepository
+import kotlinx.coroutines.launch
 import java.util.Date
 
-private const val TAG = "HomeScreen"
+//private const val TAG = "HomeScreen"
+
 data class YarnConfirmScreenUiState(
-    val yarnConfirmData: YarnData = YarnData(0,"","","", Date(),"",0) // DataSource().loadData().first { it.yarnId == 0 }
-    )
+    val yarnConfirmData: YarnData = YarnData()
+)
+
 class YarnConfirmScreenViewModel(
     savedStateHandle: SavedStateHandle,
     private val yarnDataRepository: YarnDataRepository
-): ViewModel() {
+) : ViewModel() {
     // 前画面からのリクエストパラメータ
-    private val yarnId: Int = checkNotNull( savedStateHandle[YarnConfirmDestination.yarnIdArg])
-    private val yarnName: String = checkNotNull( savedStateHandle[YarnConfirmDestination.yarnNameArg])
-    private val yarnDescription: String = checkNotNull( savedStateHandle[YarnConfirmDestination.yarnDescriptionArg])
-    private val janCode: String = checkNotNull( savedStateHandle[YarnConfirmDestination.janCodeArg])
-    private val imageUrl: String = checkNotNull( savedStateHandle[YarnConfirmDestination.imageUrlArg])
-    var yarnConfirmScreenUiState by mutableStateOf(YarnConfirmScreenUiState(YarnData(yarnId, janCode,yarnName,yarnDescription,Date(),imageUrl,0)))
+    private val yarnId: Int = checkNotNull(savedStateHandle[YarnConfirmDestination.yarnIdArg])
+    private val yarnName: String =
+        checkNotNull(savedStateHandle[YarnConfirmDestination.yarnNameArg])
+    private val yarnDescription: String =
+        checkNotNull(savedStateHandle[YarnConfirmDestination.yarnDescriptionArg])
+    private val janCode: String = checkNotNull(savedStateHandle[YarnConfirmDestination.janCodeArg])
+    private val imageUrl: String =
+        checkNotNull(savedStateHandle[YarnConfirmDestination.imageUrlArg])
+    private val drawableResourceId: Int =
+        checkNotNull(savedStateHandle[YarnConfirmDestination.drawableResourceIdArg])
+    var yarnConfirmScreenUiState by mutableStateOf(
+        YarnConfirmScreenUiState(
+            YarnData(
+                yarnId,
+                janCode,
+                yarnName,
+                yarnDescription,
+                Date(),
+                imageUrl,
+                drawableResourceId
+            )
+        )
+    )
         private set
 
-    suspend fun updateYarnData(yarnConfirmData: YarnData) {
-        if(validateInput()) {
-            yarnDataRepository.update(yarnConfirmData)
+    fun updateYarnData() {
+        if (validateInput()) {
+            viewModelScope.launch {
+                yarnDataRepository.update(yarnConfirmScreenUiState.yarnConfirmData)
+            }
         }
     }
 
-    fun validateInput(): Boolean {
+    private fun validateInput(): Boolean {
         return with(yarnConfirmScreenUiState) {
             this.yarnConfirmData.yarnName.isNotBlank() && this.yarnConfirmData.yarnDescription.isNotBlank()
         }

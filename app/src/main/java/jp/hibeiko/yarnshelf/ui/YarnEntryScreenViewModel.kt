@@ -1,6 +1,5 @@
 package jp.hibeiko.yarnshelf.ui
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,28 +7,27 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import jp.hibeiko.yarnshelf.data.YahooShoppingWebServiceItemData
 import jp.hibeiko.yarnshelf.data.YarnData
-import jp.hibeiko.yarnshelf.repository.YarnDataRepository
 import jp.hibeiko.yarnshelf.repository.YahooShoppingWebServiceItemSearchApiRepository
+import jp.hibeiko.yarnshelf.repository.YarnDataRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Date
-import kotlin.Exception
 
-private const val TAG = "HomeScreen"
+//private const val TAG = "HomeScreen"
 
 data class YarnEntryScreenUiState(
-    val yarnEntryData: YarnData = YarnData(0, "", "","", Date(), "",0)
+    val yarnEntryData: YarnData = YarnData()
 
 )
 
 // API Callの状態管理
-sealed interface SearchItemUiState{
-    data class Success(val responseItem: YahooShoppingWebServiceItemData): SearchItemUiState
+sealed interface SearchItemUiState {
+    data class Success(val responseItem: YahooShoppingWebServiceItemData) : SearchItemUiState
     object Error : SearchItemUiState
-    object Loading: SearchItemUiState
+    object Loading : SearchItemUiState
 }
 
 class YarnEntryScreenViewModel(
@@ -66,6 +64,7 @@ class YarnEntryScreenViewModel(
             )
         }
     }
+
     fun yarnJanCodeUpdate(janCode: String) {
         _yarnEntryScreenUiState.update {
             it.copy(
@@ -77,10 +76,11 @@ class YarnEntryScreenViewModel(
     }
 
 
-
-    suspend fun saveYarnData() {
-        if(validateInput()) {
-            yarnDataRepository.insert(yarnData = yarnEntryScreenUiState.value.yarnEntryData)
+    fun saveYarnData() {
+        if (validateInput()) {
+            viewModelScope.launch {
+                yarnDataRepository.insert(yarnData = yarnEntryScreenUiState.value.yarnEntryData)
+            }
         }
     }
 
@@ -90,30 +90,38 @@ class YarnEntryScreenViewModel(
         }
     }
 
-    fun searchItem(janCode: String){
-        try {
-            viewModelScope.launch {
-                val tempResponse = yahooShoppingWebServiceItemSearchApiRepository.searchItem(janCode = janCode)
-                tempResponse.hits.first()?.let {tempItem ->
-                    _yarnEntryScreenUiState.update {
-                        it.copy(
-                            yarnEntryData = YarnData(
-                                yarnName = tempItem.name ?: "",
-                                yarnDescription = tempItem.description ?: "",
-                                janCode = tempItem.janCode ?: "",
-                                imageUrl = tempItem.image?.medium ?: "",
-                                lastUpdateDate = Date(),
-                                drawableResourceId = 0
-                            )
-                        )
-                    }
-                }
-                searchItemUiState = SearchItemUiState.Success(tempResponse)
-            }
+    fun validateJanCodeInput(): Boolean {
+        return with(yarnEntryScreenUiState) {
+            this.value.yarnEntryData.janCode.isNotBlank()
         }
-        catch (e : Exception){
-            e.printStackTrace()
-            searchItemUiState = SearchItemUiState.Error
+    }
+
+    fun searchItem(janCode: String) {
+        if (validateJanCodeInput()) {
+            try {
+                viewModelScope.launch {
+                    val tempResponse =
+                        yahooShoppingWebServiceItemSearchApiRepository.searchItem(janCode = janCode)
+                    tempResponse.hits.first().let { tempItem ->
+                        _yarnEntryScreenUiState.update {
+                            it.copy(
+                                yarnEntryData = YarnData(
+                                    yarnName = tempItem.name ?: "",
+                                    yarnDescription = tempItem.description ?: "",
+                                    janCode = tempItem.janCode ?: "",
+                                    imageUrl = tempItem.image?.medium ?: "",
+                                    lastUpdateDate = Date(),
+                                    drawableResourceId = 0
+                                )
+                            )
+                        }
+                    }
+                    searchItemUiState = SearchItemUiState.Success(tempResponse)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                searchItemUiState = SearchItemUiState.Error
+            }
         }
     }
 }

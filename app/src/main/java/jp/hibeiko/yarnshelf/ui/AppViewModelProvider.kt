@@ -46,7 +46,7 @@ object AppViewModelProvider {
 
 /**
  * Extension function to queries for [Application] object and returns an instance of
- * [InventoryApplication].
+ * [YarnShelfApplication].
  */
 fun CreationExtras.yarnShelfApplication(): YarnShelfApplication =
     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as YarnShelfApplication)

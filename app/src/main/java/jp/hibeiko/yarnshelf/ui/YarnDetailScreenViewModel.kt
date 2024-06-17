@@ -10,13 +10,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import java.util.Date
+import kotlinx.coroutines.launch
 
-private const val TAG = "YarnDetailScreenViewModel"
+//private const val TAG = "YarnDetailScreenViewModel"
 
 data class YarnDetailScreenUiState(
-    val yarnDetailData: YarnData = YarnData(0, "", "", "",Date(),"", 0)
-
+    val yarnDetailData: YarnData = YarnData()
 )
 
 class YarnDetailScreenViewModel(
@@ -36,10 +35,14 @@ class YarnDetailScreenViewModel(
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
                 initialValue = YarnDetailScreenUiState()
             )
+
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
     }
-    suspend fun deleteYarnData() {
-        yarnDataRepository.delete(yarnData = yarnDetailScreenUiState.value.yarnDetailData)
+
+    fun deleteYarnData() {
+        viewModelScope.launch {
+            yarnDataRepository.delete(yarnData = yarnDetailScreenUiState.value.yarnDetailData)
+        }
     }
 }

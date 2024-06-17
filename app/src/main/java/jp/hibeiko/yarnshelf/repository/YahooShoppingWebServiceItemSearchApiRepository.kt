@@ -14,6 +14,6 @@ class YahooShoppingWebServiceItemSearchApiRepositoryImpl(
     private val appId: String
 ) : YahooShoppingWebServiceItemSearchApiRepository{
     override suspend fun searchItem( janCode: String) : YahooShoppingWebServiceItemData{
-        return yahooShoppingWebServiceItemSearchApiService.searchItem(appid = appId, janCode = janCode)
+        return yahooShoppingWebServiceItemSearchApiService.searchItem(appId = appId, janCode = janCode)
     }
 }

@@ -11,13 +11,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
-private const val TAG = "HomeScreen"
+//private const val TAG = "HomeScreen"
 
 data class HomeScreenUiState(
-    val yarnDataList: List<YarnData> = listOf() // DataSource().loadData(),
+    val yarnDataList: List<YarnData> = listOf()
 )
 
-class HomeScreenViewModel(private val yarnDataRepository: YarnDataRepository) : ViewModel() {
+class HomeScreenViewModel(yarnDataRepository: YarnDataRepository) : ViewModel() {
     //StateFlow は、現在の状態や新しい状態更新の情報を出力するデータ保持用の監視可能な Flow です。その value プロパティは、現在の状態値を反映します。状態を更新してこの Flow に送信するには、MutableStateFlow クラスの value プロパティに新しい値を割り当てます。
 //    private val _homeScreenUiState = MutableStateFlow(HomeScreenUiState())
     //_home...を直接publicにしてしまうと外部からset可能となるため、home...をpublicにして読み取り専用としてasStateFlow()経由で利用するように制御する。
@@ -45,21 +45,12 @@ class HomeScreenViewModel(private val yarnDataRepository: YarnDataRepository) : 
     }
 
     fun cardOnClick(yarnId: Int) {
-//        Log.d(TAG," ${DataSource().loadData()},")
-//        Log.d(TAG,"yarnName = $yarnName, ${_homeScreenUiState.value}")
         dialogViewFlag.update { !it }
         dialogViewYarnId.update { yarnId }
     }
 
     fun dialogOnClick() {
         dialogViewFlag.update { !it }
-//        Log.d(TAG,"${_homeScreenUiState.value}")
-//        _homeScreenUiState.update { currentState ->
-//            currentState.copy(
-//                cardClickedFlag = !currentState.cardClickedFlag,
-//            )
-//        }
-//        Log.d(TAG,"${_homeScreenUiState.value}")
     }
 
 }
