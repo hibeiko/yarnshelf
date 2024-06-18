@@ -14,11 +14,17 @@ object AppViewModelProvider {
         initializer {
             HomeScreenViewModel(yarnShelfApplication().container.yarnDataRepository)
         }
+        // 商品検索画面
+        initializer {
+            ItemSearchScreenViewModel(
+                yarnShelfApplication().container.yahooShoppingWebServiceItemSearchApiRepository)
+        }
         // 毛糸情報登録画面
         initializer {
             YarnEntryScreenViewModel(
+                this.createSavedStateHandle(),
                 yarnShelfApplication().container.yarnDataRepository,
-                yarnShelfApplication().container.yahooShoppingWebServiceItemSearchApiRepository)
+                )
         }
         // 毛糸情報詳細画面
         initializer {
@@ -45,7 +51,7 @@ object AppViewModelProvider {
 }
 
 /**
- * Extension function to queries for [Application] object and returns an instance of
+ * Extension function to queries for [YarnShelfApplication] object and returns an instance of
  * [YarnShelfApplication].
  */
 fun CreationExtras.yarnShelfApplication(): YarnShelfApplication =

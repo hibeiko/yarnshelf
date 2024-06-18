@@ -11,7 +11,7 @@ import java.util.Date
 data class YarnData(
     @PrimaryKey(autoGenerate = true)
     val yarnId: Int = 0,
-    val janCode: String = "4981769205126",
+    val janCode: String = "",
     val yarnName: String = "",
     val yarnDescription: String = "",
     val lastUpdateDate: Date = Date(),

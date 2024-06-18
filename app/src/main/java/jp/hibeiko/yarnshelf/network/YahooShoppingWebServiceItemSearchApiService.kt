@@ -8,6 +8,7 @@ interface YahooShoppingWebServiceItemSearchApiService {
     @GET("itemSearch")
     suspend fun searchItem(
         @Query("appid") appId: String,
-        @Query("jan_code") janCode: String
+        @Query("jan_code") janCode: String,
+        @Query("query") query: String
     ): YahooShoppingWebServiceItemData
 }

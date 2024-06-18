@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.devtools.ksp") version "1.9.20-1.0.14"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
+    // ナビゲーションでカスタムNavTypeを指定するのに必要。
+    id("kotlin-parcelize")
 }
 
 android {

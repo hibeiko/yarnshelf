@@ -17,15 +17,15 @@ data class YahooHit(
     val index: Int,
     val name: String?,
     val description: String?,
-    val headLine: String?,
-    val inStock: Boolean?,
-    val url: String?,
+//    val headLine: String?,
+//    val inStock: Boolean?,
+//    val url: String?,
 //    val taxExcludePrice: Int?,
-    val price: Int?,
-    val imageId: String?,
+//    val price: Int?,
+//    val imageId: String?,
     val janCode: String?,
     val image: YahooImage?,
-    val brand: YahooBrand?
+//    val brand: YahooBrand?
 )
 @Serializable
 @SerialName("image")
@@ -35,9 +35,9 @@ data class YahooImage(
 
 )
 
-@Serializable
-@SerialName("brand")
-data class YahooBrand(
-    val id: Int?,
-    val name: String?,
-)
+//@Serializable
+//@SerialName("brand")
+//data class YahooBrand(
+//    val id: Int?,
+//    val name: String?,
+//)

@@ -160,6 +160,12 @@ fun YarnDetailScreenBody(
                 .background(MaterialTheme.colorScheme.surfaceContainer),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text(
+                text = "画像",
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier
+                    .padding(10.dp)
+            )
             when (yarnDetailScreenUiState.yarnDetailData.imageUrl) {
                 "" ->
                     Image(

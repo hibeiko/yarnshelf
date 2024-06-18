@@ -1,6 +1,5 @@
 package jp.hibeiko.yarnshelf.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -47,9 +46,12 @@ import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.ui.navigation.NavigationDestination
 import jp.hibeiko.yarnshelf.ui.theme.YarnShelfTheme
 
+
 object YarnEntryDestination : NavigationDestination {
     override val route = "YarnInfoEntry"
-    override val title = "あたらしい毛糸を登録"
+    override val title = "毛糸情報入力画面"
+    const val searchItemArg = "searchItem"
+    val routeWithArgs = "${route}/{$searchItemArg}"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,53 +98,37 @@ fun YarnEntryScreen(
         ) { innerPadding ->
             YarnEntryScreenBody(
                 yarnEntryScreenUiState,
-                yarnEntryScreenViewModel.searchItemUiState,
-                yarnEntryScreenViewModel::yarnJanCodeUpdate,
                 yarnEntryScreenViewModel::yarnNameUpdate,
                 yarnEntryScreenViewModel::yarnDescriptionUpdate,
-                yarnEntryScreenViewModel::searchItem,
+                yarnEntryScreenViewModel::validateInput,
                 yarnEntryScreenViewModel::saveYarnData,
                 cancelButtonOnClick,
-                yarnEntryScreenViewModel::validateInput,
-                yarnEntryScreenViewModel::validateJanCodeInput,
-                modifier.padding(innerPadding)
+                modifier
+                    .padding(innerPadding)
+//                    .verticalScroll(rememberScrollState())
             )
         }
     }
 }
 
+
 @Composable
 fun YarnEntryScreenBody(
     yarnEntryScreenUiState: YarnEntryScreenUiState,
-    searchItemUiState: SearchItemUiState,
-    yarnJanCodeUpdate: (String) -> Unit,
     yarnNameUpdate: (String) -> Unit,
     yarnDescriptionUpdate: (String) -> Unit,
-    searchItemOnClick: (String) -> Unit,
+    validateInput: () -> Boolean,
     nextButtonOnClick: () -> Unit,
     cancelButtonOnClick: () -> Unit,
-    validateInput: () -> Boolean,
-    validateJanCodeInput: () -> Boolean,
     modifier: Modifier = Modifier
 ) {
 
     Column(
         verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start,
-        modifier = modifier.padding(start = 20.dp)
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .padding(start = 10.dp, end = 10.dp)
     ) {
-        TextField(
-            label = { Text("JANコード *", style = MaterialTheme.typography.labelSmall) },
-            leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
-            value = yarnEntryScreenUiState.yarnEntryData.janCode,
-            onValueChange = { yarnJanCodeUpdate(it) },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
-            ),
-            singleLine = true,
-            textStyle = MaterialTheme.typography.displayMedium
-        )
         TextField(
             label = { Text("名前 *", style = MaterialTheme.typography.labelSmall) },
             leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
@@ -190,39 +176,10 @@ fun YarnEntryScreenBody(
             modifier = Modifier.padding(top = 10.dp)
         )
         Spacer(modifier = Modifier.weight(1.0F))
-        when (searchItemUiState) {
-            is SearchItemUiState.Success ->
-                Text(
-                    text = "Yahooショッピングから取得した情報で更新しました",
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(top = 10.dp)
-                )
-
-            is SearchItemUiState.Error ->
-                Text(
-                    text = "商品検索に失敗しました。インターネット接続を確認してください。",
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(top = 10.dp)
-                )
-
-            is SearchItemUiState.Loading ->
-                Image(
-                    painter = painterResource(R.drawable.loading_img),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                )
-
-        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Button(
-                onClick = { searchItemOnClick(yarnEntryScreenUiState.yarnEntryData.janCode) },
-                enabled = validateJanCodeInput()
-            ) {
-                Text(text = "商品検索", style = MaterialTheme.typography.labelSmall)
-            }
             OutlinedButton(
                 onClick = cancelButtonOnClick
             ) {
@@ -241,21 +198,18 @@ fun YarnEntryScreenBody(
     }
 }
 
+
 @Preview
 @Composable
 fun YarnEntryScreenPreview() {
     YarnShelfTheme {
         YarnEntryScreenBody(
             yarnEntryScreenUiState = YarnEntryScreenUiState(yarnEntryData = YarnData()),
-            searchItemUiState = SearchItemUiState.Loading,
-            yarnJanCodeUpdate = {},
             yarnNameUpdate = {},
             yarnDescriptionUpdate = {},
-            searchItemOnClick = {},
+            validateInput = { true },
             nextButtonOnClick = {},
             cancelButtonOnClick = {},
-            validateInput = { true },
-            validateJanCodeInput = { true },
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)

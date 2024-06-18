@@ -5,15 +5,23 @@ import jp.hibeiko.yarnshelf.network.YahooShoppingWebServiceItemSearchApiService
 
 interface YahooShoppingWebServiceItemSearchApiRepository {
     suspend fun searchItem(
-        janCode: String
+        janCode: String,
+        query: String
     ): YahooShoppingWebServiceItemData
 }
 
 class YahooShoppingWebServiceItemSearchApiRepositoryImpl(
-    private  val yahooShoppingWebServiceItemSearchApiService: YahooShoppingWebServiceItemSearchApiService,
+    private val yahooShoppingWebServiceItemSearchApiService: YahooShoppingWebServiceItemSearchApiService,
     private val appId: String
-) : YahooShoppingWebServiceItemSearchApiRepository{
-    override suspend fun searchItem( janCode: String) : YahooShoppingWebServiceItemData{
-        return yahooShoppingWebServiceItemSearchApiService.searchItem(appId = appId, janCode = janCode)
+) : YahooShoppingWebServiceItemSearchApiRepository {
+    override suspend fun searchItem(
+        janCode: String,
+        query: String
+    ): YahooShoppingWebServiceItemData {
+        return yahooShoppingWebServiceItemSearchApiService.searchItem(
+            appId = appId,
+            janCode = janCode,
+            query = query
+        )
     }
 }

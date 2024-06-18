@@ -1,5 +1,6 @@
 package jp.hibeiko.yarnshelf.ui.navigation
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -13,6 +14,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import jp.hibeiko.yarnshelf.ui.HomeDestination
 import jp.hibeiko.yarnshelf.ui.HomeScreen
+import jp.hibeiko.yarnshelf.ui.ItemSearchDestination
+import jp.hibeiko.yarnshelf.ui.ItemSearchScreen
 import jp.hibeiko.yarnshelf.ui.YarnConfirmDestination
 import jp.hibeiko.yarnshelf.ui.YarnConfirmScreen
 import jp.hibeiko.yarnshelf.ui.YarnDetailDestination
@@ -21,6 +24,8 @@ import jp.hibeiko.yarnshelf.ui.YarnEditDestination
 import jp.hibeiko.yarnshelf.ui.YarnEditScreen
 import jp.hibeiko.yarnshelf.ui.YarnEntryDestination
 import jp.hibeiko.yarnshelf.ui.YarnEntryScreen
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 @Composable
 fun YarnShelfNavHost(
@@ -57,17 +62,41 @@ fun YarnShelfNavHost(
             // content: ここで、所定のルートに対して表示するコンポーザブルを呼び出すことができます。
             HomeScreen(
                 editButtonOnClicked = {
-//                    navController.navigate("${YarnEditDestination.route}/${it}")
                     navController.navigate("${YarnDetailDestination.route}/${it}")
                 },
-                addButtonOnClicked = { navController.navigate(YarnEntryDestination.route) },
+                addButtonOnClicked = { navController.navigate(ItemSearchDestination.route) },
                 modifier = modifier
             )
         }
-        // 毛糸情報登録画面。
+        // 商品検索画面。
         composable(
             // route: ルートの名前に対応する文字列。一意の文字列を指定できます。CupcakeScreen 列挙型の定数の name プロパティを使用します。
-            route = YarnEntryDestination.route
+            route = ItemSearchDestination.route
+        ) {
+            // content: ここで、所定のルートに対して表示するコンポーザブルを呼び出すことができます。
+            ItemSearchScreen(
+                nextButtonOnClick = {
+                    navController.navigate(
+                        "${YarnEntryDestination.route}/${
+                            Uri.encode(
+                                Json.encodeToString(
+                                    it
+                                )
+                            )
+                        }"
+                    )
+                },
+                cancelButtonOnClick = { navController.navigateUp() },
+                modifier = modifier
+            )
+        }
+        // 毛糸情報登録画面。※商品検索画面から遷移した場合
+        composable(
+            // route: ルートの名前に対応する文字列。一意の文字列を指定できます。CupcakeScreen 列挙型の定数の name プロパティを使用します。
+            route = YarnEntryDestination.routeWithArgs,
+            arguments = listOf(navArgument(YarnEntryDestination.searchItemArg) {
+                type = YarnDataForScreenType
+            })
         ) {
             // content: ここで、所定のルートに対して表示するコンポーザブルを呼び出すことができます。
             YarnEntryScreen(
@@ -78,6 +107,20 @@ fun YarnShelfNavHost(
                 modifier = modifier
             )
         }
+        // 毛糸情報登録画面。
+//        composable(
+//            // route: ルートの名前に対応する文字列。一意の文字列を指定できます。CupcakeScreen 列挙型の定数の name プロパティを使用します。
+//            route = YarnEntryDestination.route
+//        ) {
+//            // content: ここで、所定のルートに対して表示するコンポーザブルを呼び出すことができます。
+//            YarnEntryScreen(
+////                nextButtonOnClick = { navController.navigate(YarnConfirmDestination.route) },
+//                cancelButtonOnClick = {
+//                    navController.navigateUp()
+//                },
+//                modifier = modifier
+//            )
+//        }
         // 毛糸情報詳細画面
         // Editボタン→編集画面へ
         // Cancelボタン→ホーム画面ダイアログ表示状態へ

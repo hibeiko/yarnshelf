@@ -206,6 +206,7 @@ fun YarnCard(
                         .crossfade(true)
                         .build(),
                     placeholder = painterResource(R.drawable.loading_img),
+                    error = painterResource(R.drawable.not_found),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -288,7 +289,8 @@ fun YarnDialog(
                             .data(yarnData.imageUrl)
                             .crossfade(true)
                             .build(),
-//    placeholder = painterResource(R.drawable.placeholder),
+                        placeholder = painterResource(R.drawable.loading_img),
+                        error = painterResource(R.drawable.not_found),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
