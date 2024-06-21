@@ -6,6 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import jp.hibeiko.yarnshelf.common.YarnParamName
+import jp.hibeiko.yarnshelf.common.updateYarnData
 import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.repository.YarnDataRepository
 import kotlinx.coroutines.flow.filterNotNull
@@ -16,30 +18,32 @@ import kotlinx.coroutines.launch
 data class YarnEditScreenUiState(
     val yarnEditData: YarnData = YarnData()
 )
+
 class YarnEditScreenViewModel(
     savedStateHandle: SavedStateHandle,
     private val yarnDataRepository: YarnDataRepository
-): ViewModel() {
+) : ViewModel() {
     // 前画面からのリクエストパラメータ
-    private val yarnId: Int = checkNotNull( savedStateHandle[YarnEditDestination.yarnIdArg])
+    private val yarnId: Int = checkNotNull(savedStateHandle[YarnEditDestination.yarnIdArg])
     var yarnEditScreenUiState by mutableStateOf(YarnEditScreenUiState())
         private set
 
     init {
-            viewModelScope.launch {
-                yarnEditScreenUiState = YarnEditScreenUiState(
-                    yarnDataRepository.select(yarnId)
-                        .filterNotNull()
-                        .first()
-                )
-            }
+        viewModelScope.launch {
+            yarnEditScreenUiState = YarnEditScreenUiState(
+                yarnDataRepository.select(yarnId)
+                    .filterNotNull()
+                    .first()
+            )
+        }
     }
-    fun updateYarnName(yarnName: String){
-        yarnEditScreenUiState = yarnEditScreenUiState.copy(yarnEditData = yarnEditScreenUiState.yarnEditData.copy(yarnName = yarnName))
+
+    fun updateYarnEditData(param: Any, paramName: YarnParamName) {
+        yarnEditScreenUiState = yarnEditScreenUiState.copy(
+            yarnEditData = updateYarnData(param = param, yarnData = yarnEditScreenUiState.yarnEditData, paramName = paramName)
+        )
     }
-    fun updateYarnDescription(yarnDescription: String){
-        yarnEditScreenUiState = yarnEditScreenUiState.copy(yarnEditData = yarnEditScreenUiState.yarnEditData.copy(yarnDescription = yarnDescription))
-    }
+
     fun validateInput(): Boolean {
         return with(yarnEditScreenUiState) {
             this.yarnEditData.yarnName.isNotBlank() && this.yarnEditData.yarnDescription.isNotBlank()
@@ -47,3 +51,4 @@ class YarnEditScreenViewModel(
     }
 
 }
+

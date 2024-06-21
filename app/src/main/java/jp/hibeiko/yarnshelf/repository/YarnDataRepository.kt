@@ -17,7 +17,7 @@ class YarnDataRepositoryImpl(private val yarnDataDAO: YarnDataDAO) : YarnDataRep
     override suspend fun insert(yarnData: YarnData) = yarnDataDAO.insert(yarnData)
     override suspend fun update(yarnData: YarnData) = yarnDataDAO.update(yarnData)
     override suspend fun delete(yarnData: YarnData) = yarnDataDAO.delete(yarnData)
-    override fun select(id: Int): Flow<YarnData?> = yarnDataDAO.select(id)
+    override fun select(yarnId: Int): Flow<YarnData?> = yarnDataDAO.select(yarnId)
     override fun selectAll(): Flow<List<YarnData>> = yarnDataDAO.selectAll()
 
 }

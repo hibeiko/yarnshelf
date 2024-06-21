@@ -10,7 +10,7 @@ import androidx.room.TypeConverters
 // entities のリストを持つ唯一のクラスとして YarnData を指定します。
 // version を 1 に設定します。データベース テーブルのスキーマを変更するたびに、バージョン番号を増やす必要があります。
 // スキーマのバージョン履歴のバックアップを保持しないように、exportSchema を false に設定します。
-@Database(entities = [YarnData::class], version = 2, exportSchema = false)
+@Database(entities = [YarnData::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class YarnShelfDatabase : RoomDatabase() {
     abstract fun yarnDataDAO(): YarnDataDAO

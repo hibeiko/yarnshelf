@@ -6,12 +6,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import jp.hibeiko.yarnshelf.common.yarnDataForScreenToYarnDataConverter
 import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.repository.YarnDataRepository
+import jp.hibeiko.yarnshelf.ui.navigation.YarnDataForScreen
 import kotlinx.coroutines.launch
-import java.util.Date
-
-//private const val TAG = "HomeScreen"
 
 data class YarnConfirmScreenUiState(
     val yarnConfirmData: YarnData = YarnData()
@@ -22,28 +21,10 @@ class YarnConfirmScreenViewModel(
     private val yarnDataRepository: YarnDataRepository
 ) : ViewModel() {
     // 前画面からのリクエストパラメータ
-    private val yarnId: Int = checkNotNull(savedStateHandle[YarnConfirmDestination.yarnIdArg])
-    private val yarnName: String =
-        checkNotNull(savedStateHandle[YarnConfirmDestination.yarnNameArg])
-    private val yarnDescription: String =
-        checkNotNull(savedStateHandle[YarnConfirmDestination.yarnDescriptionArg])
-    private val janCode: String = checkNotNull(savedStateHandle[YarnConfirmDestination.janCodeArg])
-    private val imageUrl: String =
-        checkNotNull(savedStateHandle[YarnConfirmDestination.imageUrlArg])
-    private val drawableResourceId: Int =
-        checkNotNull(savedStateHandle[YarnConfirmDestination.drawableResourceIdArg])
+    private val entryItem: YarnDataForScreen =
+        checkNotNull(savedStateHandle[YarnConfirmDestination.entryItemArg])
     var yarnConfirmScreenUiState by mutableStateOf(
-        YarnConfirmScreenUiState(
-            YarnData(
-                yarnId,
-                janCode,
-                yarnName,
-                yarnDescription,
-                Date(),
-                imageUrl,
-                drawableResourceId
-            )
-        )
+        YarnConfirmScreenUiState(yarnDataForScreenToYarnDataConverter(entryItem))
     )
         private set
 

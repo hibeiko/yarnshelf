@@ -1,6 +1,5 @@
 package jp.hibeiko.yarnshelf.ui
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +43,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import jp.hibeiko.yarnshelf.R
+import jp.hibeiko.yarnshelf.common.yahooHitToYarnDataForScreenConverter
 import jp.hibeiko.yarnshelf.data.YahooHit
 import jp.hibeiko.yarnshelf.data.YahooImage
 import jp.hibeiko.yarnshelf.data.YahooShoppingWebServiceItemData
@@ -60,11 +60,11 @@ object ItemSearchDestination : NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemSearchScreen(
+    modifier: Modifier = Modifier,
     // ViewModel(UiStateを使うため)
     itemSearchScreenViewModel: ItemSearchScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
     nextButtonOnClick: (YarnDataForScreen) -> Unit,
     cancelButtonOnClick: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
     // UiStateを取得
     val itemSearchScreenUiState by itemSearchScreenViewModel.itemSearchScreenUiState.collectAsState()
@@ -198,7 +198,7 @@ fun ItemSearchScreenBody(
                     items(searchItemUiState.responseItem.hits) {
                         SearchResultCard(
                             it,
-                            cardOnClick = nextButtonOnClick ,
+                            cardOnClick = nextButtonOnClick,
 //                            modifier = Modifier.padding(5.dp)
                         )
                     }
@@ -236,7 +236,7 @@ fun ItemSearchScreenBody(
 fun SearchResultCard(
     hitItem: YahooHit,
     cardOnClick: (YarnDataForScreen) -> Unit,
-    modifier: Modifier = Modifier
+//    modifier: Modifier = Modifier
 ) {
     Card(
         modifier = Modifier
@@ -245,16 +245,8 @@ fun SearchResultCard(
             .padding(top = 10.dp, bottom = 10.dp, start = 5.dp, end = 5.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         onClick = {
-            Log.d("ItemSearchScreen","$hitItem")
-            val temp =                 YarnDataForScreen(
-                yarnName = hitItem.name ?: "",
-                yarnDescription = hitItem.description ?: "",
-                imageUrl = hitItem.image?.medium ?: "",
-                janCode = hitItem.janCode ?: ""
-            )
-            cardOnClick(temp)
-            Log.d("ItemSearchScreen","$temp")
-                  },
+            cardOnClick(yahooHitToYarnDataForScreenConverter(yahooHit = hitItem))
+        },
     ) {
 
         Column(

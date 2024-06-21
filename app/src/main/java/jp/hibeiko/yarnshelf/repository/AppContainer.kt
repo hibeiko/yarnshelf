@@ -37,6 +37,8 @@ class AppDataContainer(private val context: Context) : AppContainer {
     private val appId =
         "dj00aiZpPVREZVo5ZmlOQXJqVSZzPWNvbnN1bWVyc2VjcmV0Jng9MzY-"
 
+    private val json = Json { ignoreUnknownKeys = true }
+
     private val retrofit = Retrofit.Builder()
         // Retrofit は、ウェブサービスのベース URI と、ウェブサービス API を構築するためのコンバータ ファクトリを必要とします。
         // コンバータは、ウェブサービスから返されたデータをどのように処理するかを Retrofit に伝えます。
@@ -46,7 +48,7 @@ class AppDataContainer(private val context: Context) : AppContainer {
 
         // kotlinx.serialization コンバータを使用して、JSON オブジェクトを Kotlin オブジェクトに変換します。
         // ignoreUnknownKeys...入力JSON内の未知のプロパティに遭遇した場合に、無視するか、例外を発生ないかどうか。
-        .addConverterFactory(Json{ ignoreUnknownKeys = true }.asConverterFactory("application/json".toMediaType()))
+        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .baseUrl(baseUrl)
         .build()
 

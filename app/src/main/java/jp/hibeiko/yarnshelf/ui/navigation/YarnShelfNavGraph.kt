@@ -151,7 +151,15 @@ fun YarnShelfNavHost(
 //                        homeScreenUiState,
 //                        yarnNameOnValueChange = homeScreenViewModel::yarnNameUpdate,
 //                        yarnDescriptionOnValueChange = homeScreenViewModel::yarnDescriptionUpdate,
-                nextButtonOnClick = { navController.navigate("${YarnConfirmDestination.route}/${it}") },
+                nextButtonOnClick = { navController.navigate(
+                    "${YarnConfirmDestination.route}/${
+                        Uri.encode(
+                            Json.encodeToString(
+                                it
+                            )
+                        )
+                    }"
+                ) },
                 cancelButtonOnClick = {
 //                            homeScreenViewModel.dialogOnClick()
                     navController.navigateUp()
@@ -164,26 +172,9 @@ fun YarnShelfNavHost(
         // Cancelボタン→ホーム画面初期状態へ
         composable(
             route = YarnConfirmDestination.routeWithArgs,
-            arguments = listOf(
-                navArgument(YarnConfirmDestination.yarnIdArg) {
-                    type = NavType.IntType
-                },
-                navArgument(YarnConfirmDestination.yarnNameArg) {
-                    type = NavType.StringType
-                },
-                navArgument(YarnConfirmDestination.yarnDescriptionArg) {
-                    type = NavType.StringType
-                },
-                navArgument(YarnConfirmDestination.janCodeArg) {
-                    type = NavType.StringType
-                },
-                navArgument(YarnConfirmDestination.imageUrlArg) {
-                    type = NavType.StringType
-                },
-                navArgument(YarnConfirmDestination.drawableResourceIdArg) {
-                    type = NavType.IntType
-                },
-            )
+            arguments = listOf(navArgument(YarnConfirmDestination.entryItemArg) {
+                type = YarnDataForScreenType
+            })
         ) {
             YarnConfirmScreen(
 //                        homeScreenUiState,

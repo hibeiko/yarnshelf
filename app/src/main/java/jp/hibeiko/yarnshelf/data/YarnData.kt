@@ -5,17 +5,60 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import jp.hibeiko.yarnshelf.R
+import jp.hibeiko.yarnshelf.common.YarnRoll
+import jp.hibeiko.yarnshelf.common.YarnThickness
 import java.util.Date
 
 @Entity
 data class YarnData(
     @PrimaryKey(autoGenerate = true)
+    // KEY * 必須項目
     val yarnId: Int = 0,
+    // JANコード
     val janCode: String = "",
+    // 名称 * 必須項目
     val yarnName: String = "",
+    // メーカー
+    val yarnMakerName: String = "",
+    // 色番号
+    val colorNumber: String = "",
+    // ロット番号
+    val rotNumber:String = "",
+    // 品質
+    val quality: String = "",
+    // 重量
+    val weight: Double? = null,
+    // 巻き方
+    val roll: YarnRoll = YarnRoll.NONE,
+    // 長さ
+    val length: Double? = null,
+    // 標準ゲージ
+    // 目 * Toに値を設定する場合はFromは必須
+    val gaugeColumnFrom: Double? = null,
+    val gaugeColumnTo: Double? = null,
+    // 段 * Toに値を設定する場合はFromは必須
+    val gaugeRowFrom: Double? = null,
+    val gaugeRowTo: Double? = null,
+    // 編み方
+    val gaugeStitch: String = "",
+    // 使用針
+    // 棒針 * Toに値を設定する場合はFromは必須
+    val needleSizeFrom: Double? = null,
+    val needleSizeTo: Double? = null,
+    // かぎ針 * Toに値を設定する場合はFromは必須
+    val crochetNeedleSizeFrom: Double? = null,
+    val crochetNeedleSizeTo: Double? = null,
+    // 糸の太さ
+    val thickness: YarnThickness = YarnThickness.NONE,
+    // 個数 * 必須項目
+    val havingNumber: Int = 0,
+    // 備考
     val yarnDescription: String = "",
+    // 最終更新日
     val lastUpdateDate: Date = Date(),
+    // Yahooショッピングサイトの画像URL
     val imageUrl: String = "",
+    // 端末に保存した画像ファイルパス
     @DrawableRes val drawableResourceId: Int = R.drawable.not_found
 )
 class Converters {
@@ -29,31 +72,13 @@ class Converters {
         return date?.time
     }
 }
-
-//class DataSource(){
-//    fun loadData(): List<YarnData>{
-//        val formatter = SimpleDateFormat("yyyy/MM/dd")
-//        return listOf<YarnData>(
-//            YarnData(0,"Seabright","1010 Seabright", formatter.parse("2024/04/01"), R.drawable.spin_1010_crpd_1625196651766_400),
-//            YarnData(1,"Shaela","102 Shaela", formatter.parse("2024/04/02"), R.drawable.spin_102_crpd_1625194839510_400),
-//            YarnData(2,"Night Hawk","1020 Night Hawk", formatter.parse("2024/04/03"), R.drawable.spin_1020_crpd_1625196650659_400),
-//            YarnData(3,"Sholmit","103 Sholmit", formatter.parse("2024/04/04"), R.drawable.spin_103_crpd_1625194837544_400),
-//            YarnData(4,"Natural White","104 Natural White", formatter.parse("2024/04/04"), R.drawable.spin_104_crpd_1625194838195_400),
-//            YarnData(5,"Eesit","105 Eesit", formatter.parse("2024/04/05"), R.drawable.spin_105_crpd_1625194836934_400),
-//            YarnData(6,"Mooskit","106 Mooskit", formatter.parse("2024/04/06"), R.drawable.spin_106_crpd_1625194835979_400),
-//            YarnData(7,"Mogit","107 Mogit", formatter.parse("2024/04/07"), R.drawable.spin_107_crpd_1625194834874_400),
-//            YarnData(8,"Night Hawk","1020 Night Hawk", formatter.parse("2024/04/08"), R.drawable.spin_101_crpd_1625194841231_400),
-//        )
-//    }
-//}
-//insert into yarndata(yarnId,janCode,yarnName,yarnDescription,lastUpdateDate,imageUrl,drawableResourceId)
-//values
-//(0, '10001','Seabright','1010 Seabright',1718605302247,'','2130968608'),
-//(1, '10002','Shaela','102 Shaela',1718605302247,'','2130968602'),
-//(2, '10003','Night Hawk','1020 Night Hawk',1718605302247,'','2130968601'),
-//(3, '10004','Sholmit','103 Sholmit',1718605302247,'','2130968603'),
-//(4, '10005','Natural White','104 Natural White',1718605302247,'','2130968604'),
-//(5, '10006','Eesit','105 Eesit',1718605302247,'','2130968605'),
-//(6, '10007','Mooskit','106 Mooskit',1718605302247,'','2130968606'),
-//(7, '10008','Mogit','107 Mogit',1718605302247,'','2130968607'),
-//(8, '10009','Natural Black','101 Natural Black(Shetland Black)',1718605302247,'','2130968600'),
+//insert into YarnData values
+//(0,'10001','1010 Seabright','Jamieson''s','1010 Seabright','1548','シェットランドウール１００％',25.01,'BALL',105.0,20.0,21.0,27.0,28.0,'メリヤス編み',3.0,5.0,0.0,0.0,'THICK',10,'毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです',1718605302247,'',2130968608),
+//(1,'10002','Shaela','Jamieson''s','102 Shaela','1548','シェットランドウール１００％',25.0,'BALL',105.0,20.0,21.0,27.0,28.0,'メリヤス編み',3.0,5.0,0.0,0.0,'THICK',10,'毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです',1718605302247,'',2130968602),
+//(2,'10003','Night Hawk','Jamieson''s','1020 Night Hawk','1548','シェットランドウール１００％',25.0,'BALL',105.0,20.0,21.0,27.0,28.0,'メリヤス編み',3.0,5.0,0.0,0.0,'THICK',10,'毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです',1718605302247,'',2130968601),
+//(3,'10004','Sholmit','Jamieson''s','103 Sholmit','1548','シェットランドウール１００％',25.0,'BALL',105.0,20.0,21.0,27.0,28.0,'メリヤス編み',3.0,5.0,0.0,0.0,'THICK',10,'毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです',1718605302247,'',2130968603),
+//(4,'10005','Natural White','Jamieson''s','104 Natural White','1548','シェットランドウール１００％',25.0,'BALL',105.0,20.0,21.0,27.0,28.0,'メリヤス編み',3.0,5.0,0.0,0.0,'THICK',10,'毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです',1718605302247,'',2130968604),
+//(5,'10006','Eesit','Jamieson''s','105 Eesit','1548','シェットランドウール１００％',25.0,'BALL',105.0,20.0,21.0,27.0,28.0,'メリヤス編み',3.0,5.0,0.0,0.0,'THICK',10,'毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです',1718605302247,'',2130968605),
+//(6,'10007','Mooskit','Jamieson''s','106 Mooskit','1548','シェットランドウール１００％',25.0,'BALL',105.0,20.0,21.0,27.0,28.0,'メリヤス編み',3.0,5.0,0.0,0.0,'THICK',10,'毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです',1718605302247,'',2130968606),
+//(7,'10008','Mogit','Jamieson''s','107 Mogit','1548','シェットランドウール１００％',25.0,'BALL',105.0,20.0,21.0,27.0,28.0,'メリヤス編み',3.0,5.0,0.0,0.0,'THICK',10,'毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです',1718605302247,'',2130968607),
+//(8,'10009','Natural Black','Jamieson''s','101 Natural Black(Shetland Black)','1548','シェットランドウール１００％',25.0,'BALL',105.0,20.0,21.0,27.0,28.0,'メリヤス編み',3.0,5.0,0.0,0.0,'THICK',10,'毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです',1718605302247,'',2130968600)
