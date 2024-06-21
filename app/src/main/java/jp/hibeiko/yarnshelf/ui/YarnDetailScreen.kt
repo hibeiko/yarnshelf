@@ -130,10 +130,10 @@ fun YarnDetailScreen(
             }
         ) { innerPadding ->
             YarnDetailScreenBody(
-                yarnDetailScreenUiState.yarnDetailData,
                 modifier
                     .padding(innerPadding)
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(rememberScrollState()),
+                yarnDetailScreenUiState.yarnDetailData,
             )
         }
     }
