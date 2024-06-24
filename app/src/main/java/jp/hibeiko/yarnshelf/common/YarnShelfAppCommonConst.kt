@@ -3,24 +3,29 @@ package jp.hibeiko.yarnshelf.common
 // 毛糸：巻き方
 enum class YarnRoll(val value: String) {
     // かせ
-    SKEIN( value = "かせ"),
+    SKEIN(value = "かせ"),
+
     // 玉巻
-    BALL( value = "玉巻"),
+    BALL(value = "玉巻"),
+
     // 未設定
-    NONE( value = "" )
+    NONE(value = "")
 }
+
 // 毛糸：太さ
-enum class YarnThickness (val value: String) {
-    VERY_THIN( value = "極細"),
-    THIN( value = "合細"),
-    MIDDLE_THIN( value = "中細"),
-    THICK( value = "合太"),
-    NORMAL_THICK( value = "並太"),
-    VERY_THICK( value = "極太"),
-    VERY_VERY_THICK( value = "超極太"),
+enum class YarnThickness(val value: String, val rowValue: Int) {
+    VERY_THIN(value = "極細", rowValue = 1),
+    THIN(value = "合細", rowValue = 2),
+    MIDDLE_THIN(value = "中細", rowValue = 3),
+    THICK(value = "合太", rowValue = 4),
+    NORMAL_THICK(value = "並太", rowValue = 5),
+    VERY_THICK(value = "極太", rowValue = 6),
+    VERY_VERY_THICK(value = "超極太", rowValue = 7),
+
     // 未設定
-    NONE( value = "" )
+    NONE(value = "", rowValue = 0)
 }
+
 // YarnDataのどの項目かを識別するためのコード値
 enum class YarnParamName {
     // KEY * 必須項目

@@ -95,7 +95,7 @@ fun updateYarnData(yarnData: YarnData, param: Any, paramName: YarnParamName): Ya
         -> yarnData.copy(drawableResourceId = (param as String).toInt())
 
         YarnParamName.HAVING_NUMBER
-        -> yarnData.copy(havingNumber = (param as String).toInt())
+        -> yarnData.copy(havingNumber = ((param as String).ifBlank { "0" }).toInt())
 
         YarnParamName.COLOR_NUMBER
         -> yarnData.copy(colorNumber = param as String)
@@ -107,40 +107,40 @@ fun updateYarnData(yarnData: YarnData, param: Any, paramName: YarnParamName): Ya
         -> yarnData.copy(quality = param as String)
 
         YarnParamName.WEIGHT
-        -> yarnData.copy(weight = (param as String).toDouble())
+        -> yarnData.copy(weight = ((param as String).ifBlank { null })?.toDouble())
 
         YarnParamName.ROLL
         -> yarnData.copy(roll = param as YarnRoll)
 
         YarnParamName.LENGTH
-        -> yarnData.copy(length = (param as String).toDouble())
+        -> yarnData.copy(length = ((param as String).ifBlank { null })?.toDouble())
 
         YarnParamName.GAUGE_COLUMN_FROM
-        -> yarnData.copy(gaugeColumnFrom = (param as String).toDouble())
+        -> yarnData.copy(gaugeColumnFrom = ((param as String).ifBlank { null })?.toDouble())
 
         YarnParamName.GAUGE_COLUMN_TO
-        -> yarnData.copy(gaugeColumnTo = (param as String).toDouble())
+        -> yarnData.copy(gaugeColumnTo = ((param as String).ifBlank { null })?.toDouble())
 
         YarnParamName.GAUGE_ROW_FROM
-        -> yarnData.copy(gaugeRowFrom = (param as String).toDouble())
+        -> yarnData.copy(gaugeRowFrom = ((param as String).ifBlank { null })?.toDouble())
 
         YarnParamName.GAUGE_ROW_TO
-        -> yarnData.copy(gaugeRowTo = (param as String).toDouble())
+        -> yarnData.copy(gaugeRowTo = ((param as String).ifBlank { null })?.toDouble())
 
         YarnParamName.GAUGE_STITCH
         -> yarnData.copy(gaugeStitch = param as String)
 
         YarnParamName.NEEDLE_SIZE_FROM
-        -> yarnData.copy(needleSizeFrom = (param as String).toDouble())
+        -> yarnData.copy(needleSizeFrom = ((param as String).ifBlank { null })?.toDouble())
 
         YarnParamName.NEEDLE_SIZE_TO
-        -> yarnData.copy(needleSizeTo = (param as String).toDouble())
+        -> yarnData.copy(needleSizeTo = ((param as String).ifBlank { null })?.toDouble())
 
         YarnParamName.CROCHET_NEEDLE_SIZE_FROM
-        -> yarnData.copy(crochetNeedleSizeFrom = (param as String).toDouble())
+        -> yarnData.copy(crochetNeedleSizeFrom = ((param as String).ifBlank { null })?.toDouble())
 
         YarnParamName.CROCHET_NEEDLE_SIZE_TO
-        -> yarnData.copy(crochetNeedleSizeTo = (param as String).toDouble())
+        -> yarnData.copy(crochetNeedleSizeTo = ((param as String).ifBlank { null })?.toDouble())
 
         YarnParamName.THICKNESS
         -> yarnData.copy(thickness = param as YarnThickness)

@@ -266,6 +266,48 @@ fun YarnDetailScreenBody(
                     .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
             )
             Text(
+                text = "糸の太さ：",
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier
+                    .padding(top = 10.dp, start = 10.dp, bottom = 5.dp)
+            )
+            Text(
+                text = yarnData.thickness.value,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                style = MaterialTheme.typography.displayMedium,
+                modifier = Modifier
+                    .padding(top = 0.dp, start = 10.dp, bottom = 10.dp)
+            )
+            Text(
+                text = "色番号：",
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier
+                    .padding(top = 10.dp, start = 10.dp, bottom = 5.dp)
+            )
+            Text(
+                text = yarnData.colorNumber,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                style = MaterialTheme.typography.displayMedium,
+                modifier = Modifier
+                    .padding(top = 0.dp, start = 10.dp, bottom = 10.dp)
+            )
+            Text(
+                text = "ロット番号：",
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier
+                    .padding(top = 10.dp, start = 10.dp, bottom = 5.dp)
+            )
+            Text(
+                text = yarnData.rotNumber,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                style = MaterialTheme.typography.displayMedium,
+                modifier = Modifier
+                    .padding(top = 0.dp, start = 10.dp, bottom = 10.dp)
+            )
+            Text(
                 text = "標準ゲージ：",
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.labelSmall,
@@ -299,6 +341,28 @@ fun YarnDetailScreenBody(
                     yarnData.crochetNeedleSizeFrom,
                     yarnData.crochetNeedleSizeTo
                 ),
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                style = MaterialTheme.typography.displayMedium,
+                modifier = Modifier
+                    .padding(top = 0.dp, start = 10.dp, bottom = 10.dp)
+            )
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 10.dp)
+                .background(MaterialTheme.colorScheme.surfaceContainer),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                text = "JANコード：",
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier
+                    .padding(top = 10.dp, start = 10.dp, bottom = 5.dp)
+            )
+            Text(
+                text = "${yarnData.janCode}",
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier

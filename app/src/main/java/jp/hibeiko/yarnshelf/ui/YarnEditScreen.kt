@@ -1,5 +1,6 @@
 package jp.hibeiko.yarnshelf.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -288,6 +290,61 @@ fun YarnEditScreenBody(
                 modifier = Modifier.padding(top = 0.dp, bottom = 5.dp, start = 10.dp)
             )
             Text(
+                text = "糸の太さ：",
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier
+                    .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+            )
+            Text(
+                text = if (yarnData.thickness.value == "") "未設定" else yarnData.thickness.value,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                style = MaterialTheme.typography.displayMedium,
+                modifier = Modifier
+                    .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+            )
+            Slider(
+                value = yarnData.thickness.rowValue.toFloat(),
+                onValueChange = {
+                    updateYarnEditData(
+                        YarnThickness.entries.first { yarnThicknessItem -> Math.round(it).toInt() == yarnThicknessItem.rowValue },
+                        YarnParamName.THICKNESS
+                    )
+                },
+                steps = YarnThickness.entries.size - 2,
+                valueRange = 0f..(YarnThickness.entries.size-1).toFloat(),
+                modifier = Modifier
+                    .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+            )
+            TextField(
+                label = { Text("色番号", style = MaterialTheme.typography.labelSmall) },
+                leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
+                value = yarnData.colorNumber,
+                onValueChange = { updateYarnEditData(it, YarnParamName.COLOR_NUMBER) },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+                singleLine = true,
+                textStyle = MaterialTheme.typography.displayMedium,
+                modifier = Modifier
+                    .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+            )
+            TextField(
+                label = { Text("ロット番号", style = MaterialTheme.typography.labelSmall) },
+                leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
+                value = yarnData.rotNumber,
+                onValueChange = { updateYarnEditData(it, YarnParamName.ROT_NUMBER) },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+                singleLine = true,
+                textStyle = MaterialTheme.typography.displayMedium,
+                modifier = Modifier
+                    .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+            )
+            Text(
                 text = "ゲージ",
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.labelSmall,
@@ -331,6 +388,7 @@ fun YarnEditScreenBody(
                         imeAction = ImeAction.Done
                     ),
                     singleLine = true,
+                    enabled = yarnData.gaugeColumnFrom != null,
                     textStyle = MaterialTheme.typography.displayMedium,
                     modifier = Modifier
                         .padding(top = 0.dp, bottom = 5.dp, start = 10.dp)
@@ -378,6 +436,7 @@ fun YarnEditScreenBody(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
                     ),
+                    enabled = yarnData.gaugeRowFrom != null,
                     singleLine = true,
                     textStyle = MaterialTheme.typography.displayMedium,
                     modifier = Modifier
@@ -461,6 +520,7 @@ fun YarnEditScreenBody(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
                     ),
+                    enabled = yarnData.needleSizeFrom != null,
                     singleLine = true,
                     textStyle = MaterialTheme.typography.displayMedium,
                     modifier = Modifier
@@ -523,6 +583,7 @@ fun YarnEditScreenBody(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
                     ),
+                    enabled = yarnData.crochetNeedleSizeFrom != null,
                     singleLine = true,
                     textStyle = MaterialTheme.typography.displayMedium,
                     modifier = Modifier
