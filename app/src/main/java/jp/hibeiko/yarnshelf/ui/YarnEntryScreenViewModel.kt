@@ -2,18 +2,15 @@ package jp.hibeiko.yarnshelf.ui
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import jp.hibeiko.yarnshelf.common.yarnDataForScreenToYarnDataConverter
 import jp.hibeiko.yarnshelf.common.YarnParamName
 import jp.hibeiko.yarnshelf.common.updateYarnData
 import jp.hibeiko.yarnshelf.data.YarnData
-import jp.hibeiko.yarnshelf.repository.YarnDataRepository
 import jp.hibeiko.yarnshelf.ui.navigation.YarnDataForScreen
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 //private const val TAG = "HomeScreen"
 
@@ -24,7 +21,7 @@ data class YarnEntryScreenUiState(
 
 class YarnEntryScreenViewModel(
     savedStateHandle: SavedStateHandle,
-    private val yarnDataRepository: YarnDataRepository,
+//    private val yarnDataRepository: YarnDataRepository,
 ) : ViewModel() {
 
     // 前画面からのリクエストパラメータ
@@ -48,13 +45,13 @@ class YarnEntryScreenViewModel(
         }
     }
 
-    fun saveYarnData() {
-        if (validateInput()) {
-            viewModelScope.launch {
-                yarnDataRepository.insert(yarnData = yarnEntryScreenUiState.value.yarnEntryData)
-            }
-        }
-    }
+//    fun saveYarnData() {
+//        if (validateInput()) {
+//            viewModelScope.launch {
+//                yarnDataRepository.insert(yarnData = yarnEntryScreenUiState.value.yarnEntryData)
+//            }
+//        }
+//    }
 
     fun validateInput(): Boolean {
         return with(yarnEntryScreenUiState) {

@@ -30,7 +30,7 @@ enum class YarnThickness(val value: String, val rowValue: Int) {
 // maxLength...項目に設定可能な最大値（文字列なら文字数、数値なら最大値）
 enum class YarnParamName( val maxLength: Int ) {
     // KEY * 必須項目
-    YARN_ID(maxLength = 0),
+//    YARN_ID(maxLength = 0),
 
     // JANコード
     JAN_CODE(maxLength = 13),
@@ -90,7 +90,7 @@ enum class YarnParamName( val maxLength: Int ) {
     YARN_DESCRIPTION(maxLength = 1000),
 
     // 最終更新日
-    LAST_UPDATE_DATE(maxLength = 0),
+//    LAST_UPDATE_DATE(maxLength = 0),
 
     // Yahooショッピングサイトの画像URL
     IMAGE_URL(maxLength = 0),

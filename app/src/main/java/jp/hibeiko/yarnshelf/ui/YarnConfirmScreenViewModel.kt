@@ -29,17 +29,18 @@ class YarnConfirmScreenViewModel(
         private set
 
     fun updateYarnData() {
-        if (validateInput()) {
+//        if (validateInput()) {
             viewModelScope.launch {
-                yarnDataRepository.update(yarnConfirmScreenUiState.yarnConfirmData)
+//                yarnDataRepository.update(yarnConfirmScreenUiState.yarnConfirmData)
+                yarnDataRepository.insert(yarnData = yarnConfirmScreenUiState.yarnConfirmData)
             }
-        }
+//        }
     }
 
-    private fun validateInput(): Boolean {
-        return with(yarnConfirmScreenUiState) {
-            this.yarnConfirmData.yarnName.isNotBlank() && this.yarnConfirmData.yarnDescription.isNotBlank()
-        }
-    }
+//    private fun validateInput(): Boolean {
+//        return with(yarnConfirmScreenUiState) {
+//            this.yarnConfirmData.yarnName.isNotBlank() && this.yarnConfirmData.yarnDescription.isNotBlank()
+//        }
+//    }
 
 }

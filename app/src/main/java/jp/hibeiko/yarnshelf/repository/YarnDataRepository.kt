@@ -5,7 +5,6 @@ import jp.hibeiko.yarnshelf.data.YarnDataDAO
 import kotlinx.coroutines.flow.Flow
 
 interface YarnDataRepository {
-    // 引数 onConflict は、競合が発生した場合の処理を Room に伝えます。OnConflictStrategy.IGNORE 戦略は、新しいアイテムを無視します。
     suspend fun insert(yarnData: YarnData)
     suspend fun update(yarnData: YarnData)
     suspend fun delete(yarnData: YarnData)

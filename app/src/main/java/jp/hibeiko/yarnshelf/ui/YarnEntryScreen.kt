@@ -25,7 +25,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import jp.hibeiko.yarnshelf.common.yarnDataToYarnDataForScreenConverter
 import jp.hibeiko.yarnshelf.ui.navigation.NavigationDestination
+import jp.hibeiko.yarnshelf.ui.navigation.YarnDataForScreen
 
 
 object YarnEntryDestination : NavigationDestination {
@@ -41,7 +43,7 @@ fun YarnEntryScreen(
     modifier: Modifier = Modifier,
     // ViewModel(UiStateを使うため)
     yarnEntryScreenViewModel: YarnEntryScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
-//    nextButtonOnClick: () -> Unit,
+    nextButtonOnClick: (YarnDataForScreen) -> Unit,
     cancelButtonOnClick: () -> Unit,
 ) {
     // UiStateを取得
@@ -91,8 +93,13 @@ fun YarnEntryScreen(
                         }
                         Button(
                             onClick = {
-                                yarnEntryScreenViewModel.saveYarnData()
-                                cancelButtonOnClick()
+                            nextButtonOnClick(
+                                yarnDataToYarnDataForScreenConverter(
+                                    yarnEntryScreenUiState.yarnEntryData
+                                )
+                            )
+//                                yarnEntryScreenViewModel.saveYarnData()
+//                                cancelButtonOnClick()
                             },
                             enabled = yarnEntryScreenViewModel.validateInput()
                         ) {

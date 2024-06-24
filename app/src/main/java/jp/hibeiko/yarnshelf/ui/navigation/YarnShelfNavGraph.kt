@@ -100,7 +100,15 @@ fun YarnShelfNavHost(
         ) {
             // content: ここで、所定のルートに対して表示するコンポーザブルを呼び出すことができます。
             YarnEntryScreen(
-//                nextButtonOnClick = { navController.navigate(YarnConfirmDestination.route) },
+                nextButtonOnClick = { navController.navigate(
+                    "${YarnConfirmDestination.route}/${
+                        Uri.encode(
+                            Json.encodeToString(
+                                it
+                            )
+                        )
+                    }"
+                ) },
                 cancelButtonOnClick = {
                     navController.navigateUp()
                 },

@@ -53,7 +53,7 @@ fun YarnConfirmScreen(
                     ),
                     title = {
                         Text(
-                            text = YarnEditDestination.title,
+                            text = YarnConfirmDestination.title,
                             style = MaterialTheme.typography.headlineMedium,
                         )
                     },
