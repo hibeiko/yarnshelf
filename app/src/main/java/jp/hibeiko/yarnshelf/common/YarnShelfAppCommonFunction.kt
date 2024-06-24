@@ -152,6 +152,7 @@ fun updateYarnData(yarnData: YarnData, param: Any, paramName: YarnParamName): Ya
         -> yarnData
     }
 }
+
 fun yarnDataToYarnDataForScreenConverter(yarnData: YarnData): YarnDataForScreen {
     return YarnDataForScreen(
         yarnId = yarnData.yarnId,
@@ -236,4 +237,81 @@ fun yahooHitToYarnDataForScreenConverter(yahooHit: YahooHit): YarnDataForScreen 
         imageUrl = yahooHit.image?.medium ?: "",
 //        drawableResourceId = yahooHit.drawableResourceId,
     )
+}
+
+// バリデーションチェック
+fun validateInput(param: Any, paramName: YarnParamName): Boolean {
+    return when (paramName) {
+        YarnParamName.JAN_CODE
+        -> (param as String).length <= YarnParamName.JAN_CODE.maxLength
+
+        YarnParamName.YARN_MAKER_NAME
+        -> (param as String).length <= YarnParamName.YARN_MAKER_NAME.maxLength
+
+        YarnParamName.YARN_NAME
+        -> (param as String).isNotEmpty() && param.length <= YarnParamName.YARN_NAME.maxLength
+
+        YarnParamName.IMAGE_URL
+        -> true
+
+        YarnParamName.DRAWABLE_RESOURCE_ID
+        -> true
+
+        YarnParamName.HAVING_NUMBER
+        -> (param as Int) <= YarnParamName.HAVING_NUMBER.maxLength
+
+        YarnParamName.COLOR_NUMBER
+        -> (param as String).length <= YarnParamName.COLOR_NUMBER.maxLength
+
+        YarnParamName.ROT_NUMBER
+        -> (param as String).length <= YarnParamName.ROT_NUMBER.maxLength
+
+        YarnParamName.QUALITY
+        -> (param as String).length <= YarnParamName.QUALITY.maxLength
+
+        YarnParamName.WEIGHT
+        -> (param as Double) <= YarnParamName.WEIGHT.maxLength.toDouble()
+
+        YarnParamName.ROLL
+        -> (param as YarnRoll) in YarnRoll.entries
+
+        YarnParamName.LENGTH
+        -> (param as Double) <= YarnParamName.LENGTH.maxLength.toDouble()
+
+        YarnParamName.GAUGE_COLUMN_FROM
+        -> (param as Double) <= YarnParamName.GAUGE_COLUMN_FROM.maxLength.toDouble()
+
+        YarnParamName.GAUGE_COLUMN_TO
+        -> (param as Double) <= YarnParamName.GAUGE_COLUMN_TO.maxLength.toDouble()
+
+        YarnParamName.GAUGE_ROW_FROM
+        -> (param as Double) <= YarnParamName.GAUGE_ROW_FROM.maxLength.toDouble()
+
+        YarnParamName.GAUGE_ROW_TO
+        -> (param as Double) <= YarnParamName.GAUGE_ROW_TO.maxLength.toDouble()
+
+        YarnParamName.GAUGE_STITCH
+        -> (param as String).length <= YarnParamName.GAUGE_STITCH.maxLength
+
+        YarnParamName.NEEDLE_SIZE_FROM
+        -> (param as Double) <= YarnParamName.NEEDLE_SIZE_FROM.maxLength.toDouble()
+
+        YarnParamName.NEEDLE_SIZE_TO
+        -> (param as Double) <= YarnParamName.NEEDLE_SIZE_TO.maxLength.toDouble()
+
+        YarnParamName.CROCHET_NEEDLE_SIZE_FROM
+        -> (param as Double) <= YarnParamName.CROCHET_NEEDLE_SIZE_FROM.maxLength.toDouble()
+
+        YarnParamName.CROCHET_NEEDLE_SIZE_TO
+        -> (param as Double) <= YarnParamName.CROCHET_NEEDLE_SIZE_TO.maxLength.toDouble()
+
+        YarnParamName.THICKNESS
+        -> (param as YarnThickness) in YarnThickness.entries
+
+        YarnParamName.YARN_DESCRIPTION
+        -> (param as String).length <= YarnParamName.YARN_DESCRIPTION.maxLength
+
+        else
+        -> false
+    }
 }

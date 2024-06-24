@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 
 data class YarnEntryScreenUiState(
     val yarnEntryData: YarnData = YarnData(),
+    val validateInputFlag: Boolean = false
 )
 
 class YarnEntryScreenViewModel(
@@ -58,6 +59,11 @@ class YarnEntryScreenViewModel(
     fun validateInput(): Boolean {
         return with(yarnEntryScreenUiState) {
             this.value.yarnEntryData.yarnName.isNotBlank() && this.value.yarnEntryData.yarnDescription.isNotBlank()
+        }
+    }
+    fun validateInput(param: Boolean) {
+        _yarnEntryScreenUiState.update {
+            it.copy(validateInputFlag = param)
         }
     }
 }

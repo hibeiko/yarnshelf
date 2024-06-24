@@ -105,6 +105,7 @@ fun YarnEntryScreen(
             YarnEditScreenBody(
                 yarnEntryScreenUiState.yarnEntryData,
                 yarnEntryScreenViewModel::updateYarnEditData,
+                yarnEntryScreenViewModel::validateInput,
                 modifier
                     .padding(innerPadding)
                     .verticalScroll(rememberScrollState())

@@ -16,7 +16,8 @@ import kotlinx.coroutines.launch
 
 //private const val TAG = "HomeScreen"
 data class YarnEditScreenUiState(
-    val yarnEditData: YarnData = YarnData()
+    val yarnEditData: YarnData = YarnData(),
+    val validateInputFlag: Boolean = false
 )
 
 class YarnEditScreenViewModel(
@@ -44,10 +45,10 @@ class YarnEditScreenViewModel(
         )
     }
 
-    fun validateInput(): Boolean {
-        return with(yarnEditScreenUiState) {
-            this.yarnEditData.yarnName.isNotBlank() && this.yarnEditData.yarnDescription.isNotBlank()
-        }
+    fun validateInput(param: Boolean) {
+        yarnEditScreenUiState = yarnEditScreenUiState.copy(
+            validateInputFlag = param
+        )
     }
 
 }
