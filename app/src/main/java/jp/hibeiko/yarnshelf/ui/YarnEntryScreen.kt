@@ -1,6 +1,7 @@
 package jp.hibeiko.yarnshelf.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -8,7 +9,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,8 +24,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import jp.hibeiko.yarnshelf.common.yarnDataToYarnDataForScreenConverter
+import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.ui.navigation.NavigationDestination
 import jp.hibeiko.yarnshelf.ui.navigation.YarnDataForScreen
 
@@ -77,46 +79,61 @@ fun YarnEntryScreen(
                         }
                     }
                 )
-            },
-            bottomBar = {
-                BottomAppBar(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        OutlinedButton(
-                            onClick = cancelButtonOnClick
-                        ) {
-                            Text(text = "Cancel", style = MaterialTheme.typography.labelSmall)
-                        }
-                        Button(
-                            onClick = {
-                            nextButtonOnClick(
-                                yarnDataToYarnDataForScreenConverter(
-                                    yarnEntryScreenUiState.yarnEntryData
-                                )
-                            )
-//                                yarnEntryScreenViewModel.saveYarnData()
-//                                cancelButtonOnClick()
-                            },
-                            enabled = yarnEntryScreenViewModel.validateInput()
-                        ) {
-                            Text(text = "Next", style = MaterialTheme.typography.labelSmall)
-                        }
-                    }
-                }
             }
         ) { innerPadding ->
-            YarnEditScreenBody(
-                yarnEntryScreenUiState.yarnEntryData,
-                yarnEntryScreenViewModel::updateYarnEditData,
-                yarnEntryScreenViewModel::validateInput,
-                modifier
-                    .padding(innerPadding)
-                    .verticalScroll(rememberScrollState())
-            )
+            Column(modifier = modifier.padding(innerPadding)) {
+                YarnEditScreenBody(
+                    yarnEntryScreenUiState.yarnEntryData,
+                    yarnEntryScreenViewModel::updateYarnEditData,
+                    yarnEntryScreenViewModel::validateInput,
+                    modifier
+                        .verticalScroll(rememberScrollState())
+                        .weight(1.0f, false),
+                )
+                YarnEntryScreenBottom(
+                    yarnEntryScreenUiState.yarnEntryData,
+                    nextButtonOnClick,
+                    cancelButtonOnClick,
+                    yarnEntryScreenViewModel::validateInput,
+                    modifier
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun YarnEntryScreenBottom(
+    yarnData: YarnData,
+    nextButtonOnClick: (YarnDataForScreen) -> Unit,
+    cancelButtonOnClick: () -> Unit,
+    validateInput: () -> Boolean,
+    modifier: Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        OutlinedButton(
+            onClick = cancelButtonOnClick
+        ) {
+            Text(text = "Cancel", style = MaterialTheme.typography.labelSmall)
+        }
+        Button(
+            onClick = {
+                nextButtonOnClick(
+                    yarnDataToYarnDataForScreenConverter(
+                        yarnData
+                    )
+                )
+//                                yarnEntryScreenViewModel.saveYarnData()
+//                                cancelButtonOnClick()
+            },
+            enabled = validateInput()
+        ) {
+            Text(text = "Next", style = MaterialTheme.typography.labelSmall)
         }
     }
 }

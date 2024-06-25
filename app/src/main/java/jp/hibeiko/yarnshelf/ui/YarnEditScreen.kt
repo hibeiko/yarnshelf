@@ -19,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -105,49 +104,27 @@ fun YarnEditScreen(
                         }
                     }
                 )
-            },
-            // ボトムバー
-            bottomBar = {
-                BottomAppBar(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        OutlinedButton(
-                            onClick = cancelButtonOnClick
-                        ) {
-                            Text(text = "Cancel", style = MaterialTheme.typography.labelSmall)
-                        }
-                        Button(
-                            onClick = {
-                                nextButtonOnClick(
-                                    yarnDataToYarnDataForScreenConverter(
-                                        yarnEditScreenViewModel.yarnEditScreenUiState.yarnEditData
-                                    )
-                                )
-                            },
-                            enabled = yarnEditScreenViewModel.yarnEditScreenUiState.validateInputFlag
-                        ) {
-                            Text(text = "Next", style = MaterialTheme.typography.labelSmall)
-                        }
-                    }
-                }
             }
         ) { innerPadding ->
-            YarnEditScreenBody(
-                yarnEditScreenViewModel.yarnEditScreenUiState.yarnEditData,
-                yarnEditScreenViewModel::updateYarnEditData,
-                yarnEditScreenViewModel::validateInput,
-                modifier
-                    .padding(innerPadding)
-                    .verticalScroll(rememberScrollState())
-            )
+            Column(modifier = modifier.padding(innerPadding)) {
+                YarnEditScreenBody(
+                    yarnEditScreenViewModel.yarnEditScreenUiState.yarnEditData,
+                    yarnEditScreenViewModel::updateYarnEditData,
+                    yarnEditScreenViewModel::validateInput,
+                    modifier
+                        .verticalScroll(rememberScrollState())
+                        .weight(1.0f, false)
+                )
+                YarnEditScreenBottom(
+                    yarnEditScreenViewModel.yarnEditScreenUiState,
+                    nextButtonOnClick,
+                    cancelButtonOnClick,
+                    modifier
+                )
+            }
         }
     }
 }
-
 @Composable
 fun YarnEditScreenBody(
     yarnData: YarnData,
@@ -454,7 +431,8 @@ fun YarnEditScreenBody(
             Row(
                 Modifier
                     .selectableGroup()
-                    .align(Alignment.Start)) {
+                    .align(Alignment.Start)
+            ) {
                 YarnRoll.entries.forEach {
                     Row(
                         Modifier
@@ -942,6 +920,39 @@ fun YarnEditScreenBody(
     }
 }
 
+@Composable
+fun YarnEditScreenBottom(
+    yarnEditScreenUiState: YarnEditScreenUiState,
+    nextButtonOnClick: (YarnDataForScreen) -> Unit,
+    cancelButtonOnClick: () -> Unit,
+    modifier: Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        OutlinedButton(
+            onClick = cancelButtonOnClick
+        ) {
+            Text(text = "Cancel", style = MaterialTheme.typography.labelSmall)
+        }
+        Button(
+            onClick = {
+                nextButtonOnClick(
+                    yarnDataToYarnDataForScreenConverter(
+                        yarnEditScreenUiState.yarnEditData
+                    )
+                )
+            },
+            enabled = yarnEditScreenUiState.validateInputFlag
+        ) {
+            Text(text = "Next", style = MaterialTheme.typography.labelSmall)
+        }
+    }
+}
+
 @Preview
 @Composable
 fun YarnEditScreenPreview() {
@@ -978,6 +989,52 @@ fun YarnEditScreenPreview() {
             validateInput = { _ -> },
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(10.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+fun YarnEditScreenBottomPreview() {
+    YarnShelfTheme {
+        YarnEditScreenBottom(
+            YarnEditScreenUiState(
+                yarnEditData =
+                YarnData(
+                    0,
+                    "10001",
+                    "1010 Seabright",
+                    "Jamieson's",
+                    "1010 Seabright",
+                    "1548",
+                    "シェットランドウール１００％",
+                    25.01,
+                    YarnRoll.BALL,
+                    105.0,
+                    20.0,
+                    21.0,
+                    27.0,
+                    28.0,
+                    "メリヤス編み",
+                    3.0,
+                    5.0,
+                    0.0,
+                    0.0,
+                    YarnThickness.THICK,
+                    10,
+                    "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
+                    Date(),
+                    "",
+                    R.drawable.spin_1010_crpd_1625196651766_400
+                ),
+                validateInputFlag = true
+            ),
+            nextButtonOnClick = { _ -> },
+            cancelButtonOnClick = { },
+            modifier = Modifier
+                .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.surface)
                 .padding(10.dp)
         )

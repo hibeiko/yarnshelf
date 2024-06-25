@@ -14,7 +14,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -97,44 +96,23 @@ fun YarnDetailScreen(
                         }
                     }
                 )
-            },
-            // ボトムバー
-            bottomBar = {
-                BottomAppBar(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        OutlinedButton(
-                            onClick = cancelButtonOnClick
-                        ) {
-                            Text(text = "Cancel", style = MaterialTheme.typography.labelSmall)
-                        }
-                        Button(
-                            onClick = {
-                                yarnDetailScreenViewModel.deleteYarnData()
-                                cancelButtonOnClick()
-                            },
-                        ) {
-                            Text(text = "削除", style = MaterialTheme.typography.labelSmall)
-                        }
-                        Button(onClick = { nextButtonOnClick(yarnDetailScreenUiState.yarnDetailData.yarnId) }) {
-                            Text(text = "編集", style = MaterialTheme.typography.labelSmall)
-                        }
-                    }
-
-                }
-
             }
         ) { innerPadding ->
-            YarnDetailScreenBody(
-                modifier
-                    .padding(innerPadding)
-                    .verticalScroll(rememberScrollState()),
-                yarnDetailScreenUiState.yarnDetailData,
-            )
+            Column(modifier = modifier.padding(innerPadding)) {
+                YarnDetailScreenBody(
+                    modifier
+                        .verticalScroll(rememberScrollState())
+                        .weight(1.0f, false),
+                    yarnDetailScreenUiState.yarnDetailData,
+                )
+                YarnDetailScreenBottom(
+                    modifier,
+                    yarnDetailScreenUiState.yarnDetailData,
+                    yarnDetailScreenViewModel::deleteYarnData,
+                    nextButtonOnClick,
+                    cancelButtonOnClick,
+                )
+            }
         }
     }
 }
@@ -362,7 +340,7 @@ fun YarnDetailScreenBody(
                     .padding(top = 10.dp, start = 10.dp, bottom = 5.dp)
             )
             Text(
-                text = "${yarnData.janCode}",
+                text = yarnData.janCode,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
@@ -397,6 +375,39 @@ fun YarnDetailScreenBody(
 
         }
 //        Spacer(modifier = Modifier.weight(1.0F))
+    }
+}
+
+@Composable
+fun YarnDetailScreenBottom(
+    modifier: Modifier,
+    yarnData: YarnData,
+    deleteYarnData: () -> Unit,
+    nextButtonOnClick: (Int) -> Unit,
+    cancelButtonOnClick: () -> Unit,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        OutlinedButton(
+            onClick = cancelButtonOnClick
+        ) {
+            Text(text = "Cancel", style = MaterialTheme.typography.labelSmall)
+        }
+        Button(
+            onClick = {
+                deleteYarnData()
+                cancelButtonOnClick()
+            },
+        ) {
+            Text(text = "削除", style = MaterialTheme.typography.labelSmall)
+        }
+        Button(onClick = { nextButtonOnClick(yarnData.yarnId) }) {
+            Text(text = "編集", style = MaterialTheme.typography.labelSmall)
+        }
     }
 }
 
@@ -436,6 +447,48 @@ fun YarnDetailScreenPreview() {
                 "",
                 R.drawable.spin_1010_crpd_1625196651766_400
             ),
+        )
+    }
+}
+@Preview
+@Composable
+fun YarnDetailBottomPreview() {
+    YarnShelfTheme {
+        YarnDetailScreenBottom(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(5.dp),
+            YarnData(
+                0,
+                "10001",
+                "1010 Seabright",
+                "Jamieson's",
+                "1010 Seabright",
+                "1548",
+                "シェットランドウール１００％",
+                25.01,
+                YarnRoll.BALL,
+                105.0,
+                20.0,
+                21.0,
+                27.0,
+                28.0,
+                "メリヤス編み",
+                3.0,
+                5.0,
+                0.0,
+                0.0,
+                YarnThickness.THICK,
+                10,
+                "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
+                Date(),
+                "",
+                R.drawable.spin_1010_crpd_1625196651766_400
+            ),
+            deleteYarnData = {},
+            nextButtonOnClick = { _ -> },
+            cancelButtonOnClick = {}
         )
     }
 }

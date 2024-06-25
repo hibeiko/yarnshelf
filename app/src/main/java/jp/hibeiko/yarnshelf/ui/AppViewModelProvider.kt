@@ -23,7 +23,7 @@ object AppViewModelProvider {
         initializer {
             YarnEntryScreenViewModel(
                 this.createSavedStateHandle(),
-                yarnShelfApplication().container.yarnDataRepository,
+//                yarnShelfApplication().container.yarnDataRepository,
                 )
         }
         // 毛糸情報詳細画面
