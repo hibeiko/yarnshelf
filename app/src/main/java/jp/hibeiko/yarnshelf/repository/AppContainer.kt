@@ -1,6 +1,9 @@
 package jp.hibeiko.yarnshelf.repository
 
 import android.content.Context
+import com.google.mlkit.vision.barcode.common.Barcode
+import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import jp.hibeiko.yarnshelf.data.YarnShelfDatabase
 import jp.hibeiko.yarnshelf.network.YahooShoppingWebServiceItemSearchApiService
@@ -15,6 +18,7 @@ import retrofit2.Retrofit
 interface AppContainer {
     val yarnDataRepository: YarnDataRepository
     val yahooShoppingWebServiceItemSearchApiRepository: YahooShoppingWebServiceItemSearchApiRepository
+    val mlKitRepository: MLKitRepository
 }
 
 /**
@@ -59,5 +63,21 @@ class AppDataContainer(private val context: Context) : AppContainer {
     // lazy=遅延初期化により、プロパティが最初に使用されるときに初期化されるようにします。
     override val yahooShoppingWebServiceItemSearchApiRepository: YahooShoppingWebServiceItemSearchApiRepository by lazy{
         YahooShoppingWebServiceItemSearchApiRepositoryImpl(retrofitService,appId)
+    }
+
+    // バーコードスキャンのための設定
+    private val options = GmsBarcodeScannerOptions.Builder()
+        .setBarcodeFormats(
+            // JANコード13桁、8桁に対応
+            Barcode.FORMAT_EAN_13,
+            Barcode.FORMAT_EAN_8)
+            .enableAutoZoom() // available on 16.1.0 and higher
+            .build()
+    private val mLKitService = GmsBarcodeScanning.getClient(context,options)
+    // Or with a configured options
+    // val scanner = GmsBarcodeScanning.getClient(this, options)
+
+    override val mlKitRepository: MLKitRepository by lazy{
+        MLKitRepositoryImpl(mLKitService)
     }
 }

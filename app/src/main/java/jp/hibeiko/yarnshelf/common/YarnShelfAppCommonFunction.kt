@@ -147,9 +147,6 @@ fun updateYarnData(yarnData: YarnData, param: Any, paramName: YarnParamName): Ya
 
         YarnParamName.YARN_DESCRIPTION
         -> yarnData.copy(yarnDescription = param as String)
-
-        else
-        -> yarnData
     }
 }
 
@@ -234,7 +231,7 @@ fun yahooHitToYarnDataForScreenConverter(yahooHit: YahooHit): YarnDataForScreen 
 //        thickness = yahooHit.thickness,
         havingNumber = 0,
         yarnDescription = yahooHit.description ?: "",
-        imageUrl = yahooHit.image?.medium ?: "",
+        imageUrl = yahooHit.image.medium ?: "",
 //        drawableResourceId = yahooHit.drawableResourceId,
     )
 }
@@ -310,8 +307,5 @@ fun validateInput(param: Any, paramName: YarnParamName): Boolean {
 
         YarnParamName.YARN_DESCRIPTION
         -> (param as String).length <= YarnParamName.YARN_DESCRIPTION.maxLength
-
-        else
-        -> false
     }
 }

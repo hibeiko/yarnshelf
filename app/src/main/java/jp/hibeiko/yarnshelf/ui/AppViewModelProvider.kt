@@ -17,7 +17,9 @@ object AppViewModelProvider {
         // 商品検索画面
         initializer {
             ItemSearchScreenViewModel(
-                yarnShelfApplication().container.yahooShoppingWebServiceItemSearchApiRepository)
+                yarnShelfApplication().container.yahooShoppingWebServiceItemSearchApiRepository,
+                yarnShelfApplication().container.mlKitRepository
+            )
         }
         // 毛糸情報登録画面
         initializer {

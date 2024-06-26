@@ -98,6 +98,10 @@ dependencies {
     // Coil
     implementation(libs.coil.compose)
 
+    //バーコードスキャンするのに必要。
+    // https://developers.google.com/ml-kit/vision/barcode-scanning/code-scanner?hl=ja
+    implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

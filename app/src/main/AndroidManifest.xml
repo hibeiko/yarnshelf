@@ -4,7 +4,6 @@
 
 <!--    アプリがインターネットにアクセスするには、INTERNET 権限が必要です。-->
     <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:name=".YarnShelfApplication"
         android:allowBackup="true"
@@ -16,6 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.YarnShelf"
         tools:targetApi="31">
+        <!-- バーコードスキャンのために追加。アプリが Google Play ストアからインストールされるときに、スキャナ モジュールが Google Play 開発者サービスによって自動的にデバイスにダウンロードされるようにアプリを構成できます。-->
+        <meta-data
+            android:name="com.google.mlkit.vision.DEPENDENCIES"
+            android:value="barcode_ui"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -28,5 +31,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
