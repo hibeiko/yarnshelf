@@ -24,6 +24,22 @@ interface YarnDataDAO {
     @Query("SELECT * FROM yarndata WHERE yarnId = :yarnId")
     fun select(yarnId: Int) : Flow<YarnData>
 
-    @Query("SELECT * FROM yarndata ORDER BY yarnName ASC")
-    fun selectAll() : Flow<List<YarnData>>
+    @Query("SELECT * FROM yarndata ORDER BY " +
+            "CASE :sortStr WHEN 'yarnId ASC' THEN yarnId END ASC," +
+            "CASE :sortStr WHEN 'yarnId DESC' THEN yarnId END DESC, " +
+            "CASE :sortStr WHEN 'yarnName ASC' THEN yarnName END ASC," +
+            "CASE :sortStr WHEN 'yarnName DESC' THEN yarnName END DESC, " +
+            "CASE :sortStr WHEN 'havingNumber ASC' THEN havingNumber END ASC," +
+            "CASE :sortStr WHEN 'havingNumber DESC' THEN havingNumber END DESC"
+    )
+    fun selectAll(sortStr: String) : Flow<List<YarnData>>
+    @Query("SELECT * FROM yarndata WHERE yarnName like '%' || :query || '%' ORDER BY " +
+            "CASE :sortStr WHEN 'yarnId ASC' THEN yarnId END ASC," +
+            "CASE :sortStr WHEN 'yarnId DESC' THEN yarnId END DESC, " +
+            "CASE :sortStr WHEN 'yarnName ASC' THEN yarnName END ASC," +
+            "CASE :sortStr WHEN 'yarnName DESC' THEN yarnName END DESC, " +
+            "CASE :sortStr WHEN 'havingNumber ASC' THEN havingNumber END ASC," +
+            "CASE :sortStr WHEN 'havingNumber DESC' THEN havingNumber END DESC"
+    )
+    fun selectWithQuery(query: String,sortStr: String) : Flow<List<YarnData>>
 }

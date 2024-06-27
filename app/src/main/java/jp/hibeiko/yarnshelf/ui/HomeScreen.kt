@@ -1,7 +1,9 @@
 package jp.hibeiko.yarnshelf.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -16,30 +18,44 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,6 +63,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import jp.hibeiko.yarnshelf.R
+import jp.hibeiko.yarnshelf.common.SortKey
 import jp.hibeiko.yarnshelf.common.YarnRoll
 import jp.hibeiko.yarnshelf.common.YarnThickness
 import jp.hibeiko.yarnshelf.common.formatGaugeStringForScreen
@@ -55,6 +72,7 @@ import jp.hibeiko.yarnshelf.common.formatWeightStringForScreen
 import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.ui.navigation.NavigationDestination
 import jp.hibeiko.yarnshelf.ui.theme.YarnShelfTheme
+import kotlinx.coroutines.launch
 import java.util.Date
 
 object HomeDestination : NavigationDestination {
@@ -75,7 +93,11 @@ fun HomeScreen(
     val homeScreenUiState by homeScreenViewModel.homeScreenUiState.collectAsState()
     val dialogViewFlag by homeScreenViewModel.dialogViewFlag.collectAsState()
     val dialogViewYarnId by homeScreenViewModel.dialogViewYarnId.collectAsState()
+    val bottomSheetViewFlag by homeScreenViewModel.bottomSheetViewFlag.collectAsState()
+    val homeScreenSearchConditionState by homeScreenViewModel.homeScreenSearchConditionState.collectAsState()
 
+    Log.i("HomeScreen","$homeScreenUiState")
+    Log.i("HomeScreen","$homeScreenSearchConditionState")
     // 画面トップ
     Surface(
         modifier = modifier
@@ -124,15 +146,27 @@ fun HomeScreen(
                 }
             },
         ) { innerPadding ->
-            HomeScreenBody(
-                homeScreenUiState,
-                dialogViewFlag,
-                dialogViewYarnId,
-                homeScreenViewModel::cardOnClick,
-                homeScreenViewModel::dialogOnClick,
-                editButtonOnClicked,
-                modifier.padding(innerPadding)
-            )
+            Column(modifier = modifier.padding(innerPadding)) {
+                HomeScreenTop(
+                    homeScreenSearchConditionState,
+                    bottomSheetViewFlag,
+                    homeScreenViewModel::queryUpdate,
+                    homeScreenViewModel::sortKeyUpdate,
+                    homeScreenViewModel::sortOrderUpdate,
+                    homeScreenViewModel::bottomSheetOnClick,
+//                    homeScreenViewModel::sortList,
+                    modifier
+                )
+                HomeScreenBody(
+                    homeScreenUiState,
+                    dialogViewFlag,
+                    dialogViewYarnId,
+                    homeScreenViewModel::cardOnClick,
+                    homeScreenViewModel::dialogOnClick,
+                    editButtonOnClicked,
+                    modifier.weight(1.0f, false)
+                )
+            }
         }
     }
 }
@@ -497,6 +531,118 @@ fun YarnDialog(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreenTop(
+    homeScreenSearchConditionState: HomeScreenSearchConditionState,
+    bottomSheetViewFlag: Boolean,
+    queryUpdate: (String) -> Unit,
+    sortKeyUpdate: (SortKey) -> Unit,
+    sortOrderUpdate: () -> Unit,
+    bottomSheetOnClick: (Boolean) -> Unit,
+    modifier: Modifier
+) {
+    // BottomSheet作成用
+    val coroutineScope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState()
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        // 検索
+        TextField(
+            label = {
+                Text(
+                    "けいとを検索",
+                    style = MaterialTheme.typography.labelSmall
+                )
+            },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+            value = homeScreenSearchConditionState.query,
+            onValueChange = { queryUpdate(it) },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done
+            ),
+            singleLine = true,
+            textStyle = MaterialTheme.typography.displayMedium,
+            modifier = Modifier.weight(1.0f, false)
+        )
+        IconButton(
+            onClick = { bottomSheetOnClick(true) }
+        ) {
+            Icon(painterResource(R.drawable.baseline_sort_24), contentDescription = null)
+        }
+        IconButton(
+            onClick = { sortOrderUpdate() }
+        ) {
+            Icon(painterResource(R.drawable.baseline_swap_vert_24), contentDescription = null)
+        }
+    }
+    if (bottomSheetViewFlag) {
+        ModalBottomSheet(
+            onDismissRequest = { bottomSheetOnClick(false) },
+            sheetState = sheetState
+        ) {
+            // Sheet content
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "並び替え",
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    style = MaterialTheme.typography.displayMedium,
+                    modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
+                )
+                HorizontalDivider(thickness = 2.dp)
+                Column(
+                    Modifier
+                        .selectableGroup()
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    SortKey.entries.forEach {
+                        Row(
+                            Modifier
+//                            .fillMaxWidth()
+//                            .height(56.dp)
+                                .selectable(
+                                    selected = (it == homeScreenSearchConditionState.sortKey),
+                                    onClick = {
+                                        sortKeyUpdate(it)
+                                        coroutineScope
+                                            .launch { sheetState.hide() }
+                                            .invokeOnCompletion {
+                                                if (!sheetState.isVisible) {
+                                                    bottomSheetOnClick(false)
+                                                }
+                                            }
+                                    },
+                                    role = Role.RadioButton
+                                )
+                                .padding(top = 10.dp, bottom = 10.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = (it == homeScreenSearchConditionState.sortKey),
+                                onClick = null // null recommended for accessibility with screenreaders
+                            )
+                            Text(
+                                text = it.value,
+                                style = MaterialTheme.typography.displayMedium,
+//                            modifier = Modifier
+//                                .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 @Preview
 @Composable
 fun HomeScreenPreview() {
@@ -759,6 +905,25 @@ fun HomeScreenPreview() {
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)
                 .padding(5.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+fun HomeScreenTopPreview() {
+    YarnShelfTheme {
+        HomeScreenTop(
+            homeScreenSearchConditionState = HomeScreenSearchConditionState(query = "ダルマ毛糸"),
+            bottomSheetViewFlag = false,
+            queryUpdate = { _ -> },
+            sortKeyUpdate = { _ -> },
+            sortOrderUpdate = { },
+            bottomSheetOnClick = { _ -> },
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(10.dp)
         )
     }
 }

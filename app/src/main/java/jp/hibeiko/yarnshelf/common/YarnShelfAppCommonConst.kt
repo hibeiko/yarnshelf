@@ -98,3 +98,13 @@ enum class YarnParamName( val maxLength: Int ) {
     // 端末に保存した画像ファイルパス
     DRAWABLE_RESOURCE_ID(maxLength = 0),
 }
+// ホーム画面の並び順
+enum class SortKey(val value: String, val rowValue: String) {
+    YARN_NAME(value = "名前順",rowValue = "yarnName"),
+    YARN_CREATE_DATE(value = "登録した順",rowValue = "yarnId"),
+    YARN_HAVING_NUMBER(value = "残量が多い順",rowValue = "havingNumber"),
+}
+enum class SortOrder(val rowValue: String) {
+    ASC(rowValue = "ASC"),
+    DESC(rowValue = "DESC"),
+}
