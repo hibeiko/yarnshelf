@@ -1,14 +1,22 @@
 package jp.hibeiko.yarnshelf.ui
 
+import android.content.Intent
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
@@ -36,6 +44,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -209,6 +218,7 @@ fun YarnEditScreenBody(
                 && !crochetNeedleSizeToIsErrorFlg
                 && !yarnDescriptionIsErrorFlg
     )
+
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -272,38 +282,54 @@ fun YarnEditScreenBody(
                     .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp)
                     .fillMaxWidth()
             )
-            when (yarnData.imageUrl) {
-                "" ->
-                    Image(
-                        painter = painterResource(
-                            when (yarnData.drawableResourceId) {
-                                0 -> R.drawable.not_found
-                                else -> yarnData.drawableResourceId
-                            }
-                        ),
+            // Image Picker設定
+            val launcher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
+                if (it != null) {
+                    updateYarnEditData(it.toString(),YarnParamName.IMAGE_URL)
+//                    Log.d("PhotoPicker", "Selected URI: $it")
+                } else {
+//                    Log.d("PhotoPicker", "No media selected")
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .padding(top = 2.dp, bottom = 10.dp)
+                    .height(140.dp)
+                    .width(140.dp)
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                when (yarnData.imageUrl) {
+                    "" ->
+                        Image(
+                            painter = painterResource(
+                                when (yarnData.drawableResourceId) {
+                                    0 -> R.drawable.not_found
+                                    else -> yarnData.drawableResourceId
+                                }
+                            ),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            alpha = 0.7F,
+                            modifier = Modifier.fillMaxSize()
+                        )
+
+                    else -> AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(yarnData.imageUrl)
+                            .crossfade(true)
+                            .build(),
+                        placeholder = painterResource(R.drawable.loading_img),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .padding(top = 2.dp, bottom = 10.dp)
-                            .height(140.dp)
-                            .width(140.dp)
-                            .align(Alignment.CenterHorizontally),
+                        alpha = 0.7F,
+                        modifier = Modifier.fillMaxSize()
                     )
-
-                else -> AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(yarnData.imageUrl)
-                        .crossfade(true)
-                        .build(),
-                    placeholder = painterResource(R.drawable.loading_img),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .padding(top = 2.dp, bottom = 10.dp)
-                        .height(140.dp)
-                        .width(140.dp)
-                        .align(Alignment.CenterHorizontally),
-                )
+                }
+                IconButton(onClick = { launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    Icon(painterResource(R.drawable.outline_image_24), contentDescription = null, modifier = Modifier.size(50.dp))
+                }
             }
         }
         Column(

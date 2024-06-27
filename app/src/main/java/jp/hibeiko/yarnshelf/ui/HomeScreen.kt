@@ -96,8 +96,8 @@ fun HomeScreen(
     val bottomSheetViewFlag by homeScreenViewModel.bottomSheetViewFlag.collectAsState()
     val homeScreenSearchConditionState by homeScreenViewModel.homeScreenSearchConditionState.collectAsState()
 
-    Log.i("HomeScreen","$homeScreenUiState")
-    Log.i("HomeScreen","$homeScreenSearchConditionState")
+//    Log.i("HomeScreen","$homeScreenUiState")
+//    Log.i("HomeScreen","$homeScreenSearchConditionState")
     // 画面トップ
     Surface(
         modifier = modifier
