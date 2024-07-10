@@ -1,7 +1,5 @@
 package jp.hibeiko.yarnshelf.ui
 
-import android.content.Intent
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -11,7 +9,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -44,7 +41,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -60,7 +56,6 @@ import jp.hibeiko.yarnshelf.R
 import jp.hibeiko.yarnshelf.common.YarnParamName
 import jp.hibeiko.yarnshelf.common.YarnRoll
 import jp.hibeiko.yarnshelf.common.YarnThickness
-import jp.hibeiko.yarnshelf.common.validateInput
 import jp.hibeiko.yarnshelf.common.yarnDataToYarnDataForScreenConverter
 import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.ui.navigation.NavigationDestination
@@ -119,7 +114,7 @@ fun YarnEditScreen(
                 YarnEditScreenBody(
                     yarnEditScreenViewModel.yarnEditScreenUiState.yarnEditData,
                     yarnEditScreenViewModel::updateYarnEditData,
-                    yarnEditScreenViewModel::validateInput,
+yarnEditScreenViewModel.yarnEditScreenUiState.isErrorMap,
                     modifier
                         .verticalScroll(rememberScrollState())
                         .weight(1.0f, false)
@@ -138,86 +133,10 @@ fun YarnEditScreen(
 fun YarnEditScreenBody(
     yarnData: YarnData,
     updateYarnEditData: (Any, YarnParamName) -> Unit,
-    validateInput: (Boolean) -> Unit,
+    isErrorMap: Map<YarnParamName,String>,
     modifier: Modifier = Modifier
 ) {
 //    Log.d("YarnEditScreen", "$yarnData")
-    // バリデーションチェック実施。(trueはエラーあり falseはエラーなし)
-    val yarnMakerNameIsErrorFlg =
-        !validateInput(yarnData.yarnMakerName, YarnParamName.YARN_MAKER_NAME)
-    val yarnNameIsErrorFlg = !validateInput(yarnData.yarnName, YarnParamName.YARN_NAME)
-    val havingNumberIsErrorFlg = !validateInput(yarnData.havingNumber, YarnParamName.HAVING_NUMBER)
-    val qualityIsErrorFlg = !validateInput(yarnData.quality, YarnParamName.QUALITY)
-    val weightIsErrorFlg = if (yarnData.weight != null) !validateInput(
-        yarnData.weight,
-        YarnParamName.WEIGHT
-    ) else false
-    val lengthIsErrorFlg = if (yarnData.length != null) !validateInput(
-        yarnData.length,
-        YarnParamName.LENGTH
-    ) else false
-    val colorNumberIsErrorFlg =
-        !validateInput(yarnData.colorNumber, YarnParamName.COLOR_NUMBER)
-    val rotNumberIsErrorFlg = !validateInput(yarnData.rotNumber, YarnParamName.ROT_NUMBER)
-    val gaugeColumnFromIsErrorFlg = if (yarnData.gaugeColumnFrom != null) !validateInput(
-        yarnData.gaugeColumnFrom,
-        YarnParamName.GAUGE_COLUMN_FROM
-    ) else false
-    val gaugeColumnToIsErrorFlg = if (yarnData.gaugeColumnTo != null) !validateInput(
-        yarnData.gaugeColumnTo,
-        YarnParamName.GAUGE_COLUMN_TO
-    ) else false
-    val gaugeRowFromIsErrorFlg = if (yarnData.gaugeRowFrom != null) !validateInput(
-        yarnData.gaugeRowFrom,
-        YarnParamName.GAUGE_ROW_FROM
-    ) else false
-    val gaugeRowToIsErrorFlg = if (yarnData.gaugeRowTo != null) !validateInput(
-        yarnData.gaugeRowTo,
-        YarnParamName.GAUGE_ROW_TO
-    ) else false
-    val gaugeStitchIsErrorFlg =
-        !validateInput(yarnData.gaugeStitch, YarnParamName.GAUGE_STITCH)
-    val needleSizeFromIsErrorFlg = if (yarnData.needleSizeFrom != null) !validateInput(
-        yarnData.needleSizeFrom,
-        YarnParamName.NEEDLE_SIZE_FROM
-    ) else false
-    val needleSizeToIsErrorFlg = if (yarnData.needleSizeTo != null) !validateInput(
-        yarnData.needleSizeTo,
-        YarnParamName.NEEDLE_SIZE_TO
-    ) else false
-    val crochetNeedleSizeFromIsErrorFlg =
-        if (yarnData.crochetNeedleSizeFrom != null) !validateInput(
-            yarnData.crochetNeedleSizeFrom,
-            YarnParamName.CROCHET_NEEDLE_SIZE_FROM
-        ) else false
-    val crochetNeedleSizeToIsErrorFlg =
-        if (yarnData.crochetNeedleSizeTo != null) !validateInput(
-            yarnData.crochetNeedleSizeTo,
-            YarnParamName.CROCHET_NEEDLE_SIZE_TO
-        ) else false
-    val yarnDescriptionIsErrorFlg =
-        !validateInput(yarnData.yarnDescription, YarnParamName.YARN_DESCRIPTION)
-
-    validateInput(
-        !yarnMakerNameIsErrorFlg
-                && !yarnNameIsErrorFlg
-                && !havingNumberIsErrorFlg
-                && !qualityIsErrorFlg
-                && !weightIsErrorFlg
-                && !lengthIsErrorFlg
-                && !colorNumberIsErrorFlg
-                && !rotNumberIsErrorFlg
-                && !gaugeColumnFromIsErrorFlg
-                && !gaugeColumnToIsErrorFlg
-                && !gaugeRowFromIsErrorFlg
-                && !gaugeRowToIsErrorFlg
-                && !gaugeStitchIsErrorFlg
-                && !needleSizeFromIsErrorFlg
-                && !needleSizeToIsErrorFlg
-                && !crochetNeedleSizeFromIsErrorFlg
-                && !crochetNeedleSizeToIsErrorFlg
-                && !yarnDescriptionIsErrorFlg
-    )
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -244,8 +163,8 @@ fun YarnEditScreenBody(
                 },
                 value = yarnData.yarnMakerName,
                 onValueChange = { updateYarnEditData(it, YarnParamName.YARN_MAKER_NAME) },
-                isError = yarnMakerNameIsErrorFlg,
-                supportingText = { Text(text = if (yarnMakerNameIsErrorFlg) "エラーがあります" else "" + "(${yarnData.yarnMakerName.length}/${YarnParamName.YARN_MAKER_NAME.maxLength})") },
+                isError = isErrorMap.containsKey(YarnParamName.YARN_MAKER_NAME),
+                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.YARN_MAKER_NAME,"") + "(${yarnData.yarnMakerName.length}/${YarnParamName.YARN_MAKER_NAME.maxLength})") },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
@@ -270,8 +189,8 @@ fun YarnEditScreenBody(
                 },
                 value = yarnData.yarnName,
                 onValueChange = { updateYarnEditData(it, YarnParamName.YARN_NAME) },
-                isError = yarnNameIsErrorFlg,
-                supportingText = { Text(text = (if (yarnNameIsErrorFlg) "エラー" else "") + "(${yarnData.yarnName.length}/${YarnParamName.YARN_NAME.maxLength})") },
+                isError = isErrorMap.containsKey(YarnParamName.YARN_NAME),
+                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.YARN_NAME,"")  + "(${yarnData.yarnName.length}/${YarnParamName.YARN_NAME.maxLength})") },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
@@ -352,8 +271,8 @@ fun YarnEditScreenBody(
                 },
                 value = DecimalFormat("#.#").format(yarnData.havingNumber),
                 onValueChange = { updateYarnEditData(it, YarnParamName.HAVING_NUMBER) },
-                isError = havingNumberIsErrorFlg,
-                supportingText = { Text(text = if (havingNumberIsErrorFlg) "エラー" else "") },
+                isError = isErrorMap.containsKey(YarnParamName.HAVING_NUMBER),
+                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.HAVING_NUMBER,"") ) },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done
@@ -385,8 +304,8 @@ fun YarnEditScreenBody(
                 },
                 value = yarnData.quality,
                 onValueChange = { updateYarnEditData(it, YarnParamName.QUALITY) },
-                isError = qualityIsErrorFlg,
-                supportingText = { Text(text = (if (qualityIsErrorFlg) "エラー" else "") + "(${yarnData.quality.length}/${YarnParamName.QUALITY.maxLength})") },
+                isError = isErrorMap.containsKey(YarnParamName.QUALITY),
+                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.QUALITY,"")  + "(${yarnData.quality.length}/${YarnParamName.QUALITY.maxLength})") },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
@@ -410,8 +329,8 @@ fun YarnEditScreenBody(
                 },
                 value = if (yarnData.weight != null) DecimalFormat("#.#").format(yarnData.weight) else "",
                 onValueChange = { updateYarnEditData(it, YarnParamName.WEIGHT) },
-                isError = weightIsErrorFlg,
-                supportingText = { Text(text = if (weightIsErrorFlg) "エラー" else "") },
+                isError = isErrorMap.containsKey(YarnParamName.WEIGHT),
+                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.WEIGHT,""))  },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done
@@ -435,8 +354,8 @@ fun YarnEditScreenBody(
                 },
                 value = if (yarnData.length != null) DecimalFormat("#.#").format(yarnData.length) else "",
                 onValueChange = { updateYarnEditData(it, YarnParamName.LENGTH) },
-                isError = lengthIsErrorFlg,
-                supportingText = { Text(text = if (lengthIsErrorFlg) "エラー" else "") },
+                isError = isErrorMap.containsKey(YarnParamName.LENGTH),
+                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.LENGTH,"") ) },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done
@@ -525,8 +444,8 @@ fun YarnEditScreenBody(
                 },
                 value = yarnData.colorNumber,
                 onValueChange = { updateYarnEditData(it, YarnParamName.COLOR_NUMBER) },
-                isError = colorNumberIsErrorFlg,
-                supportingText = { Text(text = if (colorNumberIsErrorFlg) "エラー" else "") },
+                isError = isErrorMap.containsKey(YarnParamName.COLOR_NUMBER),
+                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.COLOR_NUMBER,"")  + "(${yarnData.colorNumber.length}/${YarnParamName.COLOR_NUMBER.maxLength})")},
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
@@ -550,8 +469,8 @@ fun YarnEditScreenBody(
                 },
                 value = yarnData.rotNumber,
                 onValueChange = { updateYarnEditData(it, YarnParamName.ROT_NUMBER) },
-                isError = rotNumberIsErrorFlg,
-                supportingText = { Text(text = if (rotNumberIsErrorFlg) "エラー" else "") },
+                isError = isErrorMap.containsKey(YarnParamName.ROT_NUMBER),
+                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.ROT_NUMBER,"")  + "(${yarnData.rotNumber.length}/${YarnParamName.ROT_NUMBER.maxLength})") },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
@@ -587,8 +506,8 @@ fun YarnEditScreenBody(
                         yarnData.gaugeColumnFrom
                     ) else "",
                     onValueChange = { updateYarnEditData(it, YarnParamName.GAUGE_COLUMN_FROM) },
-                    isError = gaugeColumnFromIsErrorFlg,
-                    supportingText = { Text(text = if (gaugeColumnFromIsErrorFlg) "エラー" else "") },
+                    isError = isErrorMap.containsKey(YarnParamName.GAUGE_COLUMN_FROM),
+                    supportingText = { Text(text =isErrorMap.getOrDefault(YarnParamName.GAUGE_COLUMN_FROM,"") ) },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
@@ -619,8 +538,8 @@ fun YarnEditScreenBody(
                     },
                     value = if (yarnData.gaugeColumnTo != null) DecimalFormat("#.#").format(yarnData.gaugeColumnTo) else "",
                     onValueChange = { updateYarnEditData(it, YarnParamName.GAUGE_COLUMN_TO) },
-                    isError = gaugeColumnToIsErrorFlg,
-                    supportingText = { Text(text = if (gaugeColumnToIsErrorFlg) "エラー" else "") },
+                    isError = isErrorMap.containsKey(YarnParamName.GAUGE_COLUMN_TO),
+                    supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.GAUGE_COLUMN_TO,"") ) },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
@@ -656,8 +575,8 @@ fun YarnEditScreenBody(
                     },
                     value = if (yarnData.gaugeRowFrom != null) DecimalFormat("#.#").format(yarnData.gaugeRowFrom) else "",
                     onValueChange = { updateYarnEditData(it, YarnParamName.GAUGE_ROW_FROM) },
-                    isError = gaugeRowFromIsErrorFlg,
-                    supportingText = { Text(text = if (gaugeRowFromIsErrorFlg) "エラー" else "") },
+                    isError = isErrorMap.containsKey(YarnParamName.GAUGE_ROW_FROM),
+                    supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.GAUGE_ROW_FROM,"") ) },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
@@ -688,8 +607,8 @@ fun YarnEditScreenBody(
                     },
                     value = if (yarnData.gaugeRowTo != null) DecimalFormat("#.#").format(yarnData.gaugeRowTo) else "",
                     onValueChange = { updateYarnEditData(it, YarnParamName.GAUGE_ROW_TO) },
-                    isError = gaugeRowToIsErrorFlg,
-                    supportingText = { Text(text = if (gaugeRowToIsErrorFlg) "エラー" else "") },
+                    isError = isErrorMap.containsKey(YarnParamName.GAUGE_ROW_TO),
+                    supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.GAUGE_ROW_TO,"") ) },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
@@ -727,8 +646,8 @@ fun YarnEditScreenBody(
                 },
                 value = yarnData.gaugeStitch,
                 onValueChange = { updateYarnEditData(it, YarnParamName.GAUGE_STITCH) },
-                isError = gaugeStitchIsErrorFlg,
-                supportingText = { Text(text = if (gaugeStitchIsErrorFlg) "エラー" else "") },
+                isError = isErrorMap.containsKey(YarnParamName.GAUGE_STITCH),
+                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.GAUGE_STITCH,"")  + "(${yarnData.gaugeStitch.length}/${YarnParamName.GAUGE_STITCH.maxLength})") },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
@@ -771,8 +690,8 @@ fun YarnEditScreenBody(
                         yarnData.needleSizeFrom
                     ) else "",
                     onValueChange = { updateYarnEditData(it, YarnParamName.NEEDLE_SIZE_FROM) },
-                    isError = needleSizeFromIsErrorFlg,
-                    supportingText = { Text(text = if (needleSizeFromIsErrorFlg) "エラー" else "") },
+                    isError = isErrorMap.containsKey(YarnParamName.NEEDLE_SIZE_FROM),
+                    supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.NEEDLE_SIZE_FROM,"") ) },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
@@ -803,8 +722,8 @@ fun YarnEditScreenBody(
                     },
                     value = if (yarnData.needleSizeTo != null) DecimalFormat("#.#").format(yarnData.needleSizeTo) else "",
                     onValueChange = { updateYarnEditData(it, YarnParamName.NEEDLE_SIZE_TO) },
-                    isError = needleSizeToIsErrorFlg,
-                    supportingText = { Text(text = if (needleSizeToIsErrorFlg) "エラー" else "") },
+                    isError = isErrorMap.containsKey(YarnParamName.NEEDLE_SIZE_TO),
+                    supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.NEEDLE_SIZE_TO,"") ) },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
@@ -847,8 +766,8 @@ fun YarnEditScreenBody(
                             YarnParamName.CROCHET_NEEDLE_SIZE_FROM
                         )
                     },
-                    isError = crochetNeedleSizeFromIsErrorFlg,
-                    supportingText = { Text(text = if (crochetNeedleSizeFromIsErrorFlg) "エラー" else "") },
+                    isError = isErrorMap.containsKey(YarnParamName.CROCHET_NEEDLE_SIZE_FROM),
+                    supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.CROCHET_NEEDLE_SIZE_FROM,"") ) },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
@@ -886,8 +805,8 @@ fun YarnEditScreenBody(
                             YarnParamName.CROCHET_NEEDLE_SIZE_TO
                         )
                     },
-                    isError = crochetNeedleSizeToIsErrorFlg,
-                    supportingText = { Text(text = if (crochetNeedleSizeToIsErrorFlg) "エラー" else "") },
+                    isError = isErrorMap.containsKey(YarnParamName.CROCHET_NEEDLE_SIZE_TO),
+                    supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.CROCHET_NEEDLE_SIZE_TO,"") ) },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
@@ -929,8 +848,8 @@ fun YarnEditScreenBody(
                 },
                 value = yarnData.yarnDescription,
                 onValueChange = { updateYarnEditData(it, YarnParamName.YARN_DESCRIPTION) },
-                isError = yarnDescriptionIsErrorFlg,
-                supportingText = { Text(text = (if (yarnDescriptionIsErrorFlg) "エラー" else "") + "(${yarnData.yarnDescription.length}/${YarnParamName.YARN_DESCRIPTION.maxLength})") },
+                isError = isErrorMap.containsKey(YarnParamName.YARN_DESCRIPTION),
+                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.YARN_DESCRIPTION,"") ) },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
@@ -972,7 +891,7 @@ fun YarnEditScreenBottom(
                     )
                 )
             },
-            enabled = yarnEditScreenUiState.validateInputFlag
+            enabled = yarnEditScreenUiState.isErrorMap.isEmpty()
         ) {
             Text(text = "Next", style = MaterialTheme.typography.labelSmall)
         }
@@ -1012,7 +931,7 @@ fun YarnEditScreenPreview() {
                 R.drawable.spin_1010_crpd_1625196651766_400
             ),
             updateYarnEditData = { _, _ -> },
-            validateInput = { _ -> },
+            isErrorMap = mapOf(YarnParamName.YARN_MAKER_NAME to "エラーメッセージ"),
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)
@@ -1055,7 +974,7 @@ fun YarnEditScreenBottomPreview() {
                     "",
                     R.drawable.spin_1010_crpd_1625196651766_400
                 ),
-                validateInputFlag = true
+                isErrorMap = mutableMapOf()
             ),
             nextButtonOnClick = { _ -> },
             cancelButtonOnClick = { },

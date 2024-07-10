@@ -269,7 +269,7 @@ fun ItemSearchScreenBody(
                     onValueChange = { yarnNameSearchInputUpdate(it) },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Done,
                     ),
                     singleLine = true,
                     textStyle = MaterialTheme.typography.displayMedium,

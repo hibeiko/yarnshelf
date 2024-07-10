@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import jp.hibeiko.yarnshelf.common.yarnDataToYarnDataForScreenConverter
-import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.ui.navigation.NavigationDestination
 import jp.hibeiko.yarnshelf.ui.navigation.YarnDataForScreen
 
@@ -85,16 +84,15 @@ fun YarnEntryScreen(
                 YarnEditScreenBody(
                     yarnEntryScreenUiState.yarnEntryData,
                     yarnEntryScreenViewModel::updateYarnEditData,
-                    yarnEntryScreenViewModel::validateInput,
+                    yarnEntryScreenUiState.isErrorMap,
                     modifier
                         .verticalScroll(rememberScrollState())
                         .weight(1.0f, false),
                 )
                 YarnEntryScreenBottom(
-                    yarnEntryScreenUiState.yarnEntryData,
+                    yarnEntryScreenUiState,
                     nextButtonOnClick,
                     cancelButtonOnClick,
-                    yarnEntryScreenViewModel::validateInput,
                     modifier
                 )
             }
@@ -104,10 +102,9 @@ fun YarnEntryScreen(
 
 @Composable
 fun YarnEntryScreenBottom(
-    yarnData: YarnData,
+    yarnEntryScreenUiState: YarnEntryScreenUiState,
     nextButtonOnClick: (YarnDataForScreen) -> Unit,
     cancelButtonOnClick: () -> Unit,
-    validateInput: () -> Boolean,
     modifier: Modifier
 ) {
     Row(
@@ -125,13 +122,13 @@ fun YarnEntryScreenBottom(
             onClick = {
                 nextButtonOnClick(
                     yarnDataToYarnDataForScreenConverter(
-                        yarnData
+                        yarnEntryScreenUiState.yarnEntryData
                     )
                 )
 //                                yarnEntryScreenViewModel.saveYarnData()
 //                                cancelButtonOnClick()
             },
-            enabled = validateInput()
+            enabled = yarnEntryScreenUiState.isErrorMap.isEmpty()
         ) {
             Text(text = "Next", style = MaterialTheme.typography.labelSmall)
         }

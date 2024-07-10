@@ -1,6 +1,5 @@
 package jp.hibeiko.yarnshelf.ui
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -99,6 +98,8 @@ fun HomeScreen(
 //    Log.i("HomeScreen","$homeScreenUiState")
 //    Log.i("HomeScreen","$homeScreenSearchConditionState")
     // 画面トップ
+    // Surface は色を受け取る。Surface と MaterialTheme はマテリアル デザインに関連するコンセプトです。
+    // Surface 内にネストされているコンポーネントは、その背景色の上に描画されます。
     Surface(
         modifier = modifier
     ) {

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import jp.hibeiko.yarnshelf.common.yarnDataForScreenToYarnDataConverter
 import jp.hibeiko.yarnshelf.common.YarnParamName
 import jp.hibeiko.yarnshelf.common.updateYarnData
+import jp.hibeiko.yarnshelf.common.validateInput
 import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.ui.navigation.YarnDataForScreen
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,7 @@ import kotlinx.coroutines.flow.update
 
 data class YarnEntryScreenUiState(
     val yarnEntryData: YarnData = YarnData(),
-    val validateInputFlag: Boolean = false
+    val isErrorMap: MutableMap<YarnParamName, String> = mutableMapOf(YarnParamName.YARN_NAME to "名前は必須項目です。"),
 )
 
 class YarnEntryScreenViewModel(
@@ -43,6 +44,7 @@ class YarnEntryScreenViewModel(
                 yarnEntryData = updateYarnData(param = param, yarnData = it.yarnEntryData, paramName = paramName)
             )
         }
+        updateIsErrorMap(paramName)
     }
 
 //    fun saveYarnData() {
@@ -53,14 +55,12 @@ class YarnEntryScreenViewModel(
 //        }
 //    }
 
-    fun validateInput(): Boolean {
-        return with(yarnEntryScreenUiState) {
-            this.value.yarnEntryData.yarnName.isNotBlank() && this.value.yarnEntryData.yarnDescription.isNotBlank()
-        }
-    }
-    fun validateInput(param: Boolean) {
-        _yarnEntryScreenUiState.update {
-            it.copy(validateInputFlag = param)
-        }
+    private fun updateIsErrorMap(paramName: YarnParamName) {
+        val errorMessage = validateInput(_yarnEntryScreenUiState.value.yarnEntryData, paramName)
+        // バリデーションエラーがあればメッセージが返却される。エラーがなければ空文字が返却される。
+        if (errorMessage.isNotBlank())
+            _yarnEntryScreenUiState.value.isErrorMap[paramName] = errorMessage
+        else
+            _yarnEntryScreenUiState.value.isErrorMap.remove(paramName)
     }
 }

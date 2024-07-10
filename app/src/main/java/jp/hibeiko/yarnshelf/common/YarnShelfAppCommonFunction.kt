@@ -237,75 +237,139 @@ fun yahooHitToYarnDataForScreenConverter(yahooHit: YahooHit): YarnDataForScreen 
 }
 
 // バリデーションチェック
-fun validateInput(param: Any, paramName: YarnParamName): Boolean {
+fun validateInput(yarnData: YarnData, paramName: YarnParamName): String {
     return when (paramName) {
         YarnParamName.JAN_CODE
-        -> (param as String).length <= YarnParamName.JAN_CODE.maxLength
+        ->
+            if (yarnData.janCode.length > YarnParamName.JAN_CODE.maxLength)
+                "${YarnParamName.JAN_CODE.maxLength}桁で入力してください。"
+            else ""
 
         YarnParamName.YARN_MAKER_NAME
-        -> (param as String).length <= YarnParamName.YARN_MAKER_NAME.maxLength
+        ->
+            if (yarnData.yarnMakerName.length > YarnParamName.YARN_MAKER_NAME.maxLength)
+                "${YarnParamName.YARN_MAKER_NAME.maxLength}文字以内で入力してください。"
+            else ""
 
         YarnParamName.YARN_NAME
-        -> (param as String).isNotEmpty() && param.length <= YarnParamName.YARN_NAME.maxLength
+        ->
+            if (yarnData.yarnName.isEmpty())
+                "名前は必須項目です。"
+            else if (yarnData.yarnName.length > YarnParamName.YARN_NAME.maxLength)
+                "${YarnParamName.YARN_NAME.maxLength}文字以内で入力してください。"
+            else
+                ""
 
-        YarnParamName.IMAGE_URL
-        -> true
-
+        YarnParamName.IMAGE_URL,
         YarnParamName.DRAWABLE_RESOURCE_ID
-        -> true
+        -> ""
 
         YarnParamName.HAVING_NUMBER
-        -> (param as Int) <= YarnParamName.HAVING_NUMBER.maxLength
+        -> if (yarnData.havingNumber > YarnParamName.HAVING_NUMBER.maxLength)
+            "${YarnParamName.HAVING_NUMBER.maxLength}個以内で入力してください。"
+        else
+            ""
 
         YarnParamName.COLOR_NUMBER
-        -> (param as String).length <= YarnParamName.COLOR_NUMBER.maxLength
+        -> if (yarnData.colorNumber.length > YarnParamName.COLOR_NUMBER.maxLength)
+            "${YarnParamName.COLOR_NUMBER.maxLength}文字以内で入力してください。"
+        else
+            ""
 
         YarnParamName.ROT_NUMBER
-        -> (param as String).length <= YarnParamName.ROT_NUMBER.maxLength
+        -> if (yarnData.rotNumber.length > YarnParamName.ROT_NUMBER.maxLength)
+            "${YarnParamName.ROT_NUMBER.maxLength}文字以内で入力してください。"
+        else
+            ""
 
         YarnParamName.QUALITY
-        -> (param as String).length <= YarnParamName.QUALITY.maxLength
+        -> if (yarnData.quality.length > YarnParamName.QUALITY.maxLength)
+            "${YarnParamName.QUALITY.maxLength}文字以内で入力してください。"
+        else
+            ""
 
         YarnParamName.WEIGHT
-        -> (param as Double) <= YarnParamName.WEIGHT.maxLength.toDouble()
+        -> if (yarnData.weight != null && yarnData.weight > YarnParamName.WEIGHT.maxLength.toDouble())
+            "${YarnParamName.WEIGHT.maxLength}g以内で入力してください。"
+        else
+            ""
 
         YarnParamName.ROLL
-        -> (param as YarnRoll) in YarnRoll.entries
+        -> if (yarnData.roll in YarnRoll.entries)
+            ""
+        else
+            "値が不正です。"
 
         YarnParamName.LENGTH
-        -> (param as Double) <= YarnParamName.LENGTH.maxLength.toDouble()
+        -> if (yarnData.length != null && yarnData.length > YarnParamName.LENGTH.maxLength.toDouble())
+            "${YarnParamName.LENGTH.maxLength}m以内で入力してください。"
+        else
+            ""
 
         YarnParamName.GAUGE_COLUMN_FROM
-        -> (param as Double) <= YarnParamName.GAUGE_COLUMN_FROM.maxLength.toDouble()
+        -> if (yarnData.gaugeColumnFrom != null && yarnData.gaugeColumnFrom > YarnParamName.GAUGE_COLUMN_FROM.maxLength.toDouble())
+            "${YarnParamName.GAUGE_COLUMN_FROM.maxLength}以内で入力してください。"
+        else
+            ""
 
         YarnParamName.GAUGE_COLUMN_TO
-        -> (param as Double) <= YarnParamName.GAUGE_COLUMN_TO.maxLength.toDouble()
+        -> if (yarnData.gaugeColumnTo != null && yarnData.gaugeColumnTo > YarnParamName.GAUGE_COLUMN_TO.maxLength.toDouble())
+            "${YarnParamName.GAUGE_COLUMN_TO.maxLength}以内で入力してください。"
+        else
+            ""
 
         YarnParamName.GAUGE_ROW_FROM
-        -> (param as Double) <= YarnParamName.GAUGE_ROW_FROM.maxLength.toDouble()
+        -> if (yarnData.gaugeRowFrom != null && yarnData.gaugeRowFrom > YarnParamName.GAUGE_ROW_FROM.maxLength.toDouble())
+            "${YarnParamName.GAUGE_ROW_FROM.maxLength}以内で入力してください。"
+        else
+            ""
 
         YarnParamName.GAUGE_ROW_TO
-        -> (param as Double) <= YarnParamName.GAUGE_ROW_TO.maxLength.toDouble()
+        -> if (yarnData.gaugeRowTo != null && yarnData.gaugeRowTo > YarnParamName.GAUGE_ROW_TO.maxLength.toDouble())
+            "${YarnParamName.GAUGE_ROW_TO.maxLength}以内で入力してください。"
+        else
+            ""
 
         YarnParamName.GAUGE_STITCH
-        -> (param as String).length <= YarnParamName.GAUGE_STITCH.maxLength
+        -> if (yarnData.gaugeStitch.length > YarnParamName.GAUGE_STITCH.maxLength)
+            "${YarnParamName.GAUGE_STITCH.maxLength}文字以内で入力してください。"
+        else
+            ""
 
         YarnParamName.NEEDLE_SIZE_FROM
-        -> (param as Double) <= YarnParamName.NEEDLE_SIZE_FROM.maxLength.toDouble()
+        -> if (yarnData.needleSizeFrom != null && yarnData.needleSizeFrom > YarnParamName.NEEDLE_SIZE_FROM.maxLength.toDouble())
+            "${YarnParamName.NEEDLE_SIZE_FROM.maxLength}以内で入力してください。"
+        else
+            ""
 
         YarnParamName.NEEDLE_SIZE_TO
-        -> (param as Double) <= YarnParamName.NEEDLE_SIZE_TO.maxLength.toDouble()
+        -> if (yarnData.needleSizeTo != null && yarnData.needleSizeTo > YarnParamName.NEEDLE_SIZE_TO.maxLength.toDouble())
+            "${YarnParamName.NEEDLE_SIZE_TO.maxLength}以内で入力してください。"
+        else
+            ""
 
         YarnParamName.CROCHET_NEEDLE_SIZE_FROM
-        -> (param as Double) <= YarnParamName.CROCHET_NEEDLE_SIZE_FROM.maxLength.toDouble()
+        -> if (yarnData.crochetNeedleSizeFrom != null && yarnData.crochetNeedleSizeFrom > YarnParamName.CROCHET_NEEDLE_SIZE_FROM.maxLength.toDouble())
+            "${YarnParamName.CROCHET_NEEDLE_SIZE_FROM.maxLength}以内で入力してください。"
+        else
+            ""
 
         YarnParamName.CROCHET_NEEDLE_SIZE_TO
-        -> (param as Double) <= YarnParamName.CROCHET_NEEDLE_SIZE_TO.maxLength.toDouble()
+        -> if (yarnData.crochetNeedleSizeTo != null && yarnData.crochetNeedleSizeTo > YarnParamName.CROCHET_NEEDLE_SIZE_TO.maxLength.toDouble())
+            "${YarnParamName.CROCHET_NEEDLE_SIZE_TO.maxLength}以内で入力してください。"
+        else
+            ""
 
         YarnParamName.THICKNESS
-        -> (param as YarnThickness) in YarnThickness.entries
+        -> if (yarnData.thickness in YarnThickness.entries)
+            ""
+        else
+            "値が不正です。"
 
         YarnParamName.YARN_DESCRIPTION
-        -> (param as String).length <= YarnParamName.YARN_DESCRIPTION.maxLength
+        -> if (yarnData.yarnDescription.length > YarnParamName.YARN_DESCRIPTION.maxLength)
+            "${YarnParamName.YARN_DESCRIPTION.maxLength}文字以内で入力してください。"
+        else
+            ""
     }
 }

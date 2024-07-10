@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import jp.hibeiko.yarnshelf.common.YarnParamName
 import jp.hibeiko.yarnshelf.common.updateYarnData
+import jp.hibeiko.yarnshelf.common.validateInput
 import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.repository.YarnDataRepository
 import kotlinx.coroutines.flow.filterNotNull
@@ -17,7 +18,7 @@ import kotlinx.coroutines.launch
 //private const val TAG = "HomeScreen"
 data class YarnEditScreenUiState(
     val yarnEditData: YarnData = YarnData(),
-    val validateInputFlag: Boolean = false
+    val isErrorMap: MutableMap<YarnParamName, String> = mutableMapOf(),
 )
 
 class YarnEditScreenViewModel(
@@ -36,19 +37,30 @@ class YarnEditScreenViewModel(
                     .filterNotNull()
                     .first()
             )
+            for (paramName in YarnParamName.entries){
+                updateIsErrorMap(paramName)
+            }
         }
     }
 
     fun updateYarnEditData(param: Any, paramName: YarnParamName) {
         yarnEditScreenUiState = yarnEditScreenUiState.copy(
-            yarnEditData = updateYarnData(param = param, yarnData = yarnEditScreenUiState.yarnEditData, paramName = paramName)
+            yarnEditData = updateYarnData(
+                param = param,
+                yarnData = yarnEditScreenUiState.yarnEditData,
+                paramName = paramName
+            )
         )
+        updateIsErrorMap(paramName)
     }
 
-    fun validateInput(param: Boolean) {
-        yarnEditScreenUiState = yarnEditScreenUiState.copy(
-            validateInputFlag = param
-        )
+    private fun updateIsErrorMap(paramName: YarnParamName) {
+        val errorMessage = validateInput(yarnEditScreenUiState.yarnEditData, paramName)
+        // バリデーションエラーがあればメッセージが返却される。エラーがなければ空文字が返却される。
+        if (errorMessage.isNotBlank())
+            yarnEditScreenUiState.isErrorMap[paramName] = errorMessage
+        else
+            yarnEditScreenUiState.isErrorMap.remove(paramName)
     }
 
 }
