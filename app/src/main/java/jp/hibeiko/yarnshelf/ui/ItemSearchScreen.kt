@@ -43,7 +43,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -110,7 +112,7 @@ fun ItemSearchScreen(
                         IconButton(onClick = cancelButtonOnClick) {
                             Icon(
                                 Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "戻る",
+                                contentDescription = stringResource(R.string.back),
                                 tint = MaterialTheme.colorScheme.primary
                             )
                         }
@@ -166,7 +168,7 @@ fun ItemSearchScreenBody(
                             painter = painterResource(R.drawable.outline_barcode_24),
                             contentDescription = null
                         )
-                        Text(text = "バーコード", style = MaterialTheme.typography.labelSmall)
+                        Text(text = stringResource(R.string.itemsearchscreen_barcode_tab_name), style = MaterialTheme.typography.labelSmall)
                     }
                 },
                 selected = itemSearchScreenUiState.selectedTabIndex == 0,
@@ -176,7 +178,7 @@ fun ItemSearchScreenBody(
                 text = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Search, contentDescription = null)
-                        Text(text = "検索", style = MaterialTheme.typography.labelSmall)
+                        Text(text = stringResource(R.string.itemsearchscreen_itemsearch_tab_name), style = MaterialTheme.typography.labelSmall)
                     }
                 },
                 selected = itemSearchScreenUiState.selectedTabIndex == 0,
@@ -186,7 +188,7 @@ fun ItemSearchScreenBody(
                 text = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Edit, contentDescription = null)
-                        Text(text = "手入力", style = MaterialTheme.typography.labelSmall)
+                        Text(text = stringResource(R.string.itemsearchscreen_manualinput_tab_name), style = MaterialTheme.typography.labelSmall)
                     }
                 },
                 selected = itemSearchScreenUiState.selectedTabIndex == 0,
@@ -237,7 +239,7 @@ fun ItemSearchScreenBody(
                         painter = painterResource(R.drawable.baseline_photo_camera_24),
                         contentDescription = null
                     )
-                    Text(text = "スキャン", style = MaterialTheme.typography.labelSmall)
+                    Text(text = stringResource(R.string.itemsearchscreen_scan_button_name), style = MaterialTheme.typography.labelSmall)
                 }
             }
 
@@ -246,7 +248,7 @@ fun ItemSearchScreenBody(
                 TextField(
                     label = {
                         Text(
-                            "商品名・メーカーなど",
+                            stringResource(R.string.itemsearchscreen_input_search_text),
                             style = MaterialTheme.typography.labelSmall
                         )
                     },
@@ -262,7 +264,7 @@ fun ItemSearchScreenBody(
                                     )
                             }
                         ) {
-                            Icon(Icons.Default.Search, contentDescription = null)
+                            Icon(Icons.Default.Search, contentDescription = stringResource(R.string.itemsearchscreen_itemsearch_tab_name))
                         }
                     },
                     value = itemSearchScreenUiState.yarnNameSearchInput,
@@ -340,7 +342,8 @@ fun SearchResultCard(
         modifier = Modifier
             .fillMaxHeight()
             .width(250.dp)
-            .padding(top = 10.dp, bottom = 10.dp, start = 5.dp, end = 5.dp),
+            .padding(top = 10.dp, bottom = 10.dp, start = 5.dp, end = 5.dp)
+            .testTag("ItemSearchScreen_SearchResultCard"),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         onClick = {
             cardOnClick(yahooHitToYarnDataForScreenConverter(yahooHit = hitItem))

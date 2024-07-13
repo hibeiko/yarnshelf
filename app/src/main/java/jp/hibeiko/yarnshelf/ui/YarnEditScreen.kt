@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -102,7 +103,7 @@ fun YarnEditScreen(
                         IconButton(onClick = cancelButtonOnClick) {
                             Icon(
                                 Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "戻る",
+                                contentDescription = stringResource(R.string.back),
                                 tint = MaterialTheme.colorScheme.primary
                             )
                         }
@@ -177,7 +178,7 @@ fun YarnEditScreenBody(
             )
 
             TextField(
-                label = { Text("名前", style = MaterialTheme.typography.labelSmall) },
+                label = { Text(stringResource(R.string.yarneditscreen_input_name_field_name), style = MaterialTheme.typography.labelSmall) },
                 leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                 trailingIcon = {
                     IconButton(onClick = {
@@ -881,7 +882,7 @@ fun YarnEditScreenBottom(
         OutlinedButton(
             onClick = cancelButtonOnClick
         ) {
-            Text(text = "Cancel", style = MaterialTheme.typography.labelSmall)
+            Text(text = stringResource(R.string.back), style = MaterialTheme.typography.labelSmall)
         }
         Button(
             onClick = {
@@ -893,7 +894,7 @@ fun YarnEditScreenBottom(
             },
             enabled = yarnEditScreenUiState.isErrorMap.isEmpty()
         ) {
-            Text(text = "Next", style = MaterialTheme.typography.labelSmall)
+            Text(text = stringResource(R.string.next), style = MaterialTheme.typography.labelSmall)
         }
     }
 }

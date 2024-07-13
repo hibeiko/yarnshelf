@@ -24,8 +24,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import jp.hibeiko.yarnshelf.R
 import jp.hibeiko.yarnshelf.common.yarnDataToYarnDataForScreenConverter
 import jp.hibeiko.yarnshelf.ui.navigation.NavigationDestination
 import jp.hibeiko.yarnshelf.ui.navigation.YarnDataForScreen
@@ -72,7 +74,7 @@ fun YarnEntryScreen(
                         IconButton(onClick = cancelButtonOnClick) {
                             Icon(
                                 Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "戻る",
+                                contentDescription = stringResource(R.string.back),
                                 tint = MaterialTheme.colorScheme.primary
                             )
                         }
@@ -116,7 +118,7 @@ fun YarnEntryScreenBottom(
         OutlinedButton(
             onClick = cancelButtonOnClick
         ) {
-            Text(text = "Cancel", style = MaterialTheme.typography.labelSmall)
+            Text(text = stringResource(R.string.back), style = MaterialTheme.typography.labelSmall)
         }
         Button(
             onClick = {
@@ -130,7 +132,7 @@ fun YarnEntryScreenBottom(
             },
             enabled = yarnEntryScreenUiState.isErrorMap.isEmpty()
         ) {
-            Text(text = "Next", style = MaterialTheme.typography.labelSmall)
+            Text(text = stringResource(R.string.next), style = MaterialTheme.typography.labelSmall)
         }
     }
 }

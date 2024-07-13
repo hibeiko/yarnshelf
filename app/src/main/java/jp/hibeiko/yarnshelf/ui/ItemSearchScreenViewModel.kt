@@ -49,6 +49,7 @@ class ItemSearchScreenViewModel(
     fun yarnNameSearchInputUpdate(yarnNameSearchInput: String) {
         _itemSearchScreenUiState.update { it.copy(yarnNameSearchInput = yarnNameSearchInput) }
     }
+
     fun selectedTabIndexUpdate(selectedTabIndex: Int) {
         _itemSearchScreenUiState.update {
             it.copy(
@@ -58,28 +59,31 @@ class ItemSearchScreenViewModel(
         }
         searchItemUiState = SearchItemUiState.Loading
     }
+
     fun validateYarnNameSearchInput(): Boolean {
         return with(_itemSearchScreenUiState) {
             this.value.yarnNameSearchInput.isNotBlank()
         }
     }
+
     fun searchItem(yarnName: String, janCode: String) {
         if (janCode.isNotBlank() || validateYarnNameSearchInput()) {
-            try {
-                viewModelScope.launch {
+            viewModelScope.launch {
+                try {
                     val tempResponse =
                         yahooShoppingWebServiceItemSearchApiRepository.searchItem(
                             query = yarnName,
                             janCode = janCode
                         )
                     searchItemUiState = SearchItemUiState.Success(tempResponse)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    searchItemUiState = SearchItemUiState.Error
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                searchItemUiState = SearchItemUiState.Error
             }
         }
     }
+
     fun readBarcode() {
         mlKitRepository.getJanCode(::searchItem)
     }

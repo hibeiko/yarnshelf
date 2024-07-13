@@ -13,6 +13,21 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
+      <SelectionState runConfigName="YarnDataDAOTest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="yarnDataDAOTest_daoUpdateItem_updateItemIntoDB()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="yarnDataDAOTest_daoDeleteItem_deleteItemIntoDB()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="yarnDataDAOTest_daoInsert10Items_selectItemFromDBByYarnId()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="yarnDataDAOTest_daoInsert10Items_insertsItemsIntoDBAndSelectWithQueryOrderByNameAsc()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>

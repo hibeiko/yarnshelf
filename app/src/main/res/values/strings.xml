@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">けいとのたな</string>
+    <string name="homescreen_add_button_name">追加</string>
+    <string name="itemsearchscreen_manualinput_tab_name">手入力</string>
+    <string name="itemsearchscreen_input_search_text">商品名・メーカーなど</string>
+    <string name="itemsearchscreen_itemsearch_tab_name">検索</string>
+    <string name="itemsearchscreen_barcode_tab_name">バーコード</string>
+    <string name="itemsearchscreen_scan_button_name">スキャン</string>
+    <string name="back">戻る</string>
+    <string name="next">次へ</string>
+    <string name="yarneditscreen_input_name_field_name">名前</string>
+    <string name="ok">OK</string>
 </resources>

@@ -21,9 +21,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import jp.hibeiko.yarnshelf.R
 import jp.hibeiko.yarnshelf.ui.navigation.NavigationDestination
 import jp.hibeiko.yarnshelf.ui.theme.YarnShelfTheme
 
@@ -65,7 +67,7 @@ fun YarnConfirmScreen(
                         IconButton(onClick = cancelButtonOnClick) {
                             Icon(
                                 Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "戻る",
+                                contentDescription = stringResource(R.string.back),
                                 tint = MaterialTheme.colorScheme.primary
                             )
                         }
@@ -106,13 +108,13 @@ fun YarnConfirmScreenBottom(
         OutlinedButton(
             onClick = cancelButtonOnClick
         ) {
-            Text(text = "Cancel", style = MaterialTheme.typography.labelSmall)
+            Text(text = stringResource(R.string.back), style = MaterialTheme.typography.labelSmall)
         }
         Button(onClick = {
             updateYarnData()
             nextButtonOnClick()
         }) {
-            Text(text = "OK", style = MaterialTheme.typography.labelSmall)
+            Text(text = stringResource(R.string.ok), style = MaterialTheme.typography.labelSmall)
         }
     }
 }

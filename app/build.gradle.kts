@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("com.google.devtools.ksp") version "1.9.20-1.0.14"
+    id("com.google.devtools.ksp") version "1.9.0-1.0.13"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
     // ナビゲーションでカスタムNavTypeを指定するのに必要。
     id("kotlin-parcelize")
@@ -102,11 +102,23 @@ dependencies {
     // https://developers.google.com/ml-kit/vision/barcode-scanning/code-scanner?hl=ja
     implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
 
+    // テスト
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+
+    // コルーチンのテスト
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // UIテスト
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.ui.test.junit4)
+    // Navigationテスト
+    androidTestImplementation(libs.androidx.navigation.testing)
+    androidTestImplementation(libs.androidx.junit)
+    // Espresso
+    // IntentsはNavigationテストにインポートが推奨、CoreはRoomのテストにインポートが推奨とされていたが、なくても動いた。
+//    androidTestImplementation(libs.androidx.espresso.core)
+//    androidTestImplementation(libs.androidx.espresso.intents)
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
