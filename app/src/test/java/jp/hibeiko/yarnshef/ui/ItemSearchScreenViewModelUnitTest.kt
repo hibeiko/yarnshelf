@@ -4,6 +4,7 @@ import jp.hibeiko.yarnshef.data.YahooShoppingWebServiceItemDummyData
 import jp.hibeiko.yarnshef.dummy.MLKitDummyRepository
 import jp.hibeiko.yarnshef.dummy.YahooShoppingWebServiceItemSearchApiDummyRepository
 import jp.hibeiko.yarnshef.rules.TestDispatcherRule
+import jp.hibeiko.yarnshelf.ui.ItemSearchDestination
 import jp.hibeiko.yarnshelf.ui.ItemSearchScreenViewModel
 import jp.hibeiko.yarnshelf.ui.SearchItemUiState
 import org.junit.Assert.assertEquals
@@ -26,17 +27,27 @@ class ItemSearchScreenViewModelUnitTest {
     private lateinit var viewModel: ItemSearchScreenViewModel
 
     @Before
-    fun setUp(){
+    fun setUp() {
         viewModel = ItemSearchScreenViewModel(
             yahooShoppingWebServiceItemSearchApiRepository = YahooShoppingWebServiceItemSearchApiDummyRepository(),
             mlKitRepository = MLKitDummyRepository()
         )
     }
 
+    // Destinationのテスト
+    @Test
+    fun itemSearchScreenViewModel_verifyDestination() {
+        assertEquals(ItemSearchDestination.title, "あたらしい毛糸を登録")
+        assertEquals(ItemSearchDestination.route, "ItemSearch")
+    }
+
     // バーコードスキャンに成功すると検索結果が取得できること
     @Test
     fun itemSearchScreenViewModel_ScanBarcode_verifySuccess() {
         viewModel.readBarcode()
-        assertEquals(viewModel.searchItemUiState, SearchItemUiState.Success(YahooShoppingWebServiceItemDummyData.dummyData))
+        assertEquals(
+            viewModel.searchItemUiState,
+            SearchItemUiState.Success(YahooShoppingWebServiceItemDummyData.dummyData)
+        )
     }
 }

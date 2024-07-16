@@ -5,6 +5,8 @@ import jp.hibeiko.yarnshelf.data.YahooDelivery
 import jp.hibeiko.yarnshelf.data.YahooGenreCategory
 import jp.hibeiko.yarnshelf.data.YahooHit
 import jp.hibeiko.yarnshelf.data.YahooImage
+import jp.hibeiko.yarnshelf.data.YahooParentBrands
+import jp.hibeiko.yarnshelf.data.YahooParentGenreCategories
 import jp.hibeiko.yarnshelf.data.YahooPoint
 import jp.hibeiko.yarnshelf.data.YahooPriceLabel
 import jp.hibeiko.yarnshelf.data.YahooRequest
@@ -72,9 +74,9 @@ object YahooShoppingWebServiceItemDummyData{
                 ),
                 shipping = YahooShipping(name = "", code = 0),
                 genreCategory = YahooGenreCategory(id = 0, name = "", depth = 0),
-                parentGenreCategories = listOf(),
+                parentGenreCategories = listOf(YahooParentGenreCategories(id=0,name="", depth = 0)),
                 brand = YahooBrand(id = 0, name = ""),
-                parentBrands = listOf(),
+                parentBrands = listOf(YahooParentBrands(id = 0, name = "")),
                 janCode = "",
                 payment = "",
                 releaseDate = "",
@@ -129,9 +131,9 @@ object YahooShoppingWebServiceItemDummyData{
                 ),
                 shipping = YahooShipping(name = "", code = 0),
                 genreCategory = YahooGenreCategory(id = 0, name = "", depth = 0),
-                parentGenreCategories = listOf(),
+                parentGenreCategories = listOf(YahooParentGenreCategories(id=0,name="", depth = 0)),
                 brand = YahooBrand(id = 0, name = ""),
-                parentBrands = listOf(),
+                parentBrands = listOf(YahooParentBrands(id = 0, name = "")),
                 janCode = "",
                 payment = "",
                 releaseDate = "",
@@ -187,9 +189,9 @@ object YahooShoppingWebServiceItemDummyData{
                 ),
                 shipping = YahooShipping(name = "", code = 0),
                 genreCategory = YahooGenreCategory(id = 0, name = "", depth = 0),
-                parentGenreCategories = listOf(),
+                parentGenreCategories = listOf(YahooParentGenreCategories(id=0,name="", depth = 0)),
                 brand = YahooBrand(id = 0, name = ""),
-                parentBrands = listOf(),
+                parentBrands = listOf(YahooParentBrands(id = 0, name = "")),
                 payment = "",
                 releaseDate = "",
                 seller = YahooSeller(
