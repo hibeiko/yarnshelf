@@ -9,6 +9,9 @@ import jp.hibeiko.yarnshelf.common.YarnRoll
 import jp.hibeiko.yarnshelf.common.YarnThickness
 import jp.hibeiko.yarnshelf.ui.YarnEditDestination
 import jp.hibeiko.yarnshelf.ui.YarnEditScreenViewModel
+import jp.hibeiko.yarnshelf.ui.theme.backgroundDark
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -48,8 +51,10 @@ class YarnEditScreenViewModelUnitTest {
 
     // 初期表示状態のテスト
     @Test
-    fun yarnEditScreenViewModel_InitialStateForManualInput_NothingInput() {
-        // 初期設定した最大値が設定されること
+    fun yarnEditScreenViewModel_InitialState_NothingInput() = runTest{
+        repository.emitSelect(1)
+
+        // 初期設定されること
         assertEquals(
             YarnDummyData.dummyDataList.first { it.yarnId == 1 },
             viewModel.yarnEditScreenUiState.yarnEditData

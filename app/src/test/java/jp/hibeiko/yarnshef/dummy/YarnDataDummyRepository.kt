@@ -7,11 +7,11 @@ import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.repository.YarnDataRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.flow
 import java.util.Date
 
 class YarnDataDummyRepository : YarnDataRepository {
     private val flowList = MutableSharedFlow<List<YarnData>>()
+    private val flow = MutableSharedFlow<YarnData>()
 
     private val yarnDummyData = YarnDummyData.dummyDataList
 
@@ -29,23 +29,22 @@ class YarnDataDummyRepository : YarnDataRepository {
         yarnDummyData.remove(yarnData)
     }
 
-    override fun select(yarnId: Int): Flow<YarnData?> = flow {
-        emit(yarnDummyData.first { it.yarnId == yarnId })
-    }
+    override fun select(yarnId: Int): Flow<YarnData?> = flow
+    suspend fun emitSelect(yarnId: Int) = flow.emit(
+        yarnDummyData.first { it.yarnId == yarnId }
+    )
 
     override fun selectAll(sortStr: String): Flow<List<YarnData>> = flowList
     suspend fun emitSelectAll(sortStr: String) = flowList.emit(
         // 名前の昇順
-        YarnDummyData.dummyDataList
-//        yarnDummyData.sortedBy { it.yarnName }
+        yarnDummyData.sortedBy { it.yarnName }
 
     )
 
     override fun selectWithQuery(query: String, sortStr: String): Flow<List<YarnData>> = flowList
     suspend fun emitSelectWithQuery(query: String, sortStr: String) = flowList.emit(
         // 名前の昇順
-        YarnDummyData.dummyDataList
-//        yarnDummyData.filter { it.yarnName.contains(query) }.sortedBy { it.yarnName }
+        yarnDummyData.filter { it.yarnName.contains(query) }.sortedBy { it.yarnName }
     )
 }
 

@@ -4,9 +4,12 @@ import androidx.lifecycle.SavedStateHandle
 import jp.hibeiko.yarnshef.dummy.YarnDataDummyRepository
 import jp.hibeiko.yarnshef.dummy.YarnDummyData
 import jp.hibeiko.yarnshef.rules.TestDispatcherRule
+import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.ui.YarnDetailDestination
+import jp.hibeiko.yarnshelf.ui.YarnDetailScreenUiState
 import jp.hibeiko.yarnshelf.ui.YarnDetailScreenViewModel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -33,7 +36,7 @@ class YarnDetailScreenViewModelUnitTest {
     @Before
     fun setUp() {
         repository = YarnDataDummyRepository()
-        val savedStateHandle = SavedStateHandle(mapOf(YarnDetailDestination.yarnIdArg to 1))
+        val savedStateHandle = SavedStateHandle(mapOf(YarnDetailDestination.yarnIdArg to 9))
         viewModel = YarnDetailScreenViewModel(
             savedStateHandle = savedStateHandle,
             yarnDataRepository = repository,
@@ -53,19 +56,43 @@ class YarnDetailScreenViewModelUnitTest {
         backgroundScope.launch {
             viewModel.yarnDetailScreenUiState.collect()
         }
+        // YarnDetailScreenUiStateの初期値のテスト
+        // 最終更新日が一致しないためテストしない
+//        assertEquals(viewModel.yarnDetailScreenUiState.first().yarnDetailData, YarnData())
+        viewModel.yarnDetailScreenUiState.first()
+
+        repository.emitSelect(1)
+
         // 毛糸情報が設定されること
         assertEquals(
             YarnDummyData.dummyDataList.first { it.yarnId == 1 },
-            viewModel.yarnDetailScreenUiState.value.yarnDetailData
+            viewModel.yarnDetailScreenUiState.first().yarnDetailData
         )
     }
 
     // 毛糸情報が削除されること
     @Test
-    fun yarnDetailScreenViewModel_DeleteYarnData_verifySuccess() {
+    fun yarnDetailScreenViewModel_DeleteYarnData_verifySuccess() = runTest {
+        backgroundScope.launch {
+            viewModel.yarnDetailScreenUiState.collect()
+        }
+        // YarnDetailScreenUiStateの初期値のテスト
+        // 最終更新日が一致しないためテストしない
+//        assertEquals(viewModel.yarnDetailScreenUiState.first(), YarnDetailScreenUiState())
+        viewModel.yarnDetailScreenUiState.first()
+
+        repository.emitSelect(9)
+
+        // 毛糸情報が設定されること
+        assertEquals(
+            YarnDummyData.dummyDataList.first { it.yarnId == 9 },
+            viewModel.yarnDetailScreenUiState.first().yarnDetailData
+        )
+        val deleteData = YarnDummyData.dummyDataList.first{it.yarnId == 9}
         val beforeSize = YarnDummyData.dummyDataList.size
         viewModel.deleteYarnData()
-        assertFalse(YarnDummyData.dummyDataList.contains(viewModel.yarnDetailScreenUiState.value.yarnDetailData))
-        assertEquals(beforeSize, YarnDummyData.dummyDataList.size + 1)
+
+        assertFalse(YarnDummyData.dummyDataList.contains(deleteData))
+        assertEquals(YarnDummyData.dummyDataList.size,beforeSize - 1)
     }
 }

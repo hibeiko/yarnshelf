@@ -1,6 +1,7 @@
 package jp.hibeiko.yarnshef.ui
 
 import jp.hibeiko.yarnshef.data.YahooShoppingWebServiceItemDummyData
+import jp.hibeiko.yarnshef.dummy.MLKitDummyErrorRepository
 import jp.hibeiko.yarnshef.dummy.MLKitDummyRepository
 import jp.hibeiko.yarnshef.dummy.YahooShoppingWebServiceItemSearchApiDummyRepository
 import jp.hibeiko.yarnshef.rules.TestDispatcherRule
@@ -49,5 +50,56 @@ class ItemSearchScreenViewModelUnitTest {
             viewModel.searchItemUiState,
             SearchItemUiState.Success(YahooShoppingWebServiceItemDummyData.dummyData)
         )
+    }
+
+    // 検索条件を設定できること
+    @Test
+    fun itemSearchScreenViewModel_InputSearchCondition_UpdateConditionAndValidateOK() {
+        // 初期表示時は検索条件が空でValidationエラーとなる
+        assertEquals(
+            viewModel.itemSearchScreenUiState.value.yarnNameSearchInput,
+            "")
+        assertEquals(viewModel.validateYarnNameSearchInput(), false)
+
+        viewModel.yarnNameSearchInputUpdate("ダルマ毛糸")
+        assertEquals(
+            viewModel.itemSearchScreenUiState.value.yarnNameSearchInput,
+            "ダルマ毛糸")
+        assertEquals(viewModel.validateYarnNameSearchInput(), true)
+
+        // 検索実施
+        viewModel.searchItem("ダルマ毛糸","")
+        assertEquals(
+            viewModel.searchItemUiState,
+            SearchItemUiState.Success(YahooShoppingWebServiceItemDummyData.dummyData)
+        )
+    }
+
+    // 検索条件を設定できること
+    @Test
+    fun itemSearchScreenViewModel_SearchErrorOccurred_UpdateUiState() {
+        // 検索実施
+        viewModel.yarnNameSearchInputUpdate("Error")
+        viewModel.searchItem("Error","")
+        assertEquals(
+            viewModel.searchItemUiState,
+            SearchItemUiState.Error
+        )
+    }
+
+    // 検索タブを変更できること
+    @Test
+    fun itemSearchScreenViewModel_ChangeTabIndex_UpdateTabAndResetSearchCondition() {
+        viewModel.yarnNameSearchInputUpdate("ダルマ毛糸")
+
+        viewModel.selectedTabIndexUpdate(2)
+        assertEquals(viewModel.itemSearchScreenUiState.value.selectedTabIndex,2)
+
+        // 検索条件がリセットされる
+        assertEquals(
+            viewModel.itemSearchScreenUiState.value.yarnNameSearchInput,
+            "")
+        assertEquals(viewModel.validateYarnNameSearchInput(), false)
+        assertEquals(viewModel.searchItemUiState, SearchItemUiState.Loading)
     }
 }

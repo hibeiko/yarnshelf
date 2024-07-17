@@ -9,6 +9,9 @@ class YahooShoppingWebServiceItemSearchApiDummyRepository : YahooShoppingWebServ
         janCode: String,
         query: String
     ): YahooShoppingWebServiceItemData {
-        return YahooShoppingWebServiceItemDummyData.dummyData
+        if( query == "Error")
+            throw Exception()
+        else
+            return YahooShoppingWebServiceItemDummyData.dummyData
     }
 }

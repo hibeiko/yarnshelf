@@ -61,10 +61,10 @@ fun formatNeedleSizeStringForScreen(
                     if (needleSizeTo != null)
                         "-${format.format(needleSizeTo)}号"
                     else "号"
-        } else "-"
+        } else ""
     val strCrochetNeedleSize =
         if (crochetNeedleSizeFrom != null) {
-            "\nかぎ針${format.format(crochetNeedleSizeFrom)}" +
+            "かぎ針${format.format(crochetNeedleSizeFrom)}" +
                     if (crochetNeedleSizeTo != null)
                         "-${format.format(crochetNeedleSizeTo)}号"
                     else "号"
@@ -72,7 +72,13 @@ fun formatNeedleSizeStringForScreen(
 
     // 棒針8-10号
     // かぎ針8-10号
-    return "$strNeedleSize$strCrochetNeedleSize"
+    return if (strNeedleSize.isNotBlank() && strCrochetNeedleSize.isNotBlank())
+        "$strNeedleSize\n$strCrochetNeedleSize"
+    else if (strNeedleSize.isBlank() && strCrochetNeedleSize.isBlank())
+        "-"
+    else
+        "$strNeedleSize$strCrochetNeedleSize"
+
 }
 
 
