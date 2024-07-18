@@ -28,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import jp.hibeiko.yarnshelf.R
-import jp.hibeiko.yarnshelf.common.yarnDataToYarnDataForScreenConverter
 import jp.hibeiko.yarnshelf.ui.navigation.NavigationDestination
 import jp.hibeiko.yarnshelf.ui.navigation.YarnDataForScreen
 
@@ -122,13 +121,7 @@ fun YarnEntryScreenBottom(
         }
         Button(
             onClick = {
-                nextButtonOnClick(
-                    yarnDataToYarnDataForScreenConverter(
-                        yarnEntryScreenUiState.yarnEntryData
-                    )
-                )
-//                                yarnEntryScreenViewModel.saveYarnData()
-//                                cancelButtonOnClick()
+                nextButtonOnClick(yarnEntryScreenUiState.yarnEntryData)
             },
             enabled = yarnEntryScreenUiState.isErrorMap.isEmpty()
         ) {

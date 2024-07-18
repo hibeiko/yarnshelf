@@ -31,12 +31,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -57,17 +57,13 @@ import jp.hibeiko.yarnshelf.R
 import jp.hibeiko.yarnshelf.common.YarnParamName
 import jp.hibeiko.yarnshelf.common.YarnRoll
 import jp.hibeiko.yarnshelf.common.YarnThickness
-import jp.hibeiko.yarnshelf.common.yarnDataToYarnDataForScreenConverter
-import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.ui.navigation.NavigationDestination
 import jp.hibeiko.yarnshelf.ui.navigation.YarnDataForScreen
 import jp.hibeiko.yarnshelf.ui.theme.YarnShelfTheme
-import java.text.DecimalFormat
-import java.util.Date
 
 object YarnEditDestination : NavigationDestination {
     override val route = "YarnInfoEdit"
-    override val title = "毛糸情報編集画面"
+    override val title = "けいとを編集"
     const val yarnIdArg = "yarnId"
     val routeWithArgs = "${route}/{$yarnIdArg}"
 }
@@ -115,7 +111,7 @@ fun YarnEditScreen(
                 YarnEditScreenBody(
                     yarnEditScreenViewModel.yarnEditScreenUiState.yarnEditData,
                     yarnEditScreenViewModel::updateYarnEditData,
-yarnEditScreenViewModel.yarnEditScreenUiState.isErrorMap,
+                    yarnEditScreenViewModel.yarnEditScreenUiState.isErrorMap,
                     modifier
                         .verticalScroll(rememberScrollState())
                         .weight(1.0f, false)
@@ -130,11 +126,12 @@ yarnEditScreenViewModel.yarnEditScreenUiState.isErrorMap,
         }
     }
 }
+
 @Composable
 fun YarnEditScreenBody(
-    yarnData: YarnData,
+    yarnData: YarnDataForScreen,
     updateYarnEditData: (Any, YarnParamName) -> Unit,
-    isErrorMap: Map<YarnParamName,String>,
+    isErrorMap: Map<YarnParamName, String>,
     modifier: Modifier = Modifier
 ) {
 //    Log.d("YarnEditScreen", "$yarnData")
@@ -143,7 +140,7 @@ fun YarnEditScreenBody(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp),
+            .padding(top = 6.dp, bottom = 6.dp, start = 12.dp, end = 12.dp),
     ) {
         Column(
             modifier = Modifier
@@ -151,7 +148,7 @@ fun YarnEditScreenBody(
                 .background(MaterialTheme.colorScheme.surfaceContainer),
             horizontalAlignment = Alignment.Start
         ) {
-            TextField(
+            OutlinedTextField(
                 label = { Text("メーカー", style = MaterialTheme.typography.labelSmall) },
                 leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                 trailingIcon = {
@@ -165,7 +162,14 @@ fun YarnEditScreenBody(
                 value = yarnData.yarnMakerName,
                 onValueChange = { updateYarnEditData(it, YarnParamName.YARN_MAKER_NAME) },
                 isError = isErrorMap.containsKey(YarnParamName.YARN_MAKER_NAME),
-                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.YARN_MAKER_NAME,"") + "(${yarnData.yarnMakerName.length}/${YarnParamName.YARN_MAKER_NAME.maxLength})") },
+                supportingText = {
+                    Text(
+                        text = isErrorMap.getOrDefault(
+                            YarnParamName.YARN_MAKER_NAME,
+                            ""
+                        ) + "(${yarnData.yarnMakerName.length}/${YarnParamName.YARN_MAKER_NAME.maxLength})"
+                    )
+                },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
@@ -173,12 +177,17 @@ fun YarnEditScreenBody(
                 singleLine = true,
                 textStyle = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp)
+                    .padding(top = 6.dp, bottom = 6.dp, start = 12.dp, end = 12.dp)
                     .fillMaxWidth()
             )
 
-            TextField(
-                label = { Text(stringResource(R.string.yarneditscreen_input_name_field_name), style = MaterialTheme.typography.labelSmall) },
+            OutlinedTextField(
+                label = {
+                    Text(
+                        stringResource(R.string.yarneditscreen_input_name_field_name),
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                },
                 leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                 trailingIcon = {
                     IconButton(onClick = {
@@ -191,7 +200,14 @@ fun YarnEditScreenBody(
                 value = yarnData.yarnName,
                 onValueChange = { updateYarnEditData(it, YarnParamName.YARN_NAME) },
                 isError = isErrorMap.containsKey(YarnParamName.YARN_NAME),
-                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.YARN_NAME,"")  + "(${yarnData.yarnName.length}/${YarnParamName.YARN_NAME.maxLength})") },
+                supportingText = {
+                    Text(
+                        text = isErrorMap.getOrDefault(
+                            YarnParamName.YARN_NAME,
+                            ""
+                        ) + "(${yarnData.yarnName.length}/${YarnParamName.YARN_NAME.maxLength})"
+                    )
+                },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
@@ -199,21 +215,22 @@ fun YarnEditScreenBody(
                 singleLine = true,
                 textStyle = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp)
+                    .padding(top = 6.dp, bottom = 6.dp, start = 12.dp, end = 12.dp)
                     .fillMaxWidth()
             )
             // Image Picker設定
-            val launcher = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
-                if (it != null) {
-                    updateYarnEditData(it.toString(),YarnParamName.IMAGE_URL)
+            val launcher =
+                rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
+                    if (it != null) {
+                        updateYarnEditData(it.toString(), YarnParamName.IMAGE_URL)
 //                    Log.d("PhotoPicker", "Selected URI: $it")
-                } else {
+                    } else {
 //                    Log.d("PhotoPicker", "No media selected")
+                    }
                 }
-            }
             Box(
                 modifier = Modifier
-                    .padding(top = 2.dp, bottom = 10.dp)
+                    .padding(top = 4.dp, bottom = 12.dp)
                     .height(140.dp)
                     .width(140.dp)
                     .align(Alignment.CenterHorizontally)
@@ -245,43 +262,55 @@ fun YarnEditScreenBody(
                         modifier = Modifier.fillMaxSize()
                     )
                 }
-                IconButton(onClick = { launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+                IconButton(
+                    onClick = { launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
                     modifier = Modifier.fillMaxSize(),
                 ) {
-                    Icon(painterResource(R.drawable.outline_image_24), contentDescription = null, modifier = Modifier.size(50.dp))
+                    Icon(
+                        painterResource(R.drawable.outline_image_24),
+                        contentDescription = null,
+                        modifier = Modifier.size(50.dp)
+                    )
                 }
             }
         }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 10.dp)
+                .padding(top = 12.dp)
                 .background(MaterialTheme.colorScheme.surfaceContainer),
             horizontalAlignment = Alignment.Start
         ) {
-            TextField(
+            OutlinedTextField(
                 label = { Text("残量(単位：玉)", style = MaterialTheme.typography.labelSmall) },
                 leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                 trailingIcon = {
                     IconButton(onClick = {
                         updateYarnEditData(
-                            0,
+                            "0",
                             YarnParamName.HAVING_NUMBER
                         )
                     }) { Icon(Icons.Default.Clear, contentDescription = null) }
                 },
-                value = DecimalFormat("#.#").format(yarnData.havingNumber),
+                value = yarnData.havingNumber,
                 onValueChange = { updateYarnEditData(it, YarnParamName.HAVING_NUMBER) },
                 isError = isErrorMap.containsKey(YarnParamName.HAVING_NUMBER),
-                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.HAVING_NUMBER,"") ) },
+                supportingText = {
+                    Text(
+                        text = isErrorMap.getOrDefault(
+                            YarnParamName.HAVING_NUMBER,
+                            ""
+                        )
+                    )
+                },
                 keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Number,
+                    keyboardType = KeyboardType.Decimal,
                     imeAction = ImeAction.Done
                 ),
                 singleLine = true,
                 textStyle = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 10.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
+                    .padding(top = 12.dp, bottom = 12.dp, start = 12.dp, end = 12.dp)
                     .fillMaxWidth()
             )
         }
@@ -292,7 +321,7 @@ fun YarnEditScreenBody(
                 .background(MaterialTheme.colorScheme.surfaceContainer),
             horizontalAlignment = Alignment.Start
         ) {
-            TextField(
+            OutlinedTextField(
                 label = { Text("品質", style = MaterialTheme.typography.labelSmall) },
                 leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                 trailingIcon = {
@@ -306,7 +335,14 @@ fun YarnEditScreenBody(
                 value = yarnData.quality,
                 onValueChange = { updateYarnEditData(it, YarnParamName.QUALITY) },
                 isError = isErrorMap.containsKey(YarnParamName.QUALITY),
-                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.QUALITY,"")  + "(${yarnData.quality.length}/${YarnParamName.QUALITY.maxLength})") },
+                supportingText = {
+                    Text(
+                        text = isErrorMap.getOrDefault(
+                            YarnParamName.QUALITY,
+                            ""
+                        ) + "(${yarnData.quality.length}/${YarnParamName.QUALITY.maxLength})"
+                    )
+                },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
@@ -314,10 +350,10 @@ fun YarnEditScreenBody(
                 singleLine = true,
                 textStyle = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 10.dp, bottom = 5.dp, start = 10.dp, end = 10.dp)
+                    .padding(top = 12.dp, bottom = 6.dp, start = 12.dp, end = 12.dp)
                     .fillMaxWidth()
             )
-            TextField(
+            OutlinedTextField(
                 label = { Text("重量(単位：g)", style = MaterialTheme.typography.labelSmall) },
                 leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                 trailingIcon = {
@@ -328,21 +364,21 @@ fun YarnEditScreenBody(
                         )
                     }) { Icon(Icons.Default.Clear, contentDescription = null) }
                 },
-                value = if (yarnData.weight != null) DecimalFormat("#.#").format(yarnData.weight) else "",
+                value = yarnData.weight,
                 onValueChange = { updateYarnEditData(it, YarnParamName.WEIGHT) },
                 isError = isErrorMap.containsKey(YarnParamName.WEIGHT),
-                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.WEIGHT,""))  },
+                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.WEIGHT, "")) },
                 keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Number,
+                    keyboardType = KeyboardType.Decimal,
                     imeAction = ImeAction.Done
                 ),
                 singleLine = true,
                 textStyle = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp)
+                    .padding(top = 6.dp, bottom = 6.dp, start = 12.dp, end = 12.dp)
                     .fillMaxWidth()
             )
-            TextField(
+            OutlinedTextField(
                 label = { Text("糸長(単位：m)", style = MaterialTheme.typography.labelSmall) },
                 leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                 trailingIcon = {
@@ -353,18 +389,18 @@ fun YarnEditScreenBody(
                         )
                     }) { Icon(Icons.Default.Clear, contentDescription = null) }
                 },
-                value = if (yarnData.length != null) DecimalFormat("#.#").format(yarnData.length) else "",
+                value = yarnData.length,
                 onValueChange = { updateYarnEditData(it, YarnParamName.LENGTH) },
                 isError = isErrorMap.containsKey(YarnParamName.LENGTH),
-                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.LENGTH,"") ) },
+                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.LENGTH, "")) },
                 keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Number,
+                    keyboardType = KeyboardType.Decimal,
                     imeAction = ImeAction.Done
                 ),
                 singleLine = true,
                 textStyle = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp)
+                    .padding(top = 6.dp, bottom = 6.dp, start = 12.dp, end = 12.dp)
                     .fillMaxWidth()
             )
             Text(
@@ -372,7 +408,7 @@ fun YarnEditScreenBody(
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
-                    .padding(top = 5.dp, start = 10.dp, bottom = 5.dp)
+                    .padding(top = 6.dp, start = 12.dp, bottom = 6.dp)
             )
             Row(
                 Modifier
@@ -389,7 +425,7 @@ fun YarnEditScreenBody(
                                 onClick = { updateYarnEditData(it, YarnParamName.ROLL) },
                                 role = Role.RadioButton
                             )
-                            .padding(top = 0.dp, start = 10.dp, bottom = 5.dp),
+                            .padding(top = 0.dp, start = 12.dp, bottom = 6.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
@@ -398,7 +434,7 @@ fun YarnEditScreenBody(
                         )
                         Text(
                             text = if (it.value == "") "未設定" else it.value,
-                            style = MaterialTheme.typography.labelSmall,
+                            style = MaterialTheme.typography.displayMedium,
 //                            modifier = Modifier
 //                                .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
                         )
@@ -410,14 +446,14 @@ fun YarnEditScreenBody(
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
-                    .padding(top = 5.dp, start = 10.dp, bottom = 5.dp)
+                    .padding(top = 12.dp, start = 12.dp, bottom = 6.dp)
             )
             Text(
                 text = if (yarnData.thickness.value == "") "未設定" else yarnData.thickness.value,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+                    .padding(top = 0.dp, start = 12.dp, bottom = 6.dp)
             )
             Slider(
                 value = yarnData.thickness.rowValue.toFloat(),
@@ -430,9 +466,9 @@ fun YarnEditScreenBody(
                 steps = YarnThickness.entries.size - 2,
                 valueRange = 0f..(YarnThickness.entries.size - 1).toFloat(),
                 modifier = Modifier
-                    .padding(top = 0.dp, start = 30.dp, end = 30.dp, bottom = 5.dp)
+                    .padding(top = 0.dp, start = 32.dp, end = 32.dp, bottom = 6.dp)
             )
-            TextField(
+            OutlinedTextField(
                 label = { Text("色番号", style = MaterialTheme.typography.labelSmall) },
                 leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                 trailingIcon = {
@@ -446,7 +482,14 @@ fun YarnEditScreenBody(
                 value = yarnData.colorNumber,
                 onValueChange = { updateYarnEditData(it, YarnParamName.COLOR_NUMBER) },
                 isError = isErrorMap.containsKey(YarnParamName.COLOR_NUMBER),
-                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.COLOR_NUMBER,"")  + "(${yarnData.colorNumber.length}/${YarnParamName.COLOR_NUMBER.maxLength})")},
+                supportingText = {
+                    Text(
+                        text = isErrorMap.getOrDefault(
+                            YarnParamName.COLOR_NUMBER,
+                            ""
+                        ) + "(${yarnData.colorNumber.length}/${YarnParamName.COLOR_NUMBER.maxLength})"
+                    )
+                },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
@@ -454,10 +497,10 @@ fun YarnEditScreenBody(
                 singleLine = true,
                 textStyle = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp)
+                    .padding(top = 6.dp, bottom = 6.dp, start = 12.dp, end = 12.dp)
                     .fillMaxWidth()
             )
-            TextField(
+            OutlinedTextField(
                 label = { Text("ロット番号", style = MaterialTheme.typography.labelSmall) },
                 leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                 trailingIcon = {
@@ -471,7 +514,14 @@ fun YarnEditScreenBody(
                 value = yarnData.rotNumber,
                 onValueChange = { updateYarnEditData(it, YarnParamName.ROT_NUMBER) },
                 isError = isErrorMap.containsKey(YarnParamName.ROT_NUMBER),
-                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.ROT_NUMBER,"")  + "(${yarnData.rotNumber.length}/${YarnParamName.ROT_NUMBER.maxLength})") },
+                supportingText = {
+                    Text(
+                        text = isErrorMap.getOrDefault(
+                            YarnParamName.ROT_NUMBER,
+                            ""
+                        ) + "(${yarnData.rotNumber.length}/${YarnParamName.ROT_NUMBER.maxLength})"
+                    )
+                },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
@@ -479,7 +529,7 @@ fun YarnEditScreenBody(
                 singleLine = true,
                 textStyle = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp)
+                    .padding(top = 6.dp, bottom = 6.dp, start = 12.dp, end = 12.dp)
                     .fillMaxWidth()
             )
             Text(
@@ -487,14 +537,14 @@ fun YarnEditScreenBody(
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
-                    .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+                    .padding(top = 6.dp, start = 12.dp, bottom = 6.dp)
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                TextField(
+                OutlinedTextField(
 //                label = { Text("ゲージ", style = MaterialTheme.typography.labelSmall) },
-                    leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
+//                    leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                     trailingIcon = {
                         IconButton(onClick = {
                             updateYarnEditData(
@@ -503,30 +553,35 @@ fun YarnEditScreenBody(
                             )
                         }) { Icon(Icons.Default.Clear, contentDescription = null) }
                     },
-                    value = if (yarnData.gaugeColumnFrom != null) DecimalFormat("#.#").format(
-                        yarnData.gaugeColumnFrom
-                    ) else "",
+                    value = yarnData.gaugeColumnFrom,
                     onValueChange = { updateYarnEditData(it, YarnParamName.GAUGE_COLUMN_FROM) },
                     isError = isErrorMap.containsKey(YarnParamName.GAUGE_COLUMN_FROM),
-                    supportingText = { Text(text =isErrorMap.getOrDefault(YarnParamName.GAUGE_COLUMN_FROM,"") ) },
+                    supportingText = {
+                        Text(
+                            text = isErrorMap.getOrDefault(
+                                YarnParamName.GAUGE_COLUMN_FROM,
+                                ""
+                            )
+                        )
+                    },
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
+                        keyboardType = KeyboardType.Decimal,
                         imeAction = ImeAction.Done
                     ),
                     singleLine = true,
                     textStyle = MaterialTheme.typography.displayMedium,
                     modifier = Modifier
-                        .padding(top = 0.dp, bottom = 5.dp, start = 10.dp)
-                        .width(100.dp)
+                        .padding(top = 0.dp, bottom = 6.dp, start = 12.dp)
+                        .width(150.dp)
                 )
                 Text(
                     text = "～",
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier
-                        .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+                        .padding(top = 0.dp, start = 12.dp, bottom = 6.dp)
                 )
-                TextField(
+                OutlinedTextField(
 //                label = { Text("ゲージ", style = MaterialTheme.typography.labelSmall) },
 //                    leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                     trailingIcon = {
@@ -537,35 +592,42 @@ fun YarnEditScreenBody(
                             )
                         }) { Icon(Icons.Default.Clear, contentDescription = null) }
                     },
-                    value = if (yarnData.gaugeColumnTo != null) DecimalFormat("#.#").format(yarnData.gaugeColumnTo) else "",
+                    value = yarnData.gaugeColumnTo,
                     onValueChange = { updateYarnEditData(it, YarnParamName.GAUGE_COLUMN_TO) },
                     isError = isErrorMap.containsKey(YarnParamName.GAUGE_COLUMN_TO),
-                    supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.GAUGE_COLUMN_TO,"") ) },
+                    supportingText = {
+                        Text(
+                            text = isErrorMap.getOrDefault(
+                                YarnParamName.GAUGE_COLUMN_TO,
+                                ""
+                            )
+                        )
+                    },
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
+                        keyboardType = KeyboardType.Decimal,
                         imeAction = ImeAction.Done
                     ),
                     singleLine = true,
-                    enabled = yarnData.gaugeColumnFrom != null,
+                    enabled = yarnData.gaugeColumnFrom.isNotBlank(),
                     textStyle = MaterialTheme.typography.displayMedium,
                     modifier = Modifier
-                        .padding(top = 0.dp, bottom = 5.dp, start = 10.dp)
-                        .width(100.dp)
+                        .padding(top = 0.dp, bottom = 6.dp, start = 12.dp)
+                        .width(150.dp)
                 )
                 Text(
                     text = "目",
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier
-                        .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+                        .padding(top = 0.dp, bottom = 6.dp, start = 12.dp)
                 )
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                TextField(
+                OutlinedTextField(
                     //                label = { Text("ゲージ", style = MaterialTheme.typography.labelSmall) },
-                    leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
+//                    leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                     trailingIcon = {
                         IconButton(onClick = {
                             updateYarnEditData(
@@ -574,28 +636,35 @@ fun YarnEditScreenBody(
                             )
                         }) { Icon(Icons.Default.Clear, contentDescription = null) }
                     },
-                    value = if (yarnData.gaugeRowFrom != null) DecimalFormat("#.#").format(yarnData.gaugeRowFrom) else "",
+                    value = yarnData.gaugeRowFrom,
                     onValueChange = { updateYarnEditData(it, YarnParamName.GAUGE_ROW_FROM) },
                     isError = isErrorMap.containsKey(YarnParamName.GAUGE_ROW_FROM),
-                    supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.GAUGE_ROW_FROM,"") ) },
+                    supportingText = {
+                        Text(
+                            text = isErrorMap.getOrDefault(
+                                YarnParamName.GAUGE_ROW_FROM,
+                                ""
+                            )
+                        )
+                    },
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
+                        keyboardType = KeyboardType.Decimal,
                         imeAction = ImeAction.Done
                     ),
                     singleLine = true,
                     textStyle = MaterialTheme.typography.displayMedium,
                     modifier = Modifier
-                        .padding(top = 0.dp, bottom = 5.dp, start = 10.dp)
-                        .width(100.dp)
+                        .padding(top = 0.dp, bottom = 6.dp, start = 12.dp)
+                        .width(150.dp)
                 )
                 Text(
                     text = "～",
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier
-                        .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+                        .padding(top = 0.dp, bottom = 6.dp, start = 12.dp)
                 )
-                TextField(
+                OutlinedTextField(
                     //                label = { Text("ゲージ", style = MaterialTheme.typography.labelSmall) },
                     //                    leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                     trailingIcon = {
@@ -606,33 +675,40 @@ fun YarnEditScreenBody(
                             )
                         }) { Icon(Icons.Default.Clear, contentDescription = null) }
                     },
-                    value = if (yarnData.gaugeRowTo != null) DecimalFormat("#.#").format(yarnData.gaugeRowTo) else "",
+                    value = yarnData.gaugeRowTo,
                     onValueChange = { updateYarnEditData(it, YarnParamName.GAUGE_ROW_TO) },
                     isError = isErrorMap.containsKey(YarnParamName.GAUGE_ROW_TO),
-                    supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.GAUGE_ROW_TO,"") ) },
+                    supportingText = {
+                        Text(
+                            text = isErrorMap.getOrDefault(
+                                YarnParamName.GAUGE_ROW_TO,
+                                ""
+                            )
+                        )
+                    },
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
+                        keyboardType = KeyboardType.Decimal,
                         imeAction = ImeAction.Done
                     ),
-                    enabled = yarnData.gaugeRowFrom != null,
+                    enabled = yarnData.gaugeRowFrom.isNotBlank(),
                     singleLine = true,
                     textStyle = MaterialTheme.typography.displayMedium,
                     modifier = Modifier
-                        .padding(top = 0.dp, bottom = 5.dp, start = 10.dp)
-                        .width(100.dp)
+                        .padding(top = 0.dp, bottom = 6.dp, start = 12.dp)
+                        .width(150.dp)
                 )
                 Text(
                     text = "段",
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier
-                        .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+                        .padding(top = 0.dp, bottom = 6.dp, start = 12.dp)
                 )
             }
-            TextField(
+            OutlinedTextField(
                 label = {
                     Text(
-                        "ゲージの編み方(メリヤス編み、模様編みなど)",
+                        "ゲージの編み方(例：メリヤス編み)",
                         style = MaterialTheme.typography.labelSmall
                     )
                 },
@@ -648,7 +724,14 @@ fun YarnEditScreenBody(
                 value = yarnData.gaugeStitch,
                 onValueChange = { updateYarnEditData(it, YarnParamName.GAUGE_STITCH) },
                 isError = isErrorMap.containsKey(YarnParamName.GAUGE_STITCH),
-                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.GAUGE_STITCH,"")  + "(${yarnData.gaugeStitch.length}/${YarnParamName.GAUGE_STITCH.maxLength})") },
+                supportingText = {
+                    Text(
+                        text = isErrorMap.getOrDefault(
+                            YarnParamName.GAUGE_STITCH,
+                            ""
+                        ) + "(${yarnData.gaugeStitch.length}/${YarnParamName.GAUGE_STITCH.maxLength})"
+                    )
+                },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
@@ -656,7 +739,7 @@ fun YarnEditScreenBody(
                 singleLine = true,
                 textStyle = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp)
+                    .padding(top = 6.dp, bottom = 6.dp, start = 12.dp, end = 12.dp)
                     .fillMaxWidth()
             )
             Text(
@@ -664,21 +747,21 @@ fun YarnEditScreenBody(
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
-                    .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+                    .padding(top = 0.dp, bottom = 6.dp, start = 12.dp)
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "棒針",
+                    text = "棒針　",
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier
-                        .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+                        .padding(top = 0.dp, bottom = 6.dp, start = 12.dp)
                 )
-                TextField(
+                OutlinedTextField(
 //                label = { Text("ゲージ", style = MaterialTheme.typography.labelSmall) },
-                    leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
+//                    leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                     trailingIcon = {
                         IconButton(onClick = {
                             updateYarnEditData(
@@ -687,21 +770,26 @@ fun YarnEditScreenBody(
                             )
                         }) { Icon(Icons.Default.Clear, contentDescription = null) }
                     },
-                    value = if (yarnData.needleSizeFrom != null) DecimalFormat("#.#").format(
-                        yarnData.needleSizeFrom
-                    ) else "",
+                    value = yarnData.needleSizeFrom,
                     onValueChange = { updateYarnEditData(it, YarnParamName.NEEDLE_SIZE_FROM) },
                     isError = isErrorMap.containsKey(YarnParamName.NEEDLE_SIZE_FROM),
-                    supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.NEEDLE_SIZE_FROM,"") ) },
+                    supportingText = {
+                        Text(
+                            text = isErrorMap.getOrDefault(
+                                YarnParamName.NEEDLE_SIZE_FROM,
+                                ""
+                            )
+                        )
+                    },
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
+                        keyboardType = KeyboardType.Decimal,
                         imeAction = ImeAction.Done
                     ),
                     singleLine = true,
                     textStyle = MaterialTheme.typography.displayMedium,
                     modifier = Modifier
-                        .padding(top = 0.dp, bottom = 5.dp, start = 10.dp)
-                        .width(100.dp)
+                        .padding(top = 0.dp, bottom = 6.dp, start = 12.dp)
+                        .width(150.dp)
                 )
                 Text(
                     text = "～",
@@ -710,7 +798,7 @@ fun YarnEditScreenBody(
                     modifier = Modifier
                         .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
                 )
-                TextField(
+                OutlinedTextField(
 //                label = { Text("ゲージ", style = MaterialTheme.typography.labelSmall) },
 //                    leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                     trailingIcon = {
@@ -721,20 +809,27 @@ fun YarnEditScreenBody(
                             )
                         }) { Icon(Icons.Default.Clear, contentDescription = null) }
                     },
-                    value = if (yarnData.needleSizeTo != null) DecimalFormat("#.#").format(yarnData.needleSizeTo) else "",
+                    value = yarnData.needleSizeTo,
                     onValueChange = { updateYarnEditData(it, YarnParamName.NEEDLE_SIZE_TO) },
                     isError = isErrorMap.containsKey(YarnParamName.NEEDLE_SIZE_TO),
-                    supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.NEEDLE_SIZE_TO,"") ) },
+                    supportingText = {
+                        Text(
+                            text = isErrorMap.getOrDefault(
+                                YarnParamName.NEEDLE_SIZE_TO,
+                                ""
+                            )
+                        )
+                    },
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
+                        keyboardType = KeyboardType.Decimal,
                         imeAction = ImeAction.Done
                     ),
-                    enabled = yarnData.needleSizeFrom != null,
+                    enabled = yarnData.needleSizeFrom.isNotBlank(),
                     singleLine = true,
                     textStyle = MaterialTheme.typography.displayMedium,
                     modifier = Modifier
-                        .padding(top = 0.dp, bottom = 5.dp, start = 10.dp)
-                        .width(100.dp)
+                        .padding(top = 0.dp, bottom = 6.dp, start = 12.dp)
+                        .width(150.dp)
                 )
             }
             Row(
@@ -745,11 +840,11 @@ fun YarnEditScreenBody(
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier
-                        .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+                        .padding(top = 0.dp, bottom = 6.dp, start = 12.dp)
                 )
-                TextField(
+                OutlinedTextField(
                     //                label = { Text("ゲージ", style = MaterialTheme.typography.labelSmall) },
-                    leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
+//                    leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                     trailingIcon = {
                         IconButton(onClick = {
                             updateYarnEditData(
@@ -758,9 +853,7 @@ fun YarnEditScreenBody(
                             )
                         }) { Icon(Icons.Default.Clear, contentDescription = null) }
                     },
-                    value = if (yarnData.crochetNeedleSizeFrom != null) DecimalFormat("#.#").format(
-                        yarnData.crochetNeedleSizeFrom
-                    ) else "",
+                    value = yarnData.crochetNeedleSizeFrom,
                     onValueChange = {
                         updateYarnEditData(
                             it,
@@ -768,25 +861,32 @@ fun YarnEditScreenBody(
                         )
                     },
                     isError = isErrorMap.containsKey(YarnParamName.CROCHET_NEEDLE_SIZE_FROM),
-                    supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.CROCHET_NEEDLE_SIZE_FROM,"") ) },
+                    supportingText = {
+                        Text(
+                            text = isErrorMap.getOrDefault(
+                                YarnParamName.CROCHET_NEEDLE_SIZE_FROM,
+                                ""
+                            )
+                        )
+                    },
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
+                        keyboardType = KeyboardType.Decimal,
                         imeAction = ImeAction.Done
                     ),
                     singleLine = true,
                     textStyle = MaterialTheme.typography.displayMedium,
                     modifier = Modifier
-                        .padding(top = 0.dp, bottom = 5.dp, start = 10.dp)
-                        .width(100.dp)
+                        .padding(top = 0.dp, bottom = 6.dp, start = 12.dp)
+                        .width(150.dp)
                 )
                 Text(
                     text = "～",
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier
-                        .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+                        .padding(top = 0.dp, bottom = 6.dp, start = 12.dp)
                 )
-                TextField(
+                OutlinedTextField(
                     //                label = { Text("ゲージ", style = MaterialTheme.typography.labelSmall) },
                     //                    leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                     trailingIcon = {
@@ -797,9 +897,7 @@ fun YarnEditScreenBody(
                             )
                         }) { Icon(Icons.Default.Clear, contentDescription = null) }
                     },
-                    value = if (yarnData.crochetNeedleSizeTo != null) DecimalFormat("#.#").format(
-                        yarnData.crochetNeedleSizeTo
-                    ) else "",
+                    value = yarnData.crochetNeedleSizeTo,
                     onValueChange = {
                         updateYarnEditData(
                             it,
@@ -807,20 +905,27 @@ fun YarnEditScreenBody(
                         )
                     },
                     isError = isErrorMap.containsKey(YarnParamName.CROCHET_NEEDLE_SIZE_TO),
-                    supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.CROCHET_NEEDLE_SIZE_TO,"") ) },
+                    supportingText = {
+                        Text(
+                            text = isErrorMap.getOrDefault(
+                                YarnParamName.CROCHET_NEEDLE_SIZE_TO,
+                                ""
+                            )
+                        )
+                    },
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
+                        keyboardType = KeyboardType.Decimal,
                         imeAction = ImeAction.Done
                     ),
-                    enabled = yarnData.crochetNeedleSizeFrom != null,
+                    enabled = yarnData.crochetNeedleSizeFrom.isNotBlank(),
                     singleLine = true,
                     textStyle = MaterialTheme.typography.displayMedium,
                     modifier = Modifier
-                        .padding(top = 0.dp, bottom = 5.dp, start = 10.dp)
-                        .width(100.dp)
+                        .padding(top = 0.dp, bottom = 6.dp, start = 12.dp)
+                        .width(150.dp)
                 )
             }
-            TextField(
+            OutlinedTextField(
                 label = { Text("JANコード", style = MaterialTheme.typography.labelSmall) },
                 leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                 value = yarnData.janCode,
@@ -833,10 +938,10 @@ fun YarnEditScreenBody(
                 enabled = false,
                 textStyle = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp)
+                    .padding(top = 6.dp, bottom = 6.dp, start = 12.dp, end = 12.dp)
                     .fillMaxWidth()
             )
-            TextField(
+            OutlinedTextField(
                 label = { Text("メモ", style = MaterialTheme.typography.labelSmall) },
                 leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                 trailingIcon = {
@@ -850,7 +955,14 @@ fun YarnEditScreenBody(
                 value = yarnData.yarnDescription,
                 onValueChange = { updateYarnEditData(it, YarnParamName.YARN_DESCRIPTION) },
                 isError = isErrorMap.containsKey(YarnParamName.YARN_DESCRIPTION),
-                supportingText = { Text(text = isErrorMap.getOrDefault(YarnParamName.YARN_DESCRIPTION,"") ) },
+                supportingText = {
+                    Text(
+                        text = isErrorMap.getOrDefault(
+                            YarnParamName.YARN_DESCRIPTION,
+                            ""
+                        )
+                    )
+                },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
@@ -858,7 +970,7 @@ fun YarnEditScreenBody(
                 textStyle = MaterialTheme.typography.displayMedium,
                 singleLine = false,
                 modifier = Modifier
-                    .padding(top = 5.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
+                    .padding(top = 6.dp, bottom = 12.dp, start = 12.dp, end = 12.dp)
                     .fillMaxWidth()
             )
         }
@@ -876,7 +988,7 @@ fun YarnEditScreenBottom(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp),
+            .padding(top = 6.dp, bottom = 6.dp, start = 12.dp, end = 12.dp),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         OutlinedButton(
@@ -886,11 +998,7 @@ fun YarnEditScreenBottom(
         }
         Button(
             onClick = {
-                nextButtonOnClick(
-                    yarnDataToYarnDataForScreenConverter(
-                        yarnEditScreenUiState.yarnEditData
-                    )
-                )
+                nextButtonOnClick(yarnEditScreenUiState.yarnEditData)
             },
             enabled = yarnEditScreenUiState.isErrorMap.isEmpty()
         ) {
@@ -904,7 +1012,7 @@ fun YarnEditScreenBottom(
 fun YarnEditScreenPreview() {
     YarnShelfTheme {
         YarnEditScreenBody(
-            YarnData(
+            YarnDataForScreen(
                 0,
                 "10001",
                 "1010 Seabright",
@@ -912,24 +1020,23 @@ fun YarnEditScreenPreview() {
                 "1010 Seabright",
                 "1548",
                 "シェットランドウール１００％",
-                25.01,
+                "25.01",
                 YarnRoll.BALL,
-                105.0,
-                20.0,
-                21.0,
-                27.0,
-                28.0,
+                "105.0",
+                "20.0",
+                "21.0",
+                "27.0",
+                "28.0",
                 "メリヤス編み",
-                3.0,
-                5.0,
-                0.0,
-                0.0,
+                "3.0",
+                "5.0",
+                "0.0",
+                "0.0",
                 YarnThickness.THICK,
-                10,
+                "10",
                 "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
-                Date(),
-                "",
-                R.drawable.spin_1010_crpd_1625196651766_400
+                "https://image.raku-uru.jp/01/19110/456/Spin+1010+Crpd_1625196651766.JPG",
+                R.drawable.not_found
             ),
             updateYarnEditData = { _, _ -> },
             isErrorMap = mapOf(YarnParamName.YARN_MAKER_NAME to "エラーメッセージ"),
@@ -948,7 +1055,7 @@ fun YarnEditScreenBottomPreview() {
         YarnEditScreenBottom(
             YarnEditScreenUiState(
                 yarnEditData =
-                YarnData(
+                YarnDataForScreen(
                     0,
                     "10001",
                     "1010 Seabright",
@@ -956,24 +1063,23 @@ fun YarnEditScreenBottomPreview() {
                     "1010 Seabright",
                     "1548",
                     "シェットランドウール１００％",
-                    25.01,
+                    "25.01",
                     YarnRoll.BALL,
-                    105.0,
-                    20.0,
-                    21.0,
-                    27.0,
-                    28.0,
+                    "105.0",
+                    "20.0",
+                    "21.0",
+                    "27.0",
+                    "28.0",
                     "メリヤス編み",
-                    3.0,
-                    5.0,
-                    0.0,
-                    0.0,
+                    "3.0",
+                    "5.0",
+                    "0.0",
+                    "0.0",
                     YarnThickness.THICK,
-                    10,
+                    "10",
                     "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
-                    Date(),
-                    "",
-                    R.drawable.spin_1010_crpd_1625196651766_400
+                    "https://image.raku-uru.jp/01/19110/456/Spin+1010+Crpd_1625196651766.JPG",
+                    R.drawable.not_found
                 ),
                 isErrorMap = mutableMapOf()
             ),

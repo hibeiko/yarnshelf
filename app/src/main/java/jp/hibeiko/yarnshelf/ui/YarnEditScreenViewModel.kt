@@ -9,15 +9,16 @@ import androidx.lifecycle.viewModelScope
 import jp.hibeiko.yarnshelf.common.YarnParamName
 import jp.hibeiko.yarnshelf.common.updateYarnData
 import jp.hibeiko.yarnshelf.common.validateInput
-import jp.hibeiko.yarnshelf.data.YarnData
+import jp.hibeiko.yarnshelf.common.yarnDataToYarnDataForScreenConverter
 import jp.hibeiko.yarnshelf.repository.YarnDataRepository
+import jp.hibeiko.yarnshelf.ui.navigation.YarnDataForScreen
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 //private const val TAG = "HomeScreen"
 data class YarnEditScreenUiState(
-    val yarnEditData: YarnData = YarnData(),
+    val yarnEditData: YarnDataForScreen = YarnDataForScreen(),
     val isErrorMap: MutableMap<YarnParamName, String> = mutableMapOf(),
 )
 
@@ -33,9 +34,10 @@ class YarnEditScreenViewModel(
     init {
         viewModelScope.launch {
             yarnEditScreenUiState = YarnEditScreenUiState(
-                yarnDataRepository.select(yarnId)
+                yarnDataToYarnDataForScreenConverter( yarnDataRepository.select(yarnId)
                     .filterNotNull()
                     .first()
+                )
             )
             for (paramName in YarnParamName.entries){
                 updateIsErrorMap(paramName)

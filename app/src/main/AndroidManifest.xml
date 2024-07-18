@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.YarnShelf"
-        tools:targetApi="31">
+        tools:targetApi="34">
         <!-- バーコードスキャンのために追加。アプリが Google Play ストアからインストールされるときに、スキャナ モジュールが Google Play 開発者サービスによって自動的にデバイスにダウンロードされるようにアプリを構成できます。-->
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"

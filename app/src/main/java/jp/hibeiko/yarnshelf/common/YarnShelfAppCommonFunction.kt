@@ -82,7 +82,11 @@ fun formatNeedleSizeStringForScreen(
 }
 
 
-fun updateYarnData(yarnData: YarnData, param: Any, paramName: YarnParamName): YarnData {
+fun updateYarnData(
+    yarnData: YarnDataForScreen,
+    param: Any,
+    paramName: YarnParamName
+): YarnDataForScreen {
 
     return when (paramName) {
         YarnParamName.JAN_CODE
@@ -101,7 +105,7 @@ fun updateYarnData(yarnData: YarnData, param: Any, paramName: YarnParamName): Ya
         -> yarnData.copy(drawableResourceId = (param as String).toInt())
 
         YarnParamName.HAVING_NUMBER
-        -> yarnData.copy(havingNumber = ((param as String).ifBlank { "0" }).toInt())
+        -> yarnData.copy(havingNumber = (param as String).ifBlank { "0" })
 
         YarnParamName.COLOR_NUMBER
         -> yarnData.copy(colorNumber = param as String)
@@ -113,40 +117,40 @@ fun updateYarnData(yarnData: YarnData, param: Any, paramName: YarnParamName): Ya
         -> yarnData.copy(quality = param as String)
 
         YarnParamName.WEIGHT
-        -> yarnData.copy(weight = ((param as String).ifBlank { null })?.toDouble())
+        -> yarnData.copy(weight = param as String)
 
         YarnParamName.ROLL
         -> yarnData.copy(roll = param as YarnRoll)
 
         YarnParamName.LENGTH
-        -> yarnData.copy(length = ((param as String).ifBlank { null })?.toDouble())
+        -> yarnData.copy(length = param as String)
 
         YarnParamName.GAUGE_COLUMN_FROM
-        -> yarnData.copy(gaugeColumnFrom = ((param as String).ifBlank { null })?.toDouble())
+        -> yarnData.copy(gaugeColumnFrom = param as String)
 
         YarnParamName.GAUGE_COLUMN_TO
-        -> yarnData.copy(gaugeColumnTo = ((param as String).ifBlank { null })?.toDouble())
+        -> yarnData.copy(gaugeColumnTo = param as String)
 
         YarnParamName.GAUGE_ROW_FROM
-        -> yarnData.copy(gaugeRowFrom = ((param as String).ifBlank { null })?.toDouble())
+        -> yarnData.copy(gaugeRowFrom = param as String)
 
         YarnParamName.GAUGE_ROW_TO
-        -> yarnData.copy(gaugeRowTo = ((param as String).ifBlank { null })?.toDouble())
+        -> yarnData.copy(gaugeRowTo = param as String)
 
         YarnParamName.GAUGE_STITCH
         -> yarnData.copy(gaugeStitch = param as String)
 
         YarnParamName.NEEDLE_SIZE_FROM
-        -> yarnData.copy(needleSizeFrom = ((param as String).ifBlank { null })?.toDouble())
+        -> yarnData.copy(needleSizeFrom = param as String)
 
         YarnParamName.NEEDLE_SIZE_TO
-        -> yarnData.copy(needleSizeTo = ((param as String).ifBlank { null })?.toDouble())
+        -> yarnData.copy(needleSizeTo = param as String)
 
         YarnParamName.CROCHET_NEEDLE_SIZE_FROM
-        -> yarnData.copy(crochetNeedleSizeFrom = ((param as String).ifBlank { null })?.toDouble())
+        -> yarnData.copy(crochetNeedleSizeFrom = param as String)
 
         YarnParamName.CROCHET_NEEDLE_SIZE_TO
-        -> yarnData.copy(crochetNeedleSizeTo = ((param as String).ifBlank { null })?.toDouble())
+        -> yarnData.copy(crochetNeedleSizeTo = param as String)
 
         YarnParamName.THICKNESS
         -> yarnData.copy(thickness = param as YarnThickness)
@@ -165,24 +169,23 @@ fun yarnDataToYarnDataForScreenConverter(yarnData: YarnData): YarnDataForScreen 
         colorNumber = yarnData.colorNumber,
         rotNumber = yarnData.rotNumber,
         quality = yarnData.quality,
-        weight = yarnData.weight,
+        weight = DecimalFormat("#.#").format(yarnData.weight),
         roll = yarnData.roll,
-        length = yarnData.length,
-        gaugeColumnFrom = yarnData.gaugeColumnFrom,
-        gaugeColumnTo = yarnData.gaugeColumnTo,
-        gaugeRowFrom = yarnData.gaugeRowFrom,
-        gaugeRowTo = yarnData.gaugeRowTo,
+        length = DecimalFormat("#.#").format(yarnData.length),
+        gaugeColumnFrom = DecimalFormat("#.#").format(yarnData.gaugeColumnFrom),
+        gaugeColumnTo = DecimalFormat("#.#").format(yarnData.gaugeColumnTo),
+        gaugeRowFrom = DecimalFormat("#.#").format(yarnData.gaugeRowFrom),
+        gaugeRowTo = DecimalFormat("#.#").format(yarnData.gaugeRowTo),
         gaugeStitch = yarnData.gaugeStitch,
-        needleSizeFrom = yarnData.needleSizeFrom,
-        needleSizeTo = yarnData.needleSizeTo,
-        crochetNeedleSizeFrom = yarnData.crochetNeedleSizeFrom,
-        crochetNeedleSizeTo = yarnData.crochetNeedleSizeTo,
+        needleSizeFrom = DecimalFormat("#.#").format(yarnData.needleSizeFrom),
+        needleSizeTo = DecimalFormat("#.#").format(yarnData.needleSizeTo),
+        crochetNeedleSizeFrom = DecimalFormat("#.#").format(yarnData.crochetNeedleSizeFrom),
+        crochetNeedleSizeTo = DecimalFormat("#.#").format(yarnData.crochetNeedleSizeTo),
         thickness = yarnData.thickness,
-        havingNumber = yarnData.havingNumber,
+        havingNumber = DecimalFormat("#.#").format(yarnData.havingNumber),
         yarnDescription = yarnData.yarnDescription,
         imageUrl = yarnData.imageUrl,
-        drawableResourceId = yarnData.drawableResourceId,
-    )
+        )
 }
 
 fun yarnDataForScreenToYarnDataConverter(yarnDataForScreen: YarnDataForScreen): YarnData {
@@ -194,23 +197,23 @@ fun yarnDataForScreenToYarnDataConverter(yarnDataForScreen: YarnDataForScreen): 
         colorNumber = yarnDataForScreen.colorNumber,
         rotNumber = yarnDataForScreen.rotNumber,
         quality = yarnDataForScreen.quality,
-        weight = yarnDataForScreen.weight,
+        weight = yarnDataForScreen.weight.ifBlank { null }?.toDouble(),
         roll = yarnDataForScreen.roll,
-        length = yarnDataForScreen.length,
-        gaugeColumnFrom = yarnDataForScreen.gaugeColumnFrom,
-        gaugeColumnTo = yarnDataForScreen.gaugeColumnTo,
-        gaugeRowFrom = yarnDataForScreen.gaugeRowFrom,
-        gaugeRowTo = yarnDataForScreen.gaugeRowTo,
+        length = yarnDataForScreen.length.ifBlank { null }?.toDouble(),
+        gaugeColumnFrom = yarnDataForScreen.gaugeColumnFrom.ifBlank { null }?.toDouble(),
+        gaugeColumnTo = yarnDataForScreen.gaugeColumnTo.ifBlank { null }?.toDouble(),
+        gaugeRowFrom = yarnDataForScreen.gaugeRowFrom.ifBlank { null }?.toDouble(),
+        gaugeRowTo = yarnDataForScreen.gaugeRowTo.ifBlank { null }?.toDouble(),
         gaugeStitch = yarnDataForScreen.gaugeStitch,
-        needleSizeFrom = yarnDataForScreen.needleSizeFrom,
-        needleSizeTo = yarnDataForScreen.needleSizeTo,
-        crochetNeedleSizeFrom = yarnDataForScreen.crochetNeedleSizeFrom,
-        crochetNeedleSizeTo = yarnDataForScreen.crochetNeedleSizeTo,
+        needleSizeFrom = yarnDataForScreen.needleSizeFrom.ifBlank { null }?.toDouble(),
+        needleSizeTo = yarnDataForScreen.needleSizeTo.ifBlank { null }?.toDouble(),
+        crochetNeedleSizeFrom = yarnDataForScreen.crochetNeedleSizeFrom.ifBlank { null }
+            ?.toDouble(),
+        crochetNeedleSizeTo = yarnDataForScreen.crochetNeedleSizeTo.ifBlank { null }?.toDouble(),
         thickness = yarnDataForScreen.thickness,
-        havingNumber = yarnDataForScreen.havingNumber,
+        havingNumber = yarnDataForScreen.havingNumber.ifBlank { "0" }.toInt(),
         yarnDescription = yarnDataForScreen.yarnDescription,
         imageUrl = yarnDataForScreen.imageUrl,
-        drawableResourceId = yarnDataForScreen.drawableResourceId,
     )
 }
 
@@ -235,7 +238,7 @@ fun yahooHitToYarnDataForScreenConverter(yahooHit: YahooHit): YarnDataForScreen 
 //        crochetNeedleSizeFrom = yahooHit.crochetNeedleSizeFrom,
 //        crochetNeedleSizeTo = yahooHit.crochetNeedleSizeTo,
 //        thickness = yahooHit.thickness,
-        havingNumber = 0,
+        havingNumber = "0",
         yarnDescription = yahooHit.description ?: "",
         imageUrl = yahooHit.image.medium ?: "",
 //        drawableResourceId = yahooHit.drawableResourceId,
@@ -243,7 +246,7 @@ fun yahooHitToYarnDataForScreenConverter(yahooHit: YahooHit): YarnDataForScreen 
 }
 
 // バリデーションチェック
-fun validateInput(yarnData: YarnData, paramName: YarnParamName): String {
+fun validateInput(yarnData: YarnDataForScreen, paramName: YarnParamName): String {
     return when (paramName) {
         YarnParamName.JAN_CODE
         ->
@@ -271,10 +274,17 @@ fun validateInput(yarnData: YarnData, paramName: YarnParamName): String {
         -> ""
 
         YarnParamName.HAVING_NUMBER
-        -> if (yarnData.havingNumber > YarnParamName.HAVING_NUMBER.maxLength)
-            "${YarnParamName.HAVING_NUMBER.maxLength}個以内で入力してください。"
+        -> if (yarnData.havingNumber.isNotBlank())
+            try {
+                if (yarnData.havingNumber.toInt() > YarnParamName.HAVING_NUMBER.maxLength)
+                    "${YarnParamName.HAVING_NUMBER.maxLength}個以内で入力してください。"
+                else
+                    ""
+            } catch (e: NumberFormatException) {
+                return "数値を入力してください。"
+            }
         else
-            ""
+            "数量は必須項目です。"
 
         YarnParamName.COLOR_NUMBER
         -> if (yarnData.colorNumber.length > YarnParamName.COLOR_NUMBER.maxLength)
@@ -295,8 +305,15 @@ fun validateInput(yarnData: YarnData, paramName: YarnParamName): String {
             ""
 
         YarnParamName.WEIGHT
-        -> if (yarnData.weight != null && yarnData.weight > YarnParamName.WEIGHT.maxLength.toDouble())
-            "${YarnParamName.WEIGHT.maxLength}g以内で入力してください。"
+        -> if (yarnData.weight.isNotBlank())
+            try {
+                if (yarnData.weight.toDouble() > YarnParamName.WEIGHT.maxLength.toDouble())
+                    "${YarnParamName.WEIGHT.maxLength}g以内で入力してください。"
+                else
+                    ""
+            } catch (e: NumberFormatException) {
+                return "数値を入力してください。"
+            }
         else
             ""
 
@@ -307,32 +324,67 @@ fun validateInput(yarnData: YarnData, paramName: YarnParamName): String {
             "値が不正です。"
 
         YarnParamName.LENGTH
-        -> if (yarnData.length != null && yarnData.length > YarnParamName.LENGTH.maxLength.toDouble())
-            "${YarnParamName.LENGTH.maxLength}m以内で入力してください。"
+        -> if (yarnData.length.isNotBlank())
+            try {
+                if (yarnData.length.toDouble() > YarnParamName.LENGTH.maxLength.toDouble())
+                    "${YarnParamName.LENGTH.maxLength}m以内で入力してください。"
+                else
+                    ""
+            } catch (e: NumberFormatException) {
+                return "数値を入力してください。"
+            }
         else
             ""
 
         YarnParamName.GAUGE_COLUMN_FROM
-        -> if (yarnData.gaugeColumnFrom != null && yarnData.gaugeColumnFrom > YarnParamName.GAUGE_COLUMN_FROM.maxLength.toDouble())
-            "${YarnParamName.GAUGE_COLUMN_FROM.maxLength}以内で入力してください。"
+        -> if (yarnData.gaugeColumnFrom.isNotBlank())
+            try {
+                if (yarnData.gaugeColumnFrom.toDouble() > YarnParamName.GAUGE_COLUMN_FROM.maxLength.toDouble())
+                    "${YarnParamName.GAUGE_COLUMN_FROM.maxLength}以内で入力してください。"
+                else
+                    ""
+            } catch (e: NumberFormatException) {
+                return "数値を入力してください。"
+            }
         else
             ""
 
         YarnParamName.GAUGE_COLUMN_TO
-        -> if (yarnData.gaugeColumnTo != null && yarnData.gaugeColumnTo > YarnParamName.GAUGE_COLUMN_TO.maxLength.toDouble())
-            "${YarnParamName.GAUGE_COLUMN_TO.maxLength}以内で入力してください。"
+        -> if (yarnData.gaugeColumnTo.isNotBlank())
+            try {
+                if (yarnData.gaugeColumnTo.toDouble() > YarnParamName.GAUGE_COLUMN_TO.maxLength.toDouble())
+                    "${YarnParamName.GAUGE_COLUMN_TO.maxLength}以内で入力してください。"
+                else
+                    ""
+            } catch (e: NumberFormatException) {
+                return "数値を入力してください。"
+            }
         else
             ""
 
         YarnParamName.GAUGE_ROW_FROM
-        -> if (yarnData.gaugeRowFrom != null && yarnData.gaugeRowFrom > YarnParamName.GAUGE_ROW_FROM.maxLength.toDouble())
-            "${YarnParamName.GAUGE_ROW_FROM.maxLength}以内で入力してください。"
+        -> if (yarnData.gaugeRowFrom.isNotBlank())
+            try {
+                if (yarnData.gaugeRowFrom.toDouble() > YarnParamName.GAUGE_ROW_FROM.maxLength.toDouble())
+                    "${YarnParamName.GAUGE_ROW_FROM.maxLength}以内で入力してください。"
+                else
+                    ""
+            } catch (e: NumberFormatException) {
+                return "数値を入力してください。"
+            }
         else
             ""
 
         YarnParamName.GAUGE_ROW_TO
-        -> if (yarnData.gaugeRowTo != null && yarnData.gaugeRowTo > YarnParamName.GAUGE_ROW_TO.maxLength.toDouble())
-            "${YarnParamName.GAUGE_ROW_TO.maxLength}以内で入力してください。"
+        -> if (yarnData.gaugeRowTo.isNotBlank())
+            try {
+                if (yarnData.gaugeRowTo.toDouble() > YarnParamName.GAUGE_ROW_TO.maxLength.toDouble())
+                    "${YarnParamName.GAUGE_ROW_TO.maxLength}以内で入力してください。"
+                else
+                    ""
+            } catch (e: NumberFormatException) {
+                return "数値を入力してください。"
+            }
         else
             ""
 
@@ -343,26 +395,54 @@ fun validateInput(yarnData: YarnData, paramName: YarnParamName): String {
             ""
 
         YarnParamName.NEEDLE_SIZE_FROM
-        -> if (yarnData.needleSizeFrom != null && yarnData.needleSizeFrom > YarnParamName.NEEDLE_SIZE_FROM.maxLength.toDouble())
-            "${YarnParamName.NEEDLE_SIZE_FROM.maxLength}以内で入力してください。"
+        -> if (yarnData.needleSizeFrom.isNotBlank())
+            try {
+                if (yarnData.needleSizeFrom.toDouble() > YarnParamName.NEEDLE_SIZE_FROM.maxLength.toDouble())
+                    "${YarnParamName.NEEDLE_SIZE_FROM.maxLength}以内で入力してください。"
+                else
+                    ""
+            } catch (e: NumberFormatException) {
+                return "数値を入力してください。"
+            }
         else
             ""
 
         YarnParamName.NEEDLE_SIZE_TO
-        -> if (yarnData.needleSizeTo != null && yarnData.needleSizeTo > YarnParamName.NEEDLE_SIZE_TO.maxLength.toDouble())
-            "${YarnParamName.NEEDLE_SIZE_TO.maxLength}以内で入力してください。"
+        -> if (yarnData.needleSizeTo.isNotBlank())
+            try {
+                if (yarnData.needleSizeTo.toDouble() > YarnParamName.NEEDLE_SIZE_TO.maxLength.toDouble())
+                    "${YarnParamName.NEEDLE_SIZE_TO.maxLength}以内で入力してください。"
+                else
+                    ""
+            } catch (e: NumberFormatException) {
+                return "数値を入力してください。"
+            }
         else
             ""
 
         YarnParamName.CROCHET_NEEDLE_SIZE_FROM
-        -> if (yarnData.crochetNeedleSizeFrom != null && yarnData.crochetNeedleSizeFrom > YarnParamName.CROCHET_NEEDLE_SIZE_FROM.maxLength.toDouble())
-            "${YarnParamName.CROCHET_NEEDLE_SIZE_FROM.maxLength}以内で入力してください。"
+        -> if (yarnData.crochetNeedleSizeFrom.isNotBlank())
+            try {
+                if (yarnData.crochetNeedleSizeFrom.toDouble() > YarnParamName.CROCHET_NEEDLE_SIZE_FROM.maxLength.toDouble())
+                    "${YarnParamName.CROCHET_NEEDLE_SIZE_FROM.maxLength}以内で入力してください。"
+                else
+                    ""
+            } catch (e: NumberFormatException) {
+                return "数値を入力してください。"
+            }
         else
             ""
 
         YarnParamName.CROCHET_NEEDLE_SIZE_TO
-        -> if (yarnData.crochetNeedleSizeTo != null && yarnData.crochetNeedleSizeTo > YarnParamName.CROCHET_NEEDLE_SIZE_TO.maxLength.toDouble())
-            "${YarnParamName.CROCHET_NEEDLE_SIZE_TO.maxLength}以内で入力してください。"
+        -> if (yarnData.crochetNeedleSizeTo.isNotBlank())
+            try {
+                if (yarnData.crochetNeedleSizeTo.toDouble() > YarnParamName.CROCHET_NEEDLE_SIZE_TO.maxLength.toDouble())
+                    "${YarnParamName.CROCHET_NEEDLE_SIZE_TO.maxLength}以内で入力してください。"
+                else
+                    ""
+            } catch (e: NumberFormatException) {
+                return "数値を入力してください。"
+            }
         else
             ""
 

@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -51,7 +52,7 @@ import java.util.Date
 
 object YarnDetailDestination : NavigationDestination {
     override val route = "YarnInfoDetail"
-    override val title = "けいと情報"
+    override val title = "けいとの詳細"
     const val yarnIdArg = "yarnId"
     val routeWithArgs = "${route}/{$yarnIdArg}"
 }
@@ -126,7 +127,7 @@ fun YarnDetailScreenBody(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start,
         modifier = modifier
-            .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp),
+            .padding(top = 6.dp, bottom = 6.dp, start = 12.dp, end = 12.dp),
     ) {
         Column(
             modifier = Modifier
@@ -134,35 +135,31 @@ fun YarnDetailScreenBody(
                 .background(MaterialTheme.colorScheme.surfaceContainer),
             horizontalAlignment = Alignment.Start
         ) {
+            Spacer(modifier = Modifier.height(12.dp))
             if (yarnData.yarnMakerName.isNotBlank()) {
                 Text(
                     text = yarnData.yarnMakerName,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(top = 5.dp, bottom = 2.dp, start = 10.dp)
+                    modifier = Modifier.padding(top = 0.dp, bottom = 4.dp, start = 12.dp)
                 )
             }
             Text(
                 text = yarnData.yarnName,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.displayMedium,
-                modifier = Modifier.padding(top = 2.dp, bottom = 2.dp, start = 10.dp)
+                modifier = Modifier.padding(top = 0.dp, bottom = 4.dp, start = 12.dp)
             )
             when (yarnData.imageUrl) {
                 "" ->
                     Image(
-                        painter = painterResource(
-                            when (yarnData.drawableResourceId) {
-                                0 -> R.drawable.not_found
-                                else -> yarnData.drawableResourceId
-                            }
-                        ),
+                        painter = painterResource(R.drawable.not_found),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .padding(top = 2.dp, bottom = 10.dp)
-                            .height(140.dp)
-                            .width(140.dp)
+                            .padding(top = 4.dp, bottom = 12.dp)
+                            .height(240.dp)
+                            .width(240.dp)
                             .align(Alignment.CenterHorizontally),
                     )
 
@@ -175,9 +172,9 @@ fun YarnDetailScreenBody(
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .padding(top = 2.dp, bottom = 10.dp)
-                        .height(140.dp)
-                        .width(140.dp)
+                        .padding(top = 4.dp, bottom = 12.dp)
+                        .height(240.dp)
+                        .width(240.dp)
                         .align(Alignment.CenterHorizontally),
                 )
             }
@@ -185,52 +182,52 @@ fun YarnDetailScreenBody(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 10.dp)
+                .padding(top = 12.dp)
                 .background(MaterialTheme.colorScheme.surfaceContainer),
             horizontalAlignment = Alignment.Start
         ) {
             Text(
                 text = "残量：",
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
-                    .padding(top = 10.dp, start = 10.dp, bottom = 5.dp)
+                    .padding(top = 12.dp, start = 12.dp, bottom = 6.dp)
             )
             Text(
                 text = "${yarnData.havingNumber}玉",
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 0.dp, start = 10.dp, bottom = 10.dp)
+                    .padding(top = 0.dp, start = 12.dp, bottom = 12.dp)
             )
         }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 10.dp, bottom = 10.dp)
+                .padding(top = 12.dp, bottom = 12.dp)
                 .background(MaterialTheme.colorScheme.surfaceContainer),
             horizontalAlignment = Alignment.Start
         ) {
             Text(
                 text = "品質：",
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
-                    .padding(top = 10.dp, start = 10.dp, bottom = 5.dp)
+                    .padding(top = 12.dp, start = 12.dp, bottom = 6.dp)
             )
             Text(
                 text = yarnData.quality.ifBlank { "-" },
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+                    .padding(top = 0.dp, start = 12.dp, bottom = 6.dp)
             )
             Text(
                 text = "標準状態重量：",
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
-                    .padding(top = 10.dp, start = 10.dp, bottom = 5.dp)
+                    .padding(top = 12.dp, start = 12.dp, bottom = 6.dp)
             )
             Text(
                 text = formatWeightStringForScreen(
@@ -238,59 +235,59 @@ fun YarnDetailScreenBody(
                     yarnData.length,
                     yarnData.roll
                 ),
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+                    .padding(top = 0.dp, start = 12.dp, bottom = 6.dp)
             )
             Text(
                 text = "糸の太さ：",
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
-                    .padding(top = 10.dp, start = 10.dp, bottom = 5.dp)
+                    .padding(top = 12.dp, start = 12.dp, bottom = 6.dp)
             )
             Text(
                 text = yarnData.thickness.value,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 0.dp, start = 10.dp, bottom = 10.dp)
+                    .padding(top = 0.dp, start = 12.dp, bottom = 12.dp)
             )
             Text(
                 text = "色番号：",
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
-                    .padding(top = 10.dp, start = 10.dp, bottom = 5.dp)
+                    .padding(top = 12.dp, start = 12.dp, bottom = 6.dp)
             )
             Text(
                 text = yarnData.colorNumber,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 0.dp, start = 10.dp, bottom = 10.dp)
+                    .padding(top = 0.dp, start = 12.dp, bottom = 12.dp)
             )
             Text(
                 text = "ロット番号：",
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
-                    .padding(top = 10.dp, start = 10.dp, bottom = 5.dp)
+                    .padding(top = 12.dp, start = 12.dp, bottom = 6.dp)
             )
             Text(
                 text = yarnData.rotNumber,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 0.dp, start = 10.dp, bottom = 10.dp)
+                    .padding(top = 0.dp, start = 12.dp, bottom = 12.dp)
             )
             Text(
                 text = "標準ゲージ：",
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
-                    .padding(top = 10.dp, start = 10.dp, bottom = 5.dp)
+                    .padding(top = 12.dp, start = 12.dp, bottom = 6.dp)
             )
             Text(
                 text = formatGaugeStringForScreen(
@@ -300,17 +297,17 @@ fun YarnDetailScreenBody(
                     yarnData.gaugeRowTo,
                     yarnData.gaugeStitch
                 ),
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+                    .padding(top = 0.dp, start = 12.dp, bottom = 6.dp)
             )
             Text(
                 text = "参考使用針：",
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
-                    .padding(top = 10.dp, start = 10.dp, bottom = 5.dp)
+                    .padding(top = 10.dp, start = 12.dp, bottom = 6.dp)
             )
             Text(
                 text = formatNeedleSizeStringForScreen(
@@ -319,56 +316,56 @@ fun YarnDetailScreenBody(
                     yarnData.crochetNeedleSizeFrom,
                     yarnData.crochetNeedleSizeTo
                 ),
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 0.dp, start = 10.dp, bottom = 10.dp)
+                    .padding(top = 0.dp, start = 12.dp, bottom = 12.dp)
             )
         }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 10.dp)
+                .padding(bottom = 12.dp)
                 .background(MaterialTheme.colorScheme.surfaceContainer),
             horizontalAlignment = Alignment.Start
         ) {
             Text(
                 text = "JANコード：",
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
-                    .padding(top = 10.dp, start = 10.dp, bottom = 5.dp)
+                    .padding(top = 12.dp, start = 12.dp, bottom = 6.dp)
             )
             Text(
                 text = yarnData.janCode,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier
-                    .padding(top = 0.dp, start = 10.dp, bottom = 10.dp)
+                    .padding(top = 0.dp, start = 12.dp, bottom = 12.dp)
             )
         }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 10.dp)
+                .padding(bottom = 12.dp)
                 .background(MaterialTheme.colorScheme.surfaceContainer),
             horizontalAlignment = Alignment.Start
         ) {
             Text(
                 text = "メモ：",
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
-                    .padding(top = 10.dp, start = 10.dp, bottom = 5.dp)
+                    .padding(top = 12.dp, start = 12.dp, bottom = 6.dp)
             )
             if (yarnData.yarnDescription.isNotBlank()) {
                 Text(
                     text = yarnData.yarnDescription,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.displayMedium,
                     maxLines = 5,
                     modifier = Modifier
-                        .padding(top = 0.dp, start = 10.dp, bottom = 10.dp, end = 10.dp)
+                        .padding(top = 0.dp, start = 12.dp, bottom = 12.dp, end = 12.dp)
 //                        .verticalScroll(rememberScrollState())
                 )
             }
@@ -389,7 +386,7 @@ fun YarnDetailScreenBottom(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp),
+            .padding(top = 6.dp, bottom = 6.dp, start = 12.dp, end = 12.dp),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         OutlinedButton(
@@ -444,8 +441,7 @@ fun YarnDetailScreenPreview() {
                 10,
                 "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                 Date(),
-                "",
-                R.drawable.spin_1010_crpd_1625196651766_400
+                "https://image.raku-uru.jp/01/19110/456/Spin+1010+Crpd_1625196651766.JPG",
             ),
         )
     }
@@ -483,8 +479,7 @@ fun YarnDetailBottomPreview() {
                 10,
                 "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                 Date(),
-                "",
-                R.drawable.spin_1010_crpd_1625196651766_400
+                "https://image.raku-uru.jp/01/19110/456/Spin+1010+Crpd_1625196651766.JPG",
             ),
             deleteYarnData = {},
             nextButtonOnClick = { _ -> },

@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -34,12 +36,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -64,6 +66,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import jp.hibeiko.yarnshelf.R
 import jp.hibeiko.yarnshelf.common.SortKey
+import jp.hibeiko.yarnshelf.common.SortOrder
 import jp.hibeiko.yarnshelf.common.YarnRoll
 import jp.hibeiko.yarnshelf.common.YarnThickness
 import jp.hibeiko.yarnshelf.common.formatGaugeStringForScreen
@@ -113,10 +116,20 @@ fun HomeScreen(
                         titleContentColor = MaterialTheme.colorScheme.primary,
                     ),
                     title = {
-                        Text(
-                            text = HomeDestination.title,
-                            style = MaterialTheme.typography.headlineLarge,
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Image(
+                                painter = painterResource(R.drawable.yarn_image),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(40.dp)
+                            )
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Text(
+                                text = HomeDestination.title,
+                                style = MaterialTheme.typography.headlineLarge,
+                            )
+                        }
                     },
 //                    navigationIcon = {
 //                        if (navController.previousBackStackEntry != null) {
@@ -135,6 +148,8 @@ fun HomeScreen(
                 FloatingActionButton(
                     onClick = addButtonOnClicked,
                     shape = MaterialTheme.shapes.medium,
+                    containerColor = MaterialTheme.colorScheme.tertiary,
+                    contentColor = MaterialTheme.colorScheme.onTertiary,
                     modifier = Modifier
                         .padding(
                             end = WindowInsets.safeDrawing.asPaddingValues()
@@ -214,7 +229,7 @@ fun YarnCard(
             .fillMaxWidth()
             .height(140.dp)
             .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
         onClick = { cardOnClick(yarnData.yarnId) },
     ) {
 //        Log.d("HomeScreen","$yarnData")
@@ -223,12 +238,7 @@ fun YarnCard(
             when (yarnData.imageUrl) {
                 "" ->
                     Image(
-                        painter = painterResource(
-                            when (yarnData.drawableResourceId) {
-                                0 -> R.drawable.not_found
-                                else -> yarnData.drawableResourceId
-                            }
-                        ),
+                        painter = painterResource(R.drawable.not_found),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -259,22 +269,22 @@ fun YarnCard(
                 if (yarnData.yarnMakerName.isNotBlank()) {
                     Text(
                         text = yarnData.yarnMakerName,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(bottom = 2.dp)
+                        modifier = Modifier.padding(bottom = 4.dp)
                     )
                 }
                 Text(
                     text = yarnData.yarnName,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.displayMedium,
-                    modifier = Modifier.padding(bottom = 2.dp)
+                    modifier = Modifier.padding(bottom = 4.dp)
                 )
                 Text(
                     text = "残量：${yarnData.havingNumber}玉",
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(bottom = 2.dp)
+                    modifier = Modifier.padding(bottom = 4.dp)
                 )
                 if (yarnData.yarnDescription.isNotBlank()) {
                     Text(
@@ -307,19 +317,20 @@ fun YarnDialog(
         onDismissRequest = {
             dialogOnClick()
         },
-        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         title = {
             Column {
                 if (yarnData.yarnMakerName.isNotBlank()) {
                     Text(
                         text = yarnData.yarnMakerName,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        style = MaterialTheme.typography.bodyLarge
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(bottom = 4.dp)
                     )
                 }
                 Text(
                     text = yarnData.yarnName,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.displayMedium
                 )
             }
@@ -333,17 +344,18 @@ fun YarnDialog(
                     "" ->
                         Image(
                             painter = painterResource(
-                                when (yarnData.drawableResourceId) {
-                                    0 -> R.drawable.not_found
-                                    else -> yarnData.drawableResourceId
-                                }
+                                R.drawable.not_found
+//                                when (yarnData.drawableResourceId) {
+//                                    0 -> R.drawable.not_found
+//                                    else -> yarnData.drawableResourceId
+//                                }
                             ),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
-                                .height(140.dp)
-                                .width(140.dp)
-                                .padding(5.dp),
+                                .height(240.dp)
+                                .width(240.dp)
+                                .padding(top = 6.dp, bottom = 12.dp)
                         )
 
                     else -> AsyncImage(
@@ -356,60 +368,60 @@ fun YarnDialog(
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .height(140.dp)
-                            .width(140.dp)
-                            .padding(5.dp),
+                            .height(240.dp)
+                            .width(240.dp)
+                            .padding(top = 6.dp, bottom = 12.dp)
                     )
                 }
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Row {
                         Text(
                             text = "残量：",
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.End,
                             modifier = Modifier
-                                .padding(2.dp)
+                                .padding(bottom = 4.dp, end = 4.dp)
                                 .weight(0.35f)
                         )
                         Text(
                             text = "${yarnData.havingNumber}玉",
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Start,
                             modifier = Modifier
-                                .padding(2.dp)
+                                .padding(bottom = 4.dp)
                                 .weight(0.65f)
                         )
                     }
                     Row {
                         Text(
                             text = "品質：",
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.End,
                             modifier = Modifier
-                                .padding(2.dp)
+                                .padding(bottom = 4.dp, end = 4.dp)
                                 .weight(0.35f)
                         )
                         Text(
                             text = yarnData.quality.ifBlank { "-" },
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Start,
                             modifier = Modifier
-                                .padding(2.dp)
+                                .padding(bottom = 4.dp)
                                 .weight(0.65f)
                         )
                     }
                     Row {
                         Text(
                             text = "標準状態重量：",
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.End,
                             modifier = Modifier
-                                .padding(2.dp)
+                                .padding(bottom = 4.dp, end = 4.dp)
                                 .weight(0.35f)
                         )
                         Text(
@@ -418,42 +430,42 @@ fun YarnDialog(
                                 yarnData.length,
                                 yarnData.roll
                             ),
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Start,
                             modifier = Modifier
-                                .padding(2.dp)
+                                .padding(bottom = 4.dp)
                                 .weight(0.65f)
                         )
                     }
                     Row {
                         Text(
                             text = "糸の太さ：",
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.End,
                             modifier = Modifier
-                                .padding(2.dp)
+                                .padding(bottom = 4.dp, end = 4.dp)
                                 .weight(0.35f)
                         )
                         Text(
                             text = yarnData.thickness.value,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Start,
                             modifier = Modifier
-                                .padding(2.dp)
+                                .padding(bottom = 4.dp)
                                 .weight(0.65f)
                         )
                     }
                     Row {
                         Text(
                             text = "標準ゲージ：",
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.End,
                             modifier = Modifier
-                                .padding(2.dp)
+                                .padding(bottom = 4.dp, end = 4.dp)
                                 .weight(0.35f)
                         )
                         Text(
@@ -464,22 +476,22 @@ fun YarnDialog(
                                 yarnData.gaugeRowTo,
                                 yarnData.gaugeStitch
                             ),
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Start,
                             modifier = Modifier
-                                .padding(2.dp)
+                                .padding(bottom = 4.dp)
                                 .weight(0.65f)
                         )
                     }
                     Row {
                         Text(
                             text = "参考使用針：",
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.End,
                             modifier = Modifier
-                                .padding(2.dp)
+                                .padding(bottom = 4.dp, end = 4.dp)
                                 .weight(0.35f)
                         )
                         Text(
@@ -489,11 +501,11 @@ fun YarnDialog(
                                 yarnData.crochetNeedleSizeFrom,
                                 yarnData.crochetNeedleSizeTo
                             ),
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Start,
                             modifier = Modifier
-                                .padding(2.dp)
+                                .padding(bottom = 4.dp)
                                 .weight(0.65f)
                         )
                     }
@@ -501,10 +513,10 @@ fun YarnDialog(
                 if (yarnData.yarnDescription.isNotBlank()) {
                     Text(
                         text = yarnData.yarnDescription,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.bodyLarge,
                         maxLines = 5,
-                        modifier = Modifier.padding(2.dp)
+                        modifier = Modifier.padding(4.dp)
                     )
                 }
             }
@@ -514,19 +526,19 @@ fun YarnDialog(
             TextButton(
                 onClick = {
                     dialogOnClick()
-                    editButtonOnClicked(yarnData.yarnId)
                 }
             ) {
-                Text(text = "詳細")
+                Text(text = "閉じる")
             }
         },
         confirmButton = {
             TextButton(
                 onClick = {
                     dialogOnClick()
+                    editButtonOnClicked(yarnData.yarnId)
                 }
             ) {
-                Text(text = "OK")
+                Text(text = "詳細を見る")
             }
         }
     )
@@ -552,13 +564,14 @@ fun HomeScreenTop(
         modifier = modifier
             .fillMaxWidth()
             .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         // 検索
-        TextField(
+        OutlinedTextField(
             label = {
                 Text(
-                    "けいとを検索",
+                    "検索",
                     style = MaterialTheme.typography.labelSmall
                 )
             },
@@ -573,15 +586,44 @@ fun HomeScreenTop(
             textStyle = MaterialTheme.typography.displayMedium,
             modifier = Modifier.weight(1.0f, false)
         )
-        IconButton(
-            onClick = { bottomSheetOnClick(true) }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(painterResource(R.drawable.baseline_sort_24), contentDescription = null)
+            Text(
+                text = homeScreenSearchConditionState.sortKey.value,
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.padding(0.dp)
+            )
+            IconButton(
+                onClick = { bottomSheetOnClick(true) },
+                modifier = Modifier.padding(0.dp)
+            ) {
+                Icon(
+                    painterResource(R.drawable.baseline_sort_24),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
         IconButton(
-            onClick = { sortOrderUpdate() }
+            onClick = { sortOrderUpdate() },
+            modifier = Modifier.padding(0.dp)
         ) {
-            Icon(painterResource(R.drawable.baseline_swap_vert_24), contentDescription = null)
+            when (homeScreenSearchConditionState.sortOrder) {
+                SortOrder.ASC ->
+                    Icon(
+                        painterResource(R.drawable.baseline_arrow_upward_24),
+                        contentDescription = "昇順",
+                        modifier = Modifier.fillMaxSize()
+                    )
+
+                SortOrder.DESC ->
+                    Icon(
+                        painterResource(R.drawable.baseline_arrow_downward_24),
+                        contentDescription = "降順",
+                        modifier = Modifier.fillMaxSize()
+                    )
+            }
         }
     }
     if (bottomSheetViewFlag) {
@@ -594,15 +636,16 @@ fun HomeScreenTop(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "並び替え",
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    text = "並び替える",
+                    color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.displayMedium,
-                    modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
+                    modifier = Modifier.padding(top = 12.dp, bottom = 12.dp)
                 )
                 HorizontalDivider(thickness = 2.dp)
                 Column(
                     Modifier
                         .selectableGroup()
+                        .padding(12.dp)
                         .align(Alignment.CenterHorizontally)
                 ) {
                     SortKey.entries.forEach {
@@ -624,7 +667,7 @@ fun HomeScreenTop(
                                     },
                                     role = Role.RadioButton
                                 )
-                                .padding(top = 10.dp, bottom = 10.dp),
+                                .padding(top = 6.dp, bottom = 6.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             RadioButton(
@@ -634,8 +677,8 @@ fun HomeScreenTop(
                             Text(
                                 text = it.value,
                                 style = MaterialTheme.typography.displayMedium,
-//                            modifier = Modifier
-//                                .padding(top = 0.dp, start = 10.dp, bottom = 5.dp)
+                                modifier = Modifier
+                                    .padding(top = 0.dp, start = 12.dp, bottom = 0.dp)
                             )
                         }
                     }
@@ -677,8 +720,7 @@ fun HomeScreenPreview() {
                         10,
                         "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                         Date(),
-                        "",
-                        R.drawable.spin_1010_crpd_1625196651766_400
+                        "https://image.raku-uru.jp/01/19110/456/Spin+1010+Crpd_1625196651766.JPG",
                     ),
                     YarnData(
                         1,
@@ -704,8 +746,7 @@ fun HomeScreenPreview() {
                         10,
                         "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                         Date(),
-                        "",
-                        R.drawable.spin_102_crpd_1625194839510_400
+                        "https://image.raku-uru.jp/01/19110/35/Spin+102+Crpd_1625194839510.JPG",
                     ),
                     YarnData(
                         2,
@@ -731,8 +772,7 @@ fun HomeScreenPreview() {
                         10,
                         "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                         Date(),
-                        "",
-                        R.drawable.spin_1020_crpd_1625196650659_400
+                        "https://image.raku-uru.jp/01/19110/454/Spin+1020+Crpd_1625196650659.JPG",
                     ),
                     YarnData(
                         3,
@@ -758,8 +798,7 @@ fun HomeScreenPreview() {
                         10,
                         "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                         Date(),
-                        "",
-                        R.drawable.spin_103_crpd_1625194837544_400
+                        "https://image.raku-uru.jp/01/19110/31/Spin+103+Crpd_1625194837544.JPG",
                     ),
                     YarnData(
                         4,
@@ -785,8 +824,7 @@ fun HomeScreenPreview() {
                         10,
                         "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                         Date(),
-                        "",
-                        R.drawable.spin_104_crpd_1625194838195_400
+                        "https://image.raku-uru.jp/01/19110/32/Spin+104+Crpd_1625194838195.JPG",
                     ),
                     YarnData(
                         5,
@@ -812,8 +850,7 @@ fun HomeScreenPreview() {
                         10,
                         "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                         Date(),
-                        "",
-                        R.drawable.spin_105_crpd_1625194836934_400
+                        "https://image.raku-uru.jp/01/19110/30/Spin+105+Crpd_1625194836934.JPG",
                     ),
                     YarnData(
                         6,
@@ -839,8 +876,7 @@ fun HomeScreenPreview() {
                         10,
                         "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                         Date(),
-                        "",
-                        R.drawable.spin_106_crpd_1625194835979_400
+                        "https://image.raku-uru.jp/01/19110/28/Spin+106+Crpd_1625194835979.JPG",
                     ),
                     YarnData(
                         7,
@@ -866,8 +902,7 @@ fun HomeScreenPreview() {
                         10,
                         "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                         Date(),
-                        "",
-                        R.drawable.spin_107_crpd_1625194834874_400
+                        "https://image.raku-uru.jp/01/19110/26/Spin+107+Crpd_1625194834874.JPG",
                     ),
                     YarnData(
                         8,
@@ -893,8 +928,7 @@ fun HomeScreenPreview() {
                         10,
                         "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                         Date(),
-                        "",
-                        R.drawable.spin_101_crpd_1625194841231_400
+                        "https://image.raku-uru.jp/01/19110/38/Spin+101+Crpd_1625194841231.JPG",
                     ),
                 )
             ),

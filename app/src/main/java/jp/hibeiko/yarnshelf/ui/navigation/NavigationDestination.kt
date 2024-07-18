@@ -38,31 +38,31 @@ data class YarnDataForScreen(
     // 品質
     val quality: String = "",
     // 重量
-    val weight: Double? = null,
+    val weight: String = "",
     // 巻き方
     val roll: YarnRoll = YarnRoll.NONE,
     // 長さ
-    val length: Double? = null,
+    val length: String = "",
     // 標準ゲージ
     // 目
-    val gaugeColumnFrom: Double? = null,
-    val gaugeColumnTo: Double? = null,
+    val gaugeColumnFrom: String = "",
+    val gaugeColumnTo: String = "",
     // 段
-    val gaugeRowFrom: Double? = null,
-    val gaugeRowTo: Double? = null,
+    val gaugeRowFrom: String = "",
+    val gaugeRowTo: String = "",
     // 編み方
     val gaugeStitch: String = "",
     // 使用針
     // 棒針
-    val needleSizeFrom: Double? = null,
-    val needleSizeTo: Double? = null,
+    val needleSizeFrom: String = "",
+    val needleSizeTo: String = "",
     // かぎ針
-    val crochetNeedleSizeFrom: Double? = null,
-    val crochetNeedleSizeTo: Double? = null,
+    val crochetNeedleSizeFrom: String = "",
+    val crochetNeedleSizeTo: String = "",
     // 糸の太さ
     val thickness: YarnThickness = YarnThickness.NONE,
     // 個数
-    val havingNumber: Int = 0,
+    val havingNumber: String = "0",
     // 備考
     val yarnDescription: String = "",
     // 最終更新日

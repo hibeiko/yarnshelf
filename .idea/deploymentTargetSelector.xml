@@ -4,14 +4,20 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-06-26T05:07:48.567172700Z">
+        <DropdownSelection timestamp="2024-07-17T23:27:24.724685Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\vadbo\.android\avd\Pixel_8_API_34.avd" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=QV78080Y57" />
             </handle>
           </Target>
         </DropdownSelection>
         <DialogSelection />
+      </SelectionState>
+      <SelectionState runConfigName="HomeScreenPreview">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="YarnEditScreenPreview">
+        <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
   </component>
