@@ -101,9 +101,6 @@ fun updateYarnData(
         YarnParamName.IMAGE_URL
         -> yarnData.copy(imageUrl = param as String)
 
-        YarnParamName.DRAWABLE_RESOURCE_ID
-        -> yarnData.copy(drawableResourceId = (param as String).toInt())
-
         YarnParamName.HAVING_NUMBER
         -> yarnData.copy(havingNumber = (param as String).ifBlank { "0" })
 
@@ -269,8 +266,7 @@ fun validateInput(yarnData: YarnDataForScreen, paramName: YarnParamName): String
             else
                 ""
 
-        YarnParamName.IMAGE_URL,
-        YarnParamName.DRAWABLE_RESOURCE_ID
+        YarnParamName.IMAGE_URL
         -> ""
 
         YarnParamName.HAVING_NUMBER

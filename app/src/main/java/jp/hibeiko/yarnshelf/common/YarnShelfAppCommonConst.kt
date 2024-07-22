@@ -94,9 +94,6 @@ enum class YarnParamName( val maxLength: Int ) {
 
     // Yahooショッピングサイトの画像URL
     IMAGE_URL(maxLength = 0),
-
-    // 端末に保存した画像ファイルパス
-    DRAWABLE_RESOURCE_ID(maxLength = 0),
 }
 // ホーム画面の並び順
 enum class SortKey(val value: String, val rowValue: String) {

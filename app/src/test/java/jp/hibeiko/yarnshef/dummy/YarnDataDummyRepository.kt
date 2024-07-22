@@ -1,6 +1,5 @@
 package jp.hibeiko.yarnshef.dummy
 
-import jp.hibeiko.yarnshelf.R
 import jp.hibeiko.yarnshelf.common.YarnRoll
 import jp.hibeiko.yarnshelf.common.YarnThickness
 import jp.hibeiko.yarnshelf.data.YarnData
@@ -76,7 +75,6 @@ object YarnDummyData {
                 "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                 Date(),
                 "",
-                R.drawable.spin_1010_crpd_1625196651766_400
             ),
             YarnData(
                 2,
@@ -103,7 +101,6 @@ object YarnDummyData {
                 "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                 Date(),
                 "",
-                R.drawable.spin_102_crpd_1625194839510_400
             ),
             YarnData(
                 3,
@@ -130,7 +127,6 @@ object YarnDummyData {
                 "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                 Date(),
                 "",
-                R.drawable.spin_1020_crpd_1625196650659_400
             ),
             YarnData(
                 4,
@@ -157,7 +153,6 @@ object YarnDummyData {
                 "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                 Date(),
                 "",
-                R.drawable.spin_103_crpd_1625194837544_400
             ),
             YarnData(
                 5,
@@ -184,7 +179,6 @@ object YarnDummyData {
                 "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                 Date(),
                 "",
-                R.drawable.spin_104_crpd_1625194838195_400
             ),
             YarnData(
                 6,
@@ -211,7 +205,6 @@ object YarnDummyData {
                 "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                 Date(),
                 "",
-                R.drawable.spin_105_crpd_1625194836934_400
             ),
             YarnData(
                 7,
@@ -238,7 +231,6 @@ object YarnDummyData {
                 "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                 Date(),
                 "",
-                R.drawable.spin_106_crpd_1625194835979_400
             ),
             YarnData(
                 8,
@@ -265,7 +257,6 @@ object YarnDummyData {
                 "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                 Date(),
                 "",
-                R.drawable.spin_107_crpd_1625194834874_400
             ),
             YarnData(
                 9,
@@ -292,7 +283,6 @@ object YarnDummyData {
                 "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
                 Date(),
                 "",
-                R.drawable.spin_101_crpd_1625194841231_400
             ),
         )
 }

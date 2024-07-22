@@ -7,10 +7,9 @@ import jp.hibeiko.yarnshef.rules.TestDispatcherRule
 import jp.hibeiko.yarnshelf.common.YarnParamName
 import jp.hibeiko.yarnshelf.common.YarnRoll
 import jp.hibeiko.yarnshelf.common.YarnThickness
+import jp.hibeiko.yarnshelf.common.yarnDataToYarnDataForScreenConverter
 import jp.hibeiko.yarnshelf.ui.YarnEditDestination
 import jp.hibeiko.yarnshelf.ui.YarnEditScreenViewModel
-import jp.hibeiko.yarnshelf.ui.theme.backgroundDark
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -45,7 +44,7 @@ class YarnEditScreenViewModelUnitTest {
     // Destinationのテスト
     @Test
     fun yarnEditScreenViewModel_verifyDestination() {
-        assertEquals(YarnEditDestination.title, "毛糸情報編集画面")
+        assertEquals(YarnEditDestination.title, "けいとを編集")
         assertEquals(YarnEditDestination.route, "YarnInfoEdit")
     }
 
@@ -56,7 +55,7 @@ class YarnEditScreenViewModelUnitTest {
 
         // 初期設定されること
         assertEquals(
-            YarnDummyData.dummyDataList.first { it.yarnId == 1 },
+            yarnDataToYarnDataForScreenConverter( YarnDummyData.dummyDataList.first { it.yarnId == 1 }),
             viewModel.yarnEditScreenUiState.yarnEditData
         )
 
@@ -110,10 +109,19 @@ class YarnEditScreenViewModelUnitTest {
     @Test
     fun yarnEditScreenViewModel_InputWeight_UpdateWeightAndNoError() {
         viewModel.updateYarnEditData("30.1", YarnParamName.WEIGHT)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.weight, 30.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.weight, "30.1")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.WEIGHT))
     }
-
+    @Test
+    fun yarnEditScreenViewModel_InputInvalidWeight_UpdateWeightAndError() {
+        viewModel.updateYarnEditData("a", YarnParamName.WEIGHT)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.weight, "a")
+        assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.WEIGHT))
+        assertEquals(
+            viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.WEIGHT],
+            "数値を入力してください。"
+        )
+    }
     @Test
     fun yarnEditScreenViewModel_InputRoll_UpdateRollAndNoError() {
         viewModel.updateYarnEditData(YarnRoll.BALL, YarnParamName.ROLL)
@@ -124,38 +132,83 @@ class YarnEditScreenViewModelUnitTest {
     @Test
     fun yarnEditScreenViewModel_InputLength_UpdateLengthAndNoError() {
         viewModel.updateYarnEditData("100.1", YarnParamName.LENGTH)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.length, 100.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.length, "100.1")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.LENGTH))
     }
-
+    @Test
+    fun yarnEditScreenViewModel_InputInvalidLength_UpdateLengthAndError() {
+        viewModel.updateYarnEditData("a", YarnParamName.LENGTH)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.length, "a")
+        assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.LENGTH))
+        assertEquals(
+            viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.LENGTH],
+            "数値を入力してください。"
+        )
+    }
     @Test
     fun yarnEditScreenViewModel_InputGaugeColumnFrom_UpdateGaugeColumnFromAndNoError() {
         viewModel.updateYarnEditData("20.5", YarnParamName.GAUGE_COLUMN_FROM)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnFrom, 20.5)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnFrom, "20.5")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_COLUMN_FROM))
     }
-
+    @Test
+    fun yarnEditScreenViewModel_InputInvalidGaugeColumnFrom_UpdateGaugeColumnFromAndError() {
+        viewModel.updateYarnEditData("a", YarnParamName.GAUGE_COLUMN_FROM)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnFrom, "a")
+        assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_COLUMN_FROM))
+        assertEquals(
+            viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.GAUGE_COLUMN_FROM],
+            "数値を入力してください。"
+        )
+    }
     @Test
     fun yarnEditScreenViewModel_InputGaugeColumnTo_UpdateGaugeColumnToAndNoError() {
         viewModel.updateYarnEditData("20.5", YarnParamName.GAUGE_COLUMN_TO)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnTo, 20.5)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnTo, "20.5")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_COLUMN_TO))
     }
-
+    @Test
+    fun yarnEditScreenViewModel_InputInvalidGaugeColumnTo_UpdateGaugeColumnToAndError() {
+        viewModel.updateYarnEditData("a", YarnParamName.GAUGE_COLUMN_TO)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnTo, "a")
+        assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_COLUMN_TO))
+        assertEquals(
+            viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.GAUGE_COLUMN_TO],
+            "数値を入力してください。"
+        )
+    }
     @Test
     fun yarnEditScreenViewModel_InputGaugeRowFrom_UpdateGaugeRowFromAndNoError() {
         viewModel.updateYarnEditData("20.5", YarnParamName.GAUGE_ROW_FROM)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowFrom, 20.5)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowFrom, "20.5")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_ROW_FROM))
     }
-
+    @Test
+    fun yarnEditScreenViewModel_InputInvalidGaugeRowFrom_UpdateGaugeRowFromAndError() {
+        viewModel.updateYarnEditData("a", YarnParamName.GAUGE_ROW_FROM)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowFrom, "a")
+        assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_ROW_FROM))
+        assertEquals(
+            viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.GAUGE_ROW_FROM],
+            "数値を入力してください。"
+        )
+    }
     @Test
     fun yarnEditScreenViewModel_InputGaugeRowTo_UpdateGaugeRowToAndNoError() {
         viewModel.updateYarnEditData("20.5", YarnParamName.GAUGE_ROW_TO)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowTo, 20.5)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowTo, "20.5")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_ROW_TO))
     }
-
+    @Test
+    fun yarnEditScreenViewModel_InputInvalidGaugeRowTo_UpdateGaugeRowToAndError() {
+        viewModel.updateYarnEditData("a", YarnParamName.GAUGE_ROW_TO)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowTo, "a")
+        assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_ROW_TO))
+        assertEquals(
+            viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.GAUGE_ROW_TO],
+            "数値を入力してください。"
+        )
+    }
     @Test
     fun yarnEditScreenViewModel_InputGaugeStitch_UpdateGaugeStitchAndNoError() {
         viewModel.updateYarnEditData("テストメリヤス編み", YarnParamName.GAUGE_STITCH)
@@ -166,31 +219,67 @@ class YarnEditScreenViewModelUnitTest {
     @Test
     fun yarnEditScreenViewModel_InputNeedleSizeFrom_UpdateNeedleSizeFromAndNoError() {
         viewModel.updateYarnEditData("5.5", YarnParamName.NEEDLE_SIZE_FROM)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeFrom, 5.5)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeFrom, "5.5")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.NEEDLE_SIZE_FROM))
     }
-
+    @Test
+    fun yarnEditScreenViewModel_InputInvalidNeedleSizeFrom_UpdateNeedleSizeFromAndError() {
+        viewModel.updateYarnEditData("a", YarnParamName.NEEDLE_SIZE_FROM)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeFrom, "a")
+        assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.NEEDLE_SIZE_FROM))
+        assertEquals(
+            viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.NEEDLE_SIZE_FROM],
+            "数値を入力してください。"
+        )
+    }
     @Test
     fun yarnEditScreenViewModel_InputNeedleSizeTo_UpdateNeedleSizeToAndNoError() {
         viewModel.updateYarnEditData("5.5", YarnParamName.NEEDLE_SIZE_TO)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeTo, 5.5)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeTo, "5.5")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.NEEDLE_SIZE_TO))
     }
-
+    @Test
+    fun yarnEditScreenViewModel_InputInvalidNeedleSizeTo_UpdateNeedleSizeToAndError() {
+        viewModel.updateYarnEditData("a", YarnParamName.NEEDLE_SIZE_TO)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeTo, "a")
+        assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.NEEDLE_SIZE_TO))
+        assertEquals(
+            viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.NEEDLE_SIZE_TO],
+            "数値を入力してください。"
+        )
+    }
     @Test
     fun yarnEditScreenViewModel_InputCrochetNeedleSizeFrom_UpdateCrochetNeedleSizeFromAndNoError() {
         viewModel.updateYarnEditData("5.5", YarnParamName.CROCHET_NEEDLE_SIZE_FROM)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeFrom, 5.5)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeFrom, "5.5")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.CROCHET_NEEDLE_SIZE_FROM))
     }
-
+    @Test
+    fun yarnEditScreenViewModel_InputInvalidCrochetNeedleSizeFrom_UpdateCrochetNeedleSizeFromAndError() {
+        viewModel.updateYarnEditData("a", YarnParamName.CROCHET_NEEDLE_SIZE_FROM)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeFrom, "a")
+        assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.CROCHET_NEEDLE_SIZE_FROM))
+        assertEquals(
+            viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.CROCHET_NEEDLE_SIZE_FROM],
+            "数値を入力してください。"
+        )
+    }
     @Test
     fun yarnEditScreenViewModel_InputCrochetNeedleSizeTo_UpdateCrochetNeedleSizeToAndNoError() {
         viewModel.updateYarnEditData("5.5", YarnParamName.CROCHET_NEEDLE_SIZE_TO)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeTo, 5.5)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeTo, "5.5")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.CROCHET_NEEDLE_SIZE_TO))
     }
-
+    @Test
+    fun yarnEditScreenViewModel_InputInvalidCrochetNeedleSizeTo_UpdateCrochetNeedleSizeToAndError() {
+        viewModel.updateYarnEditData("a", YarnParamName.CROCHET_NEEDLE_SIZE_TO)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeTo, "a")
+        assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.CROCHET_NEEDLE_SIZE_TO))
+        assertEquals(
+            viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.CROCHET_NEEDLE_SIZE_TO],
+            "数値を入力してください。"
+        )
+    }
     @Test
     fun yarnEditScreenViewModel_InputThickness_UpdateThicknessAndNoError() {
         viewModel.updateYarnEditData(YarnThickness.NORMAL_THICK, YarnParamName.THICKNESS)
@@ -204,10 +293,19 @@ class YarnEditScreenViewModelUnitTest {
     @Test
     fun yarnEditScreenViewModel_InputHavingNumber_UpdateHavingNumberAndNoError() {
         viewModel.updateYarnEditData("10", YarnParamName.HAVING_NUMBER)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.havingNumber, 10)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.havingNumber, "10")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.HAVING_NUMBER))
     }
-
+    @Test
+    fun yarnEditScreenViewModel_InputInvalidHavingNumber_UpdateHavingNumberAndError() {
+        viewModel.updateYarnEditData("a", YarnParamName.HAVING_NUMBER)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.havingNumber, "a")
+        assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.HAVING_NUMBER))
+        assertEquals(
+            viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.HAVING_NUMBER],
+            "数値を入力してください。"
+        )
+    }
     @Test
     fun yarnEditScreenViewModel_InputYarnDescription_UpdateYarnDescriptionAndNoError() {
         viewModel.updateYarnEditData("テストメモ", YarnParamName.YARN_DESCRIPTION)
@@ -309,7 +407,7 @@ class YarnEditScreenViewModelUnitTest {
     @Test
     fun yarnEditScreenViewModel_InputWeight_UpdateWeightAndError() {
         viewModel.updateYarnEditData("10000.1", YarnParamName.WEIGHT)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.weight, 10000.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.weight, "10000.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.WEIGHT))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.WEIGHT],
@@ -320,14 +418,14 @@ class YarnEditScreenViewModelUnitTest {
     @Test
     fun yarnEditScreenViewModel_DeleteWeight_UpdateWeightAndNoError() {
         viewModel.updateYarnEditData("", YarnParamName.WEIGHT)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.weight, null)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.weight, "")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.WEIGHT))
     }
 
     @Test
     fun yarnEditScreenViewModel_InputLength_UpdateLengthAndError() {
         viewModel.updateYarnEditData("10000.1", YarnParamName.LENGTH)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.length, 10000.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.length, "10000.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.LENGTH))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.LENGTH],
@@ -338,54 +436,74 @@ class YarnEditScreenViewModelUnitTest {
     @Test
     fun yarnEditScreenViewModel_DeleteLength_UpdateLengthAndNoError() {
         viewModel.updateYarnEditData("", YarnParamName.LENGTH)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.length, null)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.length, "")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.LENGTH))
     }
 
     @Test
     fun yarnEditScreenViewModel_InputGaugeColumnFrom_UpdateGaugeColumnFromAndError() {
         viewModel.updateYarnEditData("100.1", YarnParamName.GAUGE_COLUMN_FROM)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnFrom, 100.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnFrom, "100.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_COLUMN_FROM))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.GAUGE_COLUMN_FROM],
             "100以内で入力してください。"
         )
     }
-
+    @Test
+    fun yarnEditScreenViewModel_DeleteGaugeColumnFrom_UpdateGaugeColumnFromAndNoError() {
+        viewModel.updateYarnEditData("", YarnParamName.GAUGE_COLUMN_FROM)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnFrom, "")
+        assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_COLUMN_FROM))
+    }
     @Test
     fun yarnEditScreenViewModel_InputGaugeColumnTo_UpdateGaugeColumnToAndError() {
         viewModel.updateYarnEditData("100.1", YarnParamName.GAUGE_COLUMN_TO)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnTo, 100.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnTo, "100.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_COLUMN_TO))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.GAUGE_COLUMN_TO],
             "100以内で入力してください。"
         )
     }
-
+    @Test
+    fun yarnEditScreenViewModel_DeleteGaugeColumnTo_UpdateGaugeColumnToAndNoError() {
+        viewModel.updateYarnEditData("", YarnParamName.GAUGE_COLUMN_TO)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnTo, "")
+        assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_COLUMN_TO))
+    }
     @Test
     fun yarnEditScreenViewModel_InputGaugeRowFrom_UpdateGaugeRowFromAndError() {
         viewModel.updateYarnEditData("100.1", YarnParamName.GAUGE_ROW_FROM)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowFrom, 100.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowFrom, "100.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_ROW_FROM))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.GAUGE_ROW_FROM],
             "100以内で入力してください。"
         )
     }
-
+    @Test
+    fun yarnEditScreenViewModel_DeleteGaugeRowFrom_UpdateGaugeRowFromAndNoError() {
+        viewModel.updateYarnEditData("", YarnParamName.GAUGE_ROW_FROM)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowFrom, "")
+        assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_ROW_FROM))
+    }
     @Test
     fun yarnEditScreenViewModel_InputGaugeRowTo_UpdateGaugeRowToAndError() {
         viewModel.updateYarnEditData("100.1", YarnParamName.GAUGE_ROW_TO)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowTo, 100.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowTo, "100.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_ROW_TO))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.GAUGE_ROW_TO],
             "100以内で入力してください。"
         )
     }
-
+    @Test
+    fun yarnEditScreenViewModel_DeleteGaugeRowTo_UpdateGaugeRowToAndNoError() {
+        viewModel.updateYarnEditData("", YarnParamName.GAUGE_ROW_TO)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowTo, "")
+        assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_ROW_TO))
+    }
     @Test
     fun yarnEditScreenViewModel_InputGaugeStitch_UpdateGaugeStitchAndError() {
         viewModel.updateYarnEditData("あ".repeat(101), YarnParamName.GAUGE_STITCH)
@@ -400,51 +518,71 @@ class YarnEditScreenViewModelUnitTest {
     @Test
     fun yarnEditScreenViewModel_InputNeedleSizeFrom_UpdateNeedleSizeFromAndError() {
         viewModel.updateYarnEditData("30.1", YarnParamName.NEEDLE_SIZE_FROM)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeFrom, 30.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeFrom, "30.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.NEEDLE_SIZE_FROM))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.NEEDLE_SIZE_FROM],
             "30以内で入力してください。"
         )
     }
-
+    @Test
+    fun yarnEditScreenViewModel_DeleteNeedleSizeFrom_UpdateNeedleSizeFromAndNoError() {
+        viewModel.updateYarnEditData("", YarnParamName.NEEDLE_SIZE_FROM)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeFrom, "")
+        assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.NEEDLE_SIZE_FROM))
+    }
     @Test
     fun yarnEditScreenViewModel_InputNeedleSizeTo_UpdateNeedleSizeToAndError() {
         viewModel.updateYarnEditData("30.1", YarnParamName.NEEDLE_SIZE_TO)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeTo, 30.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeTo, "30.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.NEEDLE_SIZE_TO))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.NEEDLE_SIZE_TO],
             "30以内で入力してください。"
         )
     }
-
+    @Test
+    fun yarnEditScreenViewModel_DeleteNeedleSizeTo_UpdateNeedleSizeToAndNoError() {
+        viewModel.updateYarnEditData("", YarnParamName.NEEDLE_SIZE_TO)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeTo, "")
+        assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.NEEDLE_SIZE_TO))
+    }
     @Test
     fun yarnEditScreenViewModel_InputCrochetNeedleSizeFrom_UpdateCrochetNeedleSizeFromAndError() {
         viewModel.updateYarnEditData("30.1", YarnParamName.CROCHET_NEEDLE_SIZE_FROM)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeFrom, 30.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeFrom, "30.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.CROCHET_NEEDLE_SIZE_FROM))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.CROCHET_NEEDLE_SIZE_FROM],
             "30以内で入力してください。"
         )
     }
-
+    @Test
+    fun yarnEditScreenViewModel_DeleteCrochetNeedleSizeFrom_UpdateCrochetNeedleSizeFromAndNoError() {
+        viewModel.updateYarnEditData("", YarnParamName.CROCHET_NEEDLE_SIZE_FROM)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeFrom, "")
+        assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.CROCHET_NEEDLE_SIZE_FROM))
+    }
     @Test
     fun yarnEditScreenViewModel_InputCrochetNeedleSizeTo_UpdateCrochetNeedleSizeToAndError() {
         viewModel.updateYarnEditData("30.1", YarnParamName.CROCHET_NEEDLE_SIZE_TO)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeTo, 30.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeTo, "30.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.CROCHET_NEEDLE_SIZE_TO))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.CROCHET_NEEDLE_SIZE_TO],
             "30以内で入力してください。"
         )
     }
-
+    @Test
+    fun yarnEditScreenViewModel_DeleteCrochetNeedleSizeTo_UpdateCrochetNeedleSizeToAndNoError() {
+        viewModel.updateYarnEditData("", YarnParamName.CROCHET_NEEDLE_SIZE_TO)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeTo, "")
+        assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.CROCHET_NEEDLE_SIZE_TO))
+    }
     @Test
     fun yarnEditScreenViewModel_InputHavingNumber_UpdateHavingNumberAndError() {
         viewModel.updateYarnEditData("1001", YarnParamName.HAVING_NUMBER)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.havingNumber, 1001)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.havingNumber, "1001")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.HAVING_NUMBER))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.HAVING_NUMBER],
@@ -455,7 +593,7 @@ class YarnEditScreenViewModelUnitTest {
     @Test
     fun yarnEditScreenViewModel_DeleteHavingNumber_UpdateHavingNumberAndNoError() {
         viewModel.updateYarnEditData("", YarnParamName.HAVING_NUMBER)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.havingNumber, 0)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.havingNumber, "0")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.HAVING_NUMBER))
     }
 
@@ -582,7 +720,7 @@ class YarnEditScreenViewModelUnitTest {
     @Test
     fun yarnEditScreenViewModel_FixWeight_UpdateWeightAndNoError() {
         viewModel.updateYarnEditData("10000.1", YarnParamName.WEIGHT)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.weight, 10000.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.weight, "10000.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.WEIGHT))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.WEIGHT],
@@ -590,14 +728,14 @@ class YarnEditScreenViewModelUnitTest {
         )
 
         viewModel.updateYarnEditData("10000.0", YarnParamName.WEIGHT)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.weight, 10000.0)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.weight, "10000.0")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.WEIGHT))
     }
 
     @Test
     fun yarnEditScreenViewModel_FixLength_UpdateLengthAndNoError() {
         viewModel.updateYarnEditData("10000.1", YarnParamName.LENGTH)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.length, 10000.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.length, "10000.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.LENGTH))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.LENGTH],
@@ -605,14 +743,14 @@ class YarnEditScreenViewModelUnitTest {
         )
 
         viewModel.updateYarnEditData("10000.0", YarnParamName.LENGTH)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.length, 10000.0)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.length, "10000.0")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.LENGTH))
     }
 
     @Test
     fun yarnEditScreenViewModel_FixGaugeColumnFrom_UpdateGaugeColumnFromAndNoError() {
         viewModel.updateYarnEditData("100.1", YarnParamName.GAUGE_COLUMN_FROM)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnFrom, 100.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnFrom, "100.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_COLUMN_FROM))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.GAUGE_COLUMN_FROM],
@@ -620,14 +758,14 @@ class YarnEditScreenViewModelUnitTest {
         )
 
         viewModel.updateYarnEditData("100.0", YarnParamName.GAUGE_COLUMN_FROM)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnFrom, 100.0)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnFrom, "100.0")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_COLUMN_FROM))
     }
 
     @Test
     fun yarnEditScreenViewModel_FixGaugeColumnTo_UpdateGaugeColumnToAndNoError() {
         viewModel.updateYarnEditData("100.1", YarnParamName.GAUGE_COLUMN_TO)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnTo, 100.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnTo, "100.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_COLUMN_TO))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.GAUGE_COLUMN_TO],
@@ -635,14 +773,14 @@ class YarnEditScreenViewModelUnitTest {
         )
 
         viewModel.updateYarnEditData("100.0", YarnParamName.GAUGE_COLUMN_TO)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnTo, 100.0)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeColumnTo, "100.0")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_COLUMN_TO))
     }
 
     @Test
     fun yarnEditScreenViewModel_FixGaugeRowFrom_UpdateGaugeRowFromAndNoError() {
         viewModel.updateYarnEditData("100.1", YarnParamName.GAUGE_ROW_FROM)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowFrom, 100.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowFrom, "100.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_ROW_FROM))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.GAUGE_ROW_FROM],
@@ -650,14 +788,14 @@ class YarnEditScreenViewModelUnitTest {
         )
 
         viewModel.updateYarnEditData("100.0", YarnParamName.GAUGE_ROW_FROM)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowFrom, 100.0)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowFrom, "100.0")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_ROW_FROM))
     }
 
     @Test
     fun yarnEditScreenViewModel_FixGaugeRowTo_UpdateGaugeRowToAndNoError() {
         viewModel.updateYarnEditData("100.1", YarnParamName.GAUGE_ROW_TO)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowTo, 100.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowTo, "100.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_ROW_TO))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.GAUGE_ROW_TO],
@@ -665,7 +803,7 @@ class YarnEditScreenViewModelUnitTest {
         )
 
         viewModel.updateYarnEditData("100.0", YarnParamName.GAUGE_ROW_TO)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowTo, 100.0)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.gaugeRowTo, "100.0")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.GAUGE_ROW_TO))
     }
 
@@ -687,7 +825,7 @@ class YarnEditScreenViewModelUnitTest {
     @Test
     fun yarnEditScreenViewModel_FixNeedleSizeFrom_UpdateNeedleSizeFromAndNoError() {
         viewModel.updateYarnEditData("30.1", YarnParamName.NEEDLE_SIZE_FROM)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeFrom, 30.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeFrom, "30.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.NEEDLE_SIZE_FROM))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.NEEDLE_SIZE_FROM],
@@ -695,14 +833,14 @@ class YarnEditScreenViewModelUnitTest {
         )
 
         viewModel.updateYarnEditData("30.0", YarnParamName.NEEDLE_SIZE_FROM)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeFrom, 30.0)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeFrom, "30.0")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.NEEDLE_SIZE_FROM))
     }
 
     @Test
     fun yarnEditScreenViewModel_FixNeedleSizeTo_UpdateNeedleSizeToAndNoError() {
         viewModel.updateYarnEditData("30.1", YarnParamName.NEEDLE_SIZE_TO)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeTo, 30.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeTo, "30.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.NEEDLE_SIZE_TO))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.NEEDLE_SIZE_TO],
@@ -710,14 +848,14 @@ class YarnEditScreenViewModelUnitTest {
         )
 
         viewModel.updateYarnEditData("30.0", YarnParamName.NEEDLE_SIZE_TO)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeTo, 30.0)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.needleSizeTo, "30.0")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.NEEDLE_SIZE_TO))
     }
 
     @Test
     fun yarnEditScreenViewModel_FixCrochetNeedleSizeFrom_UpdateCrochetNeedleSizeFromAndNoError() {
         viewModel.updateYarnEditData("30.1", YarnParamName.CROCHET_NEEDLE_SIZE_FROM)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeFrom, 30.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeFrom, "30.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.CROCHET_NEEDLE_SIZE_FROM))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.CROCHET_NEEDLE_SIZE_FROM],
@@ -725,14 +863,14 @@ class YarnEditScreenViewModelUnitTest {
         )
 
         viewModel.updateYarnEditData("30.0", YarnParamName.CROCHET_NEEDLE_SIZE_FROM)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeFrom, 30.0)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeFrom, "30.0")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.CROCHET_NEEDLE_SIZE_FROM))
     }
 
     @Test
     fun yarnEditScreenViewModel_FixCrochetNeedleSizeTo_UpdateCrochetNeedleSizeToAndNoError() {
         viewModel.updateYarnEditData("30.1", YarnParamName.CROCHET_NEEDLE_SIZE_TO)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeTo, 30.1)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeTo, "30.1")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.CROCHET_NEEDLE_SIZE_TO))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.CROCHET_NEEDLE_SIZE_TO],
@@ -740,14 +878,14 @@ class YarnEditScreenViewModelUnitTest {
         )
 
         viewModel.updateYarnEditData("30.0", YarnParamName.CROCHET_NEEDLE_SIZE_TO)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeTo, 30.0)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.crochetNeedleSizeTo, "30.0")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.CROCHET_NEEDLE_SIZE_TO))
     }
 
     @Test
     fun yarnEditScreenViewModel_FixHavingNumber_UpdateHavingNumberAndNoError() {
         viewModel.updateYarnEditData("1001", YarnParamName.HAVING_NUMBER)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.havingNumber, 1001)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.havingNumber, "1001")
         assertTrue(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.HAVING_NUMBER))
         assertEquals(
             viewModel.yarnEditScreenUiState.isErrorMap[YarnParamName.HAVING_NUMBER],
@@ -755,7 +893,7 @@ class YarnEditScreenViewModelUnitTest {
         )
 
         viewModel.updateYarnEditData("1000", YarnParamName.HAVING_NUMBER)
-        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.havingNumber, 1000)
+        assertEquals(viewModel.yarnEditScreenUiState.yarnEditData.havingNumber, "1000")
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.HAVING_NUMBER))
     }
 

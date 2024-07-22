@@ -44,20 +44,20 @@ class YarnConfirmScreenViewModelUnitTest {
                     colorNumber = "１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０",
                     rotNumber = "１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０",
                     quality = "１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０",
-                    weight = 10000.0,
+                    weight = "10000.0",
                     roll = YarnRoll.BALL,
-                    length = 10000.0,
-                    gaugeColumnFrom = 100.0,
-                    gaugeColumnTo = 100.0,
-                    gaugeRowFrom = 100.0,
-                    gaugeRowTo = 100.0,
+                    length = "10000.0",
+                    gaugeColumnFrom = "100.0",
+                    gaugeColumnTo = "100.0",
+                    gaugeRowFrom = "100.0",
+                    gaugeRowTo = "100.0",
                     gaugeStitch = "１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０",
-                    needleSizeFrom = 30.0,
-                    needleSizeTo = 30.0,
-                    crochetNeedleSizeFrom = 30.0,
-                    crochetNeedleSizeTo = 30.0,
+                    needleSizeFrom = "30.0",
+                    needleSizeTo = "30.0",
+                    crochetNeedleSizeFrom = "30.0",
+                    crochetNeedleSizeTo = "30.0",
                     thickness = YarnThickness.VERY_THICK,
-                    havingNumber = 1000,
+                    havingNumber = "1000",
                     yarnDescription = "１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０",
                     imageUrl = "https://item-shopping.c.yimg.jp/i/g/ko-da_rambouillet-wc",
                     drawableResourceId = R.drawable.not_found,
@@ -111,7 +111,6 @@ class YarnConfirmScreenViewModelUnitTest {
             "１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０"
         )
         assertEquals(yarnData.imageUrl, "https://item-shopping.c.yimg.jp/i/g/ko-da_rambouillet-wc")
-        assertEquals(yarnData.drawableResourceId, R.drawable.not_found)
 
     }
 

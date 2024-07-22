@@ -4,9 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import jp.hibeiko.yarnshef.dummy.YarnDataDummyRepository
 import jp.hibeiko.yarnshef.dummy.YarnDummyData
 import jp.hibeiko.yarnshef.rules.TestDispatcherRule
-import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.ui.YarnDetailDestination
-import jp.hibeiko.yarnshelf.ui.YarnDetailScreenUiState
 import jp.hibeiko.yarnshelf.ui.YarnDetailScreenViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
@@ -46,7 +44,7 @@ class YarnDetailScreenViewModelUnitTest {
     // Destinationのテスト
     @Test
     fun yarnConfirmScreenViewModel_verifyDestination() {
-        assertEquals(YarnDetailDestination.title, "けいと情報")
+        assertEquals(YarnDetailDestination.title, "けいとの詳細")
         assertEquals(YarnDetailDestination.route, "YarnInfoDetail")
     }
 
