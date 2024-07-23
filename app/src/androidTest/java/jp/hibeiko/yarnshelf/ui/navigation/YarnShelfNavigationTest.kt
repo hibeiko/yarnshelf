@@ -99,13 +99,13 @@ class YarnShelfNavigationTest{
             .performClick()
         assertEquals(ItemSearchDestination.route, navController.currentBackStackEntry?.destination?.route)
     }
-    // 毛糸登録画面で端末の戻るボタンを押下すると毛糸検索画面に遷移すること
+    // 毛糸登録画面で端末の戻るボタンを押下するとホーム画面に遷移すること
     @Test
     fun yarnShelfNavHost_yarnEntryScreen_clickDeviceBackButton_navigatesToItemSearchScreen(){
         navigateToYarnEntryScreen()
-        assertEquals(ItemSearchDestination.route, navController.previousBackStackEntry?.destination?.route)
+        assertEquals(HomeDestination.route, navController.previousBackStackEntry?.destination?.route)
     }
-    // 毛糸登録画面で画面下部の戻るボタンを押下すると毛糸検索画面に遷移すること
+    // 毛糸登録画面で画面下部の戻るボタンを押下するとホーム画面に遷移すること
     @Test
     fun yarnShelfNavHost_yarnEntryScreen_clickBackButton_navigatesToItemSearchScreen(){
         navigateToYarnEntryScreen()
@@ -146,11 +146,8 @@ class YarnShelfNavigationTest{
 //    }
     // 毛糸登録確認画面で次へボタンを押下するとホーム画面に遷移すること
     @Test
-    fun yarnShelfNavHost_yarnConfirmScreen_clickNextButton_navigatesToItemSearchScreen(){
-        navigateToYarnConfirmScreen()
-        composeTestRule
-            .onNodeWithText(composeTestRule.activity.getString(R.string.ok))
-            .performClick()
+    fun yarnShelfNavHost_yarnEntryScreen_clickNextButton_navigatesToHomeScreen(){
+    navigateToYarnEntry()
         assertEquals(HomeDestination.route, navController.currentBackStackEntry?.destination?.route)
     }
 
@@ -168,13 +165,16 @@ class YarnShelfNavigationTest{
             .onNodeWithText(composeTestRule.activity.getString(R.string.itemsearchscreen_manualinput_tab_name))
             .performClick()
     }
-    private fun navigateToYarnConfirmScreen() {
+    private fun navigateToYarnEntry() {
         navigateToYarnEntryScreen()
         composeTestRule
             .onNodeWithText(composeTestRule.activity.getString(R.string.yarneditscreen_input_name_field_name))
             .performTextInput("テスト名前")
         composeTestRule
-            .onNodeWithText(composeTestRule.activity.getString(R.string.next))
+            .onNodeWithText(composeTestRule.activity.getString(R.string.Submit))
+            .performClick()
+        composeTestRule
+            .onNodeWithText(composeTestRule.activity.getString(R.string.ok))
             .performClick()
     }
 }

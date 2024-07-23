@@ -108,7 +108,12 @@ fun ItemSearchScreen(
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = cancelButtonOnClick) {
+                        IconButton(
+                            onClick = {
+                                if (itemSearchScreenUiState.entryScreenViewFlag) itemSearchScreenViewModel.backToItemSearchScreen()
+                                else cancelButtonOnClick()
+                            }
+                        ) {
                             Icon(
                                 Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringResource(R.string.back),
@@ -119,7 +124,7 @@ fun ItemSearchScreen(
                 )
             },
         ) { innerPadding ->
-            if( itemSearchScreenUiState.entryScreenViewFlag ){
+            if (itemSearchScreenUiState.entryScreenViewFlag) {
                 Column(modifier = modifier.padding(innerPadding)) {
                     YarnEditScreenBody(
                         yarnData = itemSearchScreenUiState.itemSearchData,
@@ -149,8 +154,7 @@ fun ItemSearchScreen(
                     )
 
                 }
-            }
-            else {
+            } else {
                 ItemSearchScreenBody(
                     itemSearchScreenUiState,
                     itemSearchScreenViewModel.searchItemUiState,
@@ -200,7 +204,10 @@ fun ItemSearchScreenBody(
                             painter = painterResource(R.drawable.outline_barcode_24),
                             contentDescription = null
                         )
-                        Text(text = stringResource(R.string.itemsearchscreen_barcode_tab_name), style = MaterialTheme.typography.labelSmall)
+                        Text(
+                            text = stringResource(R.string.itemsearchscreen_barcode_tab_name),
+                            style = MaterialTheme.typography.labelSmall
+                        )
                     }
                 },
                 selected = itemSearchScreenUiState.selectedTabIndex == 0,
@@ -210,7 +217,10 @@ fun ItemSearchScreenBody(
                 text = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Search, contentDescription = null)
-                        Text(text = stringResource(R.string.itemsearchscreen_itemsearch_tab_name), style = MaterialTheme.typography.labelSmall)
+                        Text(
+                            text = stringResource(R.string.itemsearchscreen_itemsearch_tab_name),
+                            style = MaterialTheme.typography.labelSmall
+                        )
                     }
                 },
                 selected = itemSearchScreenUiState.selectedTabIndex == 0,
@@ -220,7 +230,10 @@ fun ItemSearchScreenBody(
                 text = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Edit, contentDescription = null)
-                        Text(text = stringResource(R.string.itemsearchscreen_manualinput_tab_name), style = MaterialTheme.typography.labelSmall)
+                        Text(
+                            text = stringResource(R.string.itemsearchscreen_manualinput_tab_name),
+                            style = MaterialTheme.typography.labelSmall
+                        )
                     }
                 },
                 selected = itemSearchScreenUiState.selectedTabIndex == 0,
@@ -271,7 +284,10 @@ fun ItemSearchScreenBody(
                         painter = painterResource(R.drawable.baseline_photo_camera_24),
                         contentDescription = null
                     )
-                    Text(text = stringResource(R.string.itemsearchscreen_scan_button_name), style = MaterialTheme.typography.labelSmall)
+                    Text(
+                        text = stringResource(R.string.itemsearchscreen_scan_button_name),
+                        style = MaterialTheme.typography.labelSmall
+                    )
                 }
             }
 
@@ -296,7 +312,10 @@ fun ItemSearchScreenBody(
                                     )
                             }
                         ) {
-                            Icon(Icons.Default.Search, contentDescription = stringResource(R.string.itemsearchscreen_itemsearch_tab_name))
+                            Icon(
+                                Icons.Default.Search,
+                                contentDescription = stringResource(R.string.itemsearchscreen_itemsearch_tab_name)
+                            )
                         }
                     },
                     value = itemSearchScreenUiState.yarnNameSearchInput,
