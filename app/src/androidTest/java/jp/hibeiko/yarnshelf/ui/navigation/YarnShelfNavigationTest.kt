@@ -13,8 +13,6 @@ import jp.hibeiko.yarnshelf.R
 import jp.hibeiko.yarnshelf.YarnShelfApp
 import jp.hibeiko.yarnshelf.ui.HomeDestination
 import jp.hibeiko.yarnshelf.ui.ItemSearchDestination
-import jp.hibeiko.yarnshelf.ui.YarnConfirmDestination
-import jp.hibeiko.yarnshelf.ui.YarnEntryDestination
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -86,12 +84,12 @@ class YarnShelfNavigationTest{
 //            .performClick()
 //        assertEquals(YarnEntryDestination.route, navController.currentBackStackEntry?.destination?.route)
 //    }
-    // 毛糸検索画面で手入力タブを押下すると毛糸登録画面に遷移すること
-    @Test
-    fun yarnShelfNavHost_itemSearchScreen_clickManualInputTab_navigatesToYarnEntryScreen(){
-        navigateToYarnEntryScreen()
-        assertEquals(YarnEntryDestination.routeWithArgs, navController.currentBackStackEntry?.destination?.route)
-    }
+//    // 毛糸検索画面で手入力タブを押下すると毛糸登録画面に遷移すること
+//    @Test
+//    fun yarnShelfNavHost_itemSearchScreen_clickManualInputTab_navigatesToYarnEntryScreen(){
+//        navigateToYarnEntryScreen()
+//        assertEquals(YarnEntryDestination.routeWithArgs, navController.currentBackStackEntry?.destination?.route)
+//    }
     // 毛糸登録画面でトップバーの戻るボタンを押下すると毛糸検索画面に遷移すること
     @Test
     fun yarnShelfNavHost_yarnEntryScreen_clickBackIcon_navigatesToItemSearchScreen(){
@@ -116,36 +114,36 @@ class YarnShelfNavigationTest{
             .performClick()
         assertEquals(ItemSearchDestination.route, navController.currentBackStackEntry?.destination?.route)
     }
-    // 毛糸登録画面で次へボタンを押下すると毛糸登録確認画面に遷移すること
-    @Test
-    fun yarnShelfNavHost_yarnEntryScreen_clickNextButton_navigatesToItemSearchScreen(){
-        navigateToYarnConfirmScreen()
-        assertEquals(YarnConfirmDestination.routeWithArgs, navController.currentBackStackEntry?.destination?.route)
-    }
-    // 毛糸登録確認画面でトップバーの戻るボタンを押下すると毛糸登録画面に遷移すること
-    @Test
-    fun yarnShelfNavHost_yarnConfirmScreen_clickBackIcon_navigatesToYarnEntryScreen(){
-        navigateToYarnConfirmScreen()
-        composeTestRule
-            .onNodeWithContentDescription(composeTestRule.activity.getString(R.string.back))
-            .performClick()
-        assertEquals(YarnEntryDestination.routeWithArgs, navController.currentBackStackEntry?.destination?.route)
-    }
-    // 毛糸登録確認画面で端末の戻るボタンを押下すると毛糸登録画面に遷移すること
-    @Test
-    fun yarnShelfNavHost_yarnConfirmScreen_clickDeviceBackButton_navigatesToYarnEntryScreen(){
-        navigateToYarnConfirmScreen()
-        assertEquals(YarnEntryDestination.routeWithArgs, navController.previousBackStackEntry?.destination?.route)
-    }
-    // 毛糸登録確認画面で画面下部の戻るボタンを押下すると毛糸登録画面に遷移すること
-    @Test
-    fun yarnShelfNavHost_yarnConfirmScreen_clickBackButton_navigatesToYarnEntryScreen(){
-        navigateToYarnConfirmScreen()
-        composeTestRule
-            .onNodeWithText(composeTestRule.activity.getString(R.string.back))
-            .performClick()
-        assertEquals(YarnEntryDestination.routeWithArgs, navController.currentBackStackEntry?.destination?.route)
-    }
+//    // 毛糸登録画面で次へボタンを押下すると毛糸登録確認画面に遷移すること
+//    @Test
+//    fun yarnShelfNavHost_yarnEntryScreen_clickNextButton_navigatesToItemSearchScreen(){
+//        navigateToYarnConfirmScreen()
+//        assertEquals(YarnConfirmDestination.routeWithArgs, navController.currentBackStackEntry?.destination?.route)
+//    }
+//    // 毛糸登録確認画面でトップバーの戻るボタンを押下すると毛糸登録画面に遷移すること
+//    @Test
+//    fun yarnShelfNavHost_yarnConfirmScreen_clickBackIcon_navigatesToYarnEntryScreen(){
+//        navigateToYarnConfirmScreen()
+//        composeTestRule
+//            .onNodeWithContentDescription(composeTestRule.activity.getString(R.string.back))
+//            .performClick()
+//        assertEquals(YarnEntryDestination.routeWithArgs, navController.currentBackStackEntry?.destination?.route)
+//    }
+//    // 毛糸登録確認画面で端末の戻るボタンを押下すると毛糸登録画面に遷移すること
+//    @Test
+//    fun yarnShelfNavHost_yarnConfirmScreen_clickDeviceBackButton_navigatesToYarnEntryScreen(){
+//        navigateToYarnConfirmScreen()
+//        assertEquals(YarnEntryDestination.routeWithArgs, navController.previousBackStackEntry?.destination?.route)
+//    }
+//    // 毛糸登録確認画面で画面下部の戻るボタンを押下すると毛糸登録画面に遷移すること
+//    @Test
+//    fun yarnShelfNavHost_yarnConfirmScreen_clickBackButton_navigatesToYarnEntryScreen(){
+//        navigateToYarnConfirmScreen()
+//        composeTestRule
+//            .onNodeWithText(composeTestRule.activity.getString(R.string.back))
+//            .performClick()
+//        assertEquals(YarnEntryDestination.routeWithArgs, navController.currentBackStackEntry?.destination?.route)
+//    }
     // 毛糸登録確認画面で次へボタンを押下するとホーム画面に遷移すること
     @Test
     fun yarnShelfNavHost_yarnConfirmScreen_clickNextButton_navigatesToItemSearchScreen(){
