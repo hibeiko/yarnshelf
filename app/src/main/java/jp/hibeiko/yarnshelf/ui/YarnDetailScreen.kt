@@ -15,6 +15,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,6 +27,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -34,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -68,6 +72,7 @@ fun YarnDetailScreen(
 ) {
     // UiStateを取得
     val yarnDetailScreenUiState by yarnDetailScreenViewModel.yarnDetailScreenUiState.collectAsState()
+    val dialogViewFlag by yarnDetailScreenViewModel.dialogViewFlag.collectAsState()
 
     // 画面トップ
     Surface(
@@ -105,12 +110,16 @@ fun YarnDetailScreen(
                         .verticalScroll(rememberScrollState())
                         .weight(1.0f, false),
                     yarnDetailScreenUiState.yarnDetailData,
+                    dialogViewFlag,
+                    yarnDetailScreenViewModel::updateDialogViewFlag,
+                    yarnDetailScreenViewModel::deleteYarnData,
+                    cancelButtonOnClick,
                 )
                 YarnDetailScreenBottom(
                     modifier,
                     yarnDetailScreenUiState.yarnDetailData,
-                    yarnDetailScreenViewModel::deleteYarnData,
                     nextButtonOnClick,
+                    yarnDetailScreenViewModel::updateDialogViewFlag,
                     cancelButtonOnClick,
                 )
             }
@@ -122,6 +131,10 @@ fun YarnDetailScreen(
 fun YarnDetailScreenBody(
     modifier: Modifier = Modifier,
     yarnData: YarnData,
+    dialogViewFlag: Boolean,
+    updateDialogViewFlag: (Boolean) -> Unit,
+    deleteYarnData: () -> Unit,
+    cancelButtonOnClick: () -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.Top,
@@ -373,14 +386,58 @@ fun YarnDetailScreenBody(
         }
 //        Spacer(modifier = Modifier.weight(1.0F))
     }
+    if (dialogViewFlag) {
+        ConfirmationDialog(
+            onDismissRequest = updateDialogViewFlag,
+            onConfirmation = {
+                deleteYarnData()
+                cancelButtonOnClick()
+            },
+            titleText = "確認",
+            dialogText = "削除したデータは元に戻せません。削除してよろしいですか？",
+            confirmButtonText = stringResource(R.string.delete)
+        )
+
+    }
 }
 
+@Composable
+fun ConfirmationDialog(
+    onDismissRequest: (Boolean) -> Unit,
+    onConfirmation: () -> Unit,
+    titleText : String,
+    dialogText: String,
+    confirmButtonText: String,
+){
+    AlertDialog(
+        icon = {
+            Icon(Icons.Default.Info, contentDescription = "Confirmation")
+        },
+        title = {
+            Text(text = titleText)
+        },
+        text = {
+            Text(text = dialogText)
+        },
+        onDismissRequest = {onDismissRequest(false)} ,
+        confirmButton = {
+            TextButton(onClick = onConfirmation) {
+                Text(text = confirmButtonText)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = {onDismissRequest(false)}) {
+                Text(text = stringResource(R.string.cancel))
+            }
+        }
+    )
+}
 @Composable
 fun YarnDetailScreenBottom(
     modifier: Modifier,
     yarnData: YarnData,
-    deleteYarnData: () -> Unit,
     nextButtonOnClick: (Int) -> Unit,
+    updateDialogViewFlag: (Boolean) -> Unit,
     cancelButtonOnClick: () -> Unit,
 ) {
     Row(
@@ -392,18 +449,15 @@ fun YarnDetailScreenBottom(
         OutlinedButton(
             onClick = cancelButtonOnClick
         ) {
-            Text(text = "Cancel", style = MaterialTheme.typography.labelSmall)
+            Text(text = stringResource(R.string.back), style = MaterialTheme.typography.labelSmall)
         }
         Button(
-            onClick = {
-                deleteYarnData()
-                cancelButtonOnClick()
-            },
+            onClick = {updateDialogViewFlag(true)},
         ) {
-            Text(text = "削除", style = MaterialTheme.typography.labelSmall)
+            Text(text = stringResource(R.string.delete), style = MaterialTheme.typography.labelSmall)
         }
         Button(onClick = { nextButtonOnClick(yarnData.yarnId) }) {
-            Text(text = "編集", style = MaterialTheme.typography.labelSmall)
+            Text(text = stringResource(R.string.edit), style = MaterialTheme.typography.labelSmall)
         }
     }
 }
@@ -443,6 +497,10 @@ fun YarnDetailScreenPreview() {
                 Date(),
                 "https://image.raku-uru.jp/01/19110/456/Spin+1010+Crpd_1625196651766.JPG",
             ),
+            dialogViewFlag = false,
+            updateDialogViewFlag = {_ -> },
+            deleteYarnData = {},
+            cancelButtonOnClick = {}
         )
     }
 }
@@ -481,8 +539,8 @@ fun YarnDetailBottomPreview() {
                 Date(),
                 "https://image.raku-uru.jp/01/19110/456/Spin+1010+Crpd_1625196651766.JPG",
             ),
-            deleteYarnData = {},
             nextButtonOnClick = { _ -> },
+            updateDialogViewFlag = {_ ->},
             cancelButtonOnClick = {}
         )
     }

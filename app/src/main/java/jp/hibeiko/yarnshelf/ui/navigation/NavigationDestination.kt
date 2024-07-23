@@ -1,15 +1,9 @@
 package jp.hibeiko.yarnshelf.ui.navigation
 
-import android.os.Bundle
-import android.os.Parcelable
 import androidx.annotation.DrawableRes
-import androidx.navigation.NavType
 import jp.hibeiko.yarnshelf.R
 import jp.hibeiko.yarnshelf.common.YarnRoll
 import jp.hibeiko.yarnshelf.common.YarnThickness
-import kotlinx.parcelize.Parcelize
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
 // 画面遷移のための画面情報定義（インターフェース）
 interface NavigationDestination {
@@ -20,9 +14,7 @@ interface NavigationDestination {
     val title: String
 }
 
-// 画面遷移時にカスタムNavTypeを渡すための設定
-@Serializable
-@Parcelize
+// 画面表示用のデータクラス
 data class YarnDataForScreen(
     val yarnId: Int = 0,
     // JANコード
@@ -71,24 +63,4 @@ data class YarnDataForScreen(
     val imageUrl: String = "",
     // 端末に保存した画像ファイルパス
     @DrawableRes val drawableResourceId: Int = R.drawable.not_found
-) : Parcelable
-
-val YarnDataForScreenType = object : NavType<YarnDataForScreen>(
-    isNullableAllowed = false
-) {
-    override fun put(bundle: Bundle, key: String, value: YarnDataForScreen) {
-        bundle.putParcelable(key, value)
-    }
-
-    override fun get(bundle: Bundle, key: String): YarnDataForScreen? {
-        return bundle.getParcelable(key, YarnDataForScreen::class.java)
-    }
-
-    override fun parseValue(value: String): YarnDataForScreen {
-        return Json.decodeFromString<YarnDataForScreen>(value)
-    }
-
-    // Only required when using Navigation 2.4.0-alpha07 and lower
-    override val name = "YarnDataForScreen"
-}
-
+)

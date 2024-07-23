@@ -1,6 +1,5 @@
 package jp.hibeiko.yarnshelf.ui.navigation
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -16,16 +15,10 @@ import jp.hibeiko.yarnshelf.ui.HomeDestination
 import jp.hibeiko.yarnshelf.ui.HomeScreen
 import jp.hibeiko.yarnshelf.ui.ItemSearchDestination
 import jp.hibeiko.yarnshelf.ui.ItemSearchScreen
-import jp.hibeiko.yarnshelf.ui.YarnConfirmDestination
-import jp.hibeiko.yarnshelf.ui.YarnConfirmScreen
 import jp.hibeiko.yarnshelf.ui.YarnDetailDestination
 import jp.hibeiko.yarnshelf.ui.YarnDetailScreen
 import jp.hibeiko.yarnshelf.ui.YarnEditDestination
 import jp.hibeiko.yarnshelf.ui.YarnEditScreen
-import jp.hibeiko.yarnshelf.ui.YarnEntryDestination
-import jp.hibeiko.yarnshelf.ui.YarnEntryScreen
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 @Composable
 fun YarnShelfNavHost(
@@ -75,60 +68,14 @@ fun YarnShelfNavHost(
         ) {
             // content: ここで、所定のルートに対して表示するコンポーザブルを呼び出すことができます。
             ItemSearchScreen(
-                nextButtonOnClick = {
-                    navController.navigate(
-                        "${YarnEntryDestination.route}/${
-                            Uri.encode(
-                                Json.encodeToString(
-                                    it
-                                )
-                            )
-                        }"
-                    )
-                },
+                // システムの「戻る」ボタンとは異なり、[Cancel] ボタンを押しても前の画面に戻りません。バックスタックからすべての画面をポップ（削除）して、開始画面に戻る必要があります。
+                // route: 戻るデスティネーションのルートを表す文字列。
+                // inclusive: ブール値。true の場合、指定したルートもポップ（削除）します。false の場合、popBackStack() は開始デスティネーションより上にあるデスティネーションをすべて削除し、ユーザーが目にする一番上の画面として開始デスティネーションを残します。
+                nextButtonOnClick = { navController.popBackStack(HomeDestination.route, false) },
                 cancelButtonOnClick = { navController.navigateUp() },
                 modifier = modifier
             )
         }
-        // 毛糸情報登録画面。※商品検索画面から遷移した場合
-        composable(
-            // route: ルートの名前に対応する文字列。一意の文字列を指定できます。CupcakeScreen 列挙型の定数の name プロパティを使用します。
-            route = YarnEntryDestination.routeWithArgs,
-            arguments = listOf(navArgument(YarnEntryDestination.searchItemArg) {
-                type = YarnDataForScreenType
-            })
-        ) {
-            // content: ここで、所定のルートに対して表示するコンポーザブルを呼び出すことができます。
-            YarnEntryScreen(
-                nextButtonOnClick = { navController.navigate(
-                    "${YarnConfirmDestination.route}/${
-                        Uri.encode(
-                            Json.encodeToString(
-                                it
-                            )
-                        )
-                    }"
-                ) },
-                cancelButtonOnClick = {
-                    navController.navigateUp()
-                },
-                modifier = modifier
-            )
-        }
-        // 毛糸情報登録画面。
-//        composable(
-//            // route: ルートの名前に対応する文字列。一意の文字列を指定できます。CupcakeScreen 列挙型の定数の name プロパティを使用します。
-//            route = YarnEntryDestination.route
-//        ) {
-//            // content: ここで、所定のルートに対して表示するコンポーザブルを呼び出すことができます。
-//            YarnEntryScreen(
-////                nextButtonOnClick = { navController.navigate(YarnConfirmDestination.route) },
-//                cancelButtonOnClick = {
-//                    navController.navigateUp()
-//                },
-//                modifier = modifier
-//            )
-//        }
         // 毛糸情報詳細画面
         // Editボタン→編集画面へ
         // Cancelボタン→ホーム画面ダイアログ表示状態へ
@@ -156,43 +103,7 @@ fun YarnShelfNavHost(
             // Context は Android システムによって実装が提供される抽象クラスです。アプリケーション固有のリソースとクラスだけでなく、アプリケーション レベルのオペレーション（例: アクティビティの起動）のアップコールへのアクセスを可能にします。
 //                    val context = LocalContext.current
             YarnEditScreen(
-//                        homeScreenUiState,
-//                        yarnNameOnValueChange = homeScreenViewModel::yarnNameUpdate,
-//                        yarnDescriptionOnValueChange = homeScreenViewModel::yarnDescriptionUpdate,
-                nextButtonOnClick = { navController.navigate(
-                    "${YarnConfirmDestination.route}/${
-                        Uri.encode(
-                            Json.encodeToString(
-                                it
-                            )
-                        )
-                    }"
-                ) },
-                cancelButtonOnClick = {
-//                            homeScreenViewModel.dialogOnClick()
-                    navController.navigateUp()
-                },
-                modifier = modifier
-            )
-        }
-        // 毛糸情報確認画面
-        // OKボタン→ホーム画面へ
-        // Cancelボタン→ホーム画面初期状態へ
-        composable(
-            route = YarnConfirmDestination.routeWithArgs,
-            arguments = listOf(navArgument(YarnConfirmDestination.entryItemArg) {
-                type = YarnDataForScreenType
-            })
-        ) {
-            YarnConfirmScreen(
-//                        homeScreenUiState,
-                // システムの「戻る」ボタンとは異なり、[Cancel] ボタンを押しても前の画面に戻りません。バックスタックからすべての画面をポップ（削除）して、開始画面に戻る必要があります。
-                // route: 戻るデスティネーションのルートを表す文字列。
-                // inclusive: ブール値。true の場合、指定したルートもポップ（削除）します。false の場合、popBackStack() は開始デスティネーションより上にあるデスティネーションをすべて削除し、ユーザーが目にする一番上の画面として開始デスティネーションを残します。
-                nextButtonOnClick = {
-//                            homeScreenViewModel.dialogOnClick()
-                    navController.popBackStack(HomeDestination.route, false)
-                },
+                nextButtonOnClick = { navController.popBackStack(HomeDestination.route, false) },
                 cancelButtonOnClick = { navController.navigateUp() },
                 modifier = modifier
             )

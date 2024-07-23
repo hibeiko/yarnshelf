@@ -8,6 +8,10 @@
     <string name="itemsearchscreen_scan_button_name">スキャン</string>
     <string name="back">戻る</string>
     <string name="next">次へ</string>
+    <string name="Submit">決定</string>
     <string name="yarneditscreen_input_name_field_name">名前</string>
     <string name="ok">OK</string>
+    <string name="delete">削除</string>
+    <string name="edit">編集</string>
+    <string name="cancel">キャンセル</string>
 </resources>

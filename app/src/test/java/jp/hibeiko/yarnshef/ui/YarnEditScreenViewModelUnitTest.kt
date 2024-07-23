@@ -7,6 +7,7 @@ import jp.hibeiko.yarnshef.rules.TestDispatcherRule
 import jp.hibeiko.yarnshelf.common.YarnParamName
 import jp.hibeiko.yarnshelf.common.YarnRoll
 import jp.hibeiko.yarnshelf.common.YarnThickness
+import jp.hibeiko.yarnshelf.common.yarnDataForScreenToYarnDataConverter
 import jp.hibeiko.yarnshelf.common.yarnDataToYarnDataForScreenConverter
 import jp.hibeiko.yarnshelf.ui.YarnEditDestination
 import jp.hibeiko.yarnshelf.ui.YarnEditScreenViewModel
@@ -917,5 +918,12 @@ class YarnEditScreenViewModelUnitTest {
         )
         assertFalse(viewModel.yarnEditScreenUiState.isErrorMap.containsKey(YarnParamName.YARN_DESCRIPTION))
     }
-
+    // 毛糸情報が更新されること
+    @Test
+    fun yarnEditScreenViewModel_UpdateYarnData_verifySuccess() {
+        viewModel.updateYarnData()
+        assertEquals(
+            yarnDataForScreenToYarnDataConverter( viewModel.yarnEditScreenUiState.yarnEditData),
+            YarnDummyData.dummyDataList.first { it.yarnId == viewModel.yarnEditScreenUiState.yarnEditData.yarnId })
+    }
 }

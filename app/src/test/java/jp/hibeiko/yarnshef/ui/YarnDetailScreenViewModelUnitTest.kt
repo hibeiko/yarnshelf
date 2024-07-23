@@ -93,4 +93,10 @@ class YarnDetailScreenViewModelUnitTest {
         assertFalse(YarnDummyData.dummyDataList.contains(deleteData))
         assertEquals(YarnDummyData.dummyDataList.size,beforeSize - 1)
     }
+
+    @Test
+    fun yarnDetailScreenViewModel_ChangeDialogViewFlag_Update(){
+        viewModel.updateDialogViewFlag(true)
+        assertEquals(viewModel.dialogViewFlag.value,true)
+    }
 }

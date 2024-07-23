@@ -18,15 +18,9 @@ object AppViewModelProvider {
         initializer {
             ItemSearchScreenViewModel(
                 yarnShelfApplication().container.yahooShoppingWebServiceItemSearchApiRepository,
-                yarnShelfApplication().container.mlKitRepository
+                yarnShelfApplication().container.mlKitRepository,
+                yarnShelfApplication().container.yarnDataRepository
             )
-        }
-        // 毛糸情報登録画面
-        initializer {
-            YarnEntryScreenViewModel(
-                this.createSavedStateHandle(),
-//                yarnShelfApplication().container.yarnDataRepository,
-                )
         }
         // 毛糸情報詳細画面
         initializer {
@@ -38,13 +32,6 @@ object AppViewModelProvider {
         // 毛糸情報編集画面
         initializer {
             YarnEditScreenViewModel(
-                this.createSavedStateHandle(),
-                yarnShelfApplication().container.yarnDataRepository
-            )
-        }
-        // 毛糸情報確認画面
-        initializer {
-            YarnConfirmScreenViewModel(
                 this.createSavedStateHandle(),
                 yarnShelfApplication().container.yarnDataRepository
             )

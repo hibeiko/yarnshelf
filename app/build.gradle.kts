@@ -4,7 +4,7 @@ plugins {
     id("com.google.devtools.ksp") version "1.9.0-1.0.13"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
     // ナビゲーションでカスタムNavTypeを指定するのに必要。
-    id("kotlin-parcelize")
+//    id("kotlin-parcelize")
 }
 
 android {
@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "jp.hibeiko.yarnshelf"
-        minSdk = 31
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"

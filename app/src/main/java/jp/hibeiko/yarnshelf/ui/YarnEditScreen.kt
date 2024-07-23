@@ -74,7 +74,7 @@ fun YarnEditScreen(
     modifier: Modifier = Modifier,
     // ViewModel(UiStateを使うため)
     yarnEditScreenViewModel: YarnEditScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    nextButtonOnClick: (YarnDataForScreen) -> Unit,
+    nextButtonOnClick: () -> Unit,
     cancelButtonOnClick: () -> Unit,
 ) {
     // 画面トップ
@@ -117,11 +117,24 @@ fun YarnEditScreen(
                         .weight(1.0f, false)
                 )
                 YarnEditScreenBottom(
-                    yarnEditScreenViewModel.yarnEditScreenUiState,
-                    nextButtonOnClick,
+                    yarnEditScreenViewModel.yarnEditScreenUiState.isErrorMap,
+                    yarnEditScreenViewModel::updateDialogViewFlag,
                     cancelButtonOnClick,
                     modifier
                 )
+            }
+            if (yarnEditScreenViewModel.yarnEditScreenUiState.confirmDialogViewFlag) {
+                ConfirmationDialog(
+                    onDismissRequest = yarnEditScreenViewModel::updateDialogViewFlag,
+                    onConfirmation = {
+                        yarnEditScreenViewModel.updateYarnData()
+                        nextButtonOnClick()
+                    },
+                    titleText = "確認",
+                    dialogText = "この内容で更新します。よろしいですか？",
+                    confirmButtonText = stringResource(R.string.ok)
+                )
+
             }
         }
     }
@@ -980,8 +993,8 @@ fun YarnEditScreenBody(
 
 @Composable
 fun YarnEditScreenBottom(
-    yarnEditScreenUiState: YarnEditScreenUiState,
-    nextButtonOnClick: (YarnDataForScreen) -> Unit,
+    isErrorMap: Map<YarnParamName, String>,
+    updateDialogViewFlag: (Boolean) -> Unit,
     cancelButtonOnClick: () -> Unit,
     modifier: Modifier
 ) {
@@ -997,12 +1010,10 @@ fun YarnEditScreenBottom(
             Text(text = stringResource(R.string.back), style = MaterialTheme.typography.labelSmall)
         }
         Button(
-            onClick = {
-                nextButtonOnClick(yarnEditScreenUiState.yarnEditData)
-            },
-            enabled = yarnEditScreenUiState.isErrorMap.isEmpty()
+            onClick = {updateDialogViewFlag(true)},
+            enabled = isErrorMap.isEmpty()
         ) {
-            Text(text = stringResource(R.string.next), style = MaterialTheme.typography.labelSmall)
+            Text(text = stringResource(R.string.Submit), style = MaterialTheme.typography.labelSmall)
         }
     }
 }
@@ -1053,37 +1064,8 @@ fun YarnEditScreenPreview() {
 fun YarnEditScreenBottomPreview() {
     YarnShelfTheme {
         YarnEditScreenBottom(
-            YarnEditScreenUiState(
-                yarnEditData =
-                YarnDataForScreen(
-                    0,
-                    "10001",
-                    "1010 Seabright",
-                    "Jamieson's",
-                    "1010 Seabright",
-                    "1548",
-                    "シェットランドウール１００％",
-                    "25.01",
-                    YarnRoll.BALL,
-                    "105.0",
-                    "20.0",
-                    "21.0",
-                    "27.0",
-                    "28.0",
-                    "メリヤス編み",
-                    "3.0",
-                    "5.0",
-                    "0.0",
-                    "0.0",
-                    YarnThickness.THICK,
-                    "10",
-                    "毛糸になるまでのすべての工程を島内で行う、純粋なシェットランドヤーンです",
-                    "https://image.raku-uru.jp/01/19110/456/Spin+1010+Crpd_1625196651766.JPG",
-                    R.drawable.not_found
-                ),
-                isErrorMap = mutableMapOf()
-            ),
-            nextButtonOnClick = { _ -> },
+                isErrorMap = mutableMapOf(),
+            updateDialogViewFlag = {_ ->},
             cancelButtonOnClick = { },
             modifier = Modifier
                 .fillMaxWidth()

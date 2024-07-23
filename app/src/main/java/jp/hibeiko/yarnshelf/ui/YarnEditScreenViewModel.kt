@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import jp.hibeiko.yarnshelf.common.YarnParamName
 import jp.hibeiko.yarnshelf.common.updateYarnData
 import jp.hibeiko.yarnshelf.common.validateInput
+import jp.hibeiko.yarnshelf.common.yarnDataForScreenToYarnDataConverter
 import jp.hibeiko.yarnshelf.common.yarnDataToYarnDataForScreenConverter
 import jp.hibeiko.yarnshelf.repository.YarnDataRepository
 import jp.hibeiko.yarnshelf.ui.navigation.YarnDataForScreen
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 data class YarnEditScreenUiState(
     val yarnEditData: YarnDataForScreen = YarnDataForScreen(),
     val isErrorMap: MutableMap<YarnParamName, String> = mutableMapOf(),
+    val confirmDialogViewFlag: Boolean = false,
 )
 
 class YarnEditScreenViewModel(
@@ -64,6 +66,17 @@ class YarnEditScreenViewModel(
         else
             yarnEditScreenUiState.isErrorMap.remove(paramName)
     }
-
+    fun updateDialogViewFlag(flag : Boolean) {
+        yarnEditScreenUiState = yarnEditScreenUiState.copy(confirmDialogViewFlag = flag)
+    }
+    fun updateYarnData() {
+        updateDialogViewFlag(false)
+//        if (validateInput()) {
+        viewModelScope.launch {
+            yarnDataRepository.insert(yarnData = yarnDataForScreenToYarnDataConverter( yarnEditScreenUiState.yarnEditData ))
+//                yarnDataRepository.update(yarnConfirmScreenUiState.yarnConfirmData)
+        }
+//        }
+    }
 }
 

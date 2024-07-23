@@ -68,7 +68,6 @@ import jp.hibeiko.yarnshelf.data.YahooSeller
 import jp.hibeiko.yarnshelf.data.YahooSellerReview
 import jp.hibeiko.yarnshelf.data.YahooShipping
 import jp.hibeiko.yarnshelf.data.YahooShoppingWebServiceItemData
-import jp.hibeiko.yarnshelf.data.YarnData
 import jp.hibeiko.yarnshelf.ui.navigation.NavigationDestination
 import jp.hibeiko.yarnshelf.ui.navigation.YarnDataForScreen
 import jp.hibeiko.yarnshelf.ui.theme.YarnShelfTheme
@@ -84,7 +83,7 @@ fun ItemSearchScreen(
     modifier: Modifier = Modifier,
     // ViewModel(UiStateを使うため)
     itemSearchScreenViewModel: ItemSearchScreenViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    nextButtonOnClick: (YarnDataForScreen) -> Unit,
+    nextButtonOnClick: () -> Unit,
     cancelButtonOnClick: () -> Unit,
 ) {
     // UiStateを取得
@@ -120,19 +119,52 @@ fun ItemSearchScreen(
                 )
             },
         ) { innerPadding ->
-            ItemSearchScreenBody(
-                itemSearchScreenUiState,
-                itemSearchScreenViewModel.searchItemUiState,
-                itemSearchScreenViewModel::yarnNameSearchInputUpdate,
-                itemSearchScreenViewModel::selectedTabIndexUpdate,
-                itemSearchScreenViewModel::validateYarnNameSearchInput,
-                itemSearchScreenViewModel::searchItem,
-                itemSearchScreenViewModel::readBarcode,
-                nextButtonOnClick,
-                modifier
-                    .padding(innerPadding)
-                    .verticalScroll(rememberScrollState())
-            )
+            if( itemSearchScreenUiState.entryScreenViewFlag ){
+                Column(modifier = modifier.padding(innerPadding)) {
+                    YarnEditScreenBody(
+                        yarnData = itemSearchScreenUiState.itemSearchData,
+                        updateYarnEditData = itemSearchScreenViewModel::updateYarnEditData,
+                        isErrorMap = itemSearchScreenUiState.isErrorMap,
+                        modifier
+                            .verticalScroll(rememberScrollState())
+                            .weight(1.0f, false)
+                    )
+                    YarnEditScreenBottom(
+                        isErrorMap = itemSearchScreenUiState.isErrorMap,
+                        itemSearchScreenViewModel::updateDialogViewFlag,
+                        itemSearchScreenViewModel::backToItemSearchScreen,
+                        modifier
+                    )
+                }
+                if (itemSearchScreenUiState.confirmDialogViewFlag) {
+                    ConfirmationDialog(
+                        onDismissRequest = itemSearchScreenViewModel::updateDialogViewFlag,
+                        onConfirmation = {
+                            itemSearchScreenViewModel.updateYarnData()
+                            nextButtonOnClick()
+                        },
+                        titleText = "確認",
+                        dialogText = "この内容で登録します。よろしいですか？",
+                        confirmButtonText = stringResource(R.string.ok)
+                    )
+
+                }
+            }
+            else {
+                ItemSearchScreenBody(
+                    itemSearchScreenUiState,
+                    itemSearchScreenViewModel.searchItemUiState,
+                    itemSearchScreenViewModel::yarnNameSearchInputUpdate,
+                    itemSearchScreenViewModel::selectedTabIndexUpdate,
+                    itemSearchScreenViewModel::validateYarnNameSearchInput,
+                    itemSearchScreenViewModel::searchItem,
+                    itemSearchScreenViewModel::readBarcode,
+                    itemSearchScreenViewModel::navigateToYarnEntryScreen,
+                    modifier
+                        .padding(innerPadding)
+                        .verticalScroll(rememberScrollState())
+                )
+            }
         }
     }
 }
@@ -146,7 +178,7 @@ fun ItemSearchScreenBody(
     validateYarnNameSearchInput: () -> Boolean,
     searchItemOnClick: (String, String) -> Unit,
     readBarcode: () -> Unit,
-    nextButtonOnClick: (YarnDataForScreen) -> Unit,
+    cardOnClick: (YarnDataForScreen) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -192,7 +224,7 @@ fun ItemSearchScreenBody(
                     }
                 },
                 selected = itemSearchScreenUiState.selectedTabIndex == 0,
-                onClick = { nextButtonOnClick(YarnDataForScreen()) }
+                onClick = { cardOnClick(YarnDataForScreen()) }
             )
         }
 //        Button(
@@ -308,7 +340,7 @@ fun ItemSearchScreenBody(
                     items(searchItemUiState.responseItem.hits) {
                         SearchResultCard(
                             it,
-                            cardOnClick = nextButtonOnClick,
+                            cardOnClick = cardOnClick,
 //                            modifier = Modifier.padding(5.dp)
                         )
                     }
@@ -392,7 +424,7 @@ fun SearchResultCard(
 fun ItemSearchScreenPreview() {
     YarnShelfTheme {
         ItemSearchScreenBody(
-            itemSearchScreenUiState = ItemSearchScreenUiState(itemSearchData = YarnData()),
+            itemSearchScreenUiState = ItemSearchScreenUiState(itemSearchData = YarnDataForScreen()),
             searchItemUiState = SearchItemUiState.Success(
                 responseItem = YahooShoppingWebServiceItemData(
                     10, 0, 0, YahooRequest(""),
@@ -576,7 +608,7 @@ fun ItemSearchScreenPreview() {
             validateYarnNameSearchInput = { false },
             searchItemOnClick = { _, _ -> },
             readBarcode = {},
-            nextButtonOnClick = {},
+            cardOnClick = { _ -> },
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)
