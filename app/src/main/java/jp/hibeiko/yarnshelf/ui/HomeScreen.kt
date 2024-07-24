@@ -528,7 +528,7 @@ fun YarnDialog(
                     dialogOnClick()
                 }
             ) {
-                Text(text = "閉じる")
+                Text(text = stringResource(R.string.close))
             }
         },
         confirmButton = {
@@ -538,7 +538,7 @@ fun YarnDialog(
                     editButtonOnClicked(yarnData.yarnId)
                 }
             ) {
-                Text(text = "詳細を見る")
+                Text(text = stringResource(R.string.view_more))
             }
         }
     )
