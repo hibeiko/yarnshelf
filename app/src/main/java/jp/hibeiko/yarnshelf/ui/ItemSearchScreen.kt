@@ -494,7 +494,7 @@ fun ItemSearchScreenPreview() {
                             parentBrands = listOf(),
                             janCode = "",
                             payment = "",
-                            releaseDate = "",
+                            releaseDate = 0,
                             seller = YahooSeller(
                                 sellerId = "",
                                 name = "",
@@ -551,7 +551,7 @@ fun ItemSearchScreenPreview() {
                             parentBrands = listOf(),
                             janCode = "",
                             payment = "",
-                            releaseDate = "",
+                            releaseDate = 0,
                             seller = YahooSeller(
                                 sellerId = "",
                                 name = "",
@@ -608,7 +608,7 @@ fun ItemSearchScreenPreview() {
                             brand = YahooBrand(id = 0, name = ""),
                             parentBrands = listOf(),
                             payment = "",
-                            releaseDate = "",
+                            releaseDate = 0,
                             seller = YahooSeller(
                                 sellerId = "",
                                 name = "",

@@ -48,7 +48,7 @@ data class YahooHit(
     val parentBrands: List<YahooParentBrands>,
     val janCode: String?,
     val payment: String?,
-    val releaseDate: String?,
+    val releaseDate: Int?,
     val seller: YahooSeller,
     val delivery: YahooDelivery,
 )

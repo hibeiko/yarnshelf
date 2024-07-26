@@ -1,6 +1,7 @@
 package jp.hibeiko.yarnshelf.repository
 
 import android.util.Log
+import com.google.mlkit.common.MlKitException
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner
 
 interface MLKitRepository {
@@ -23,7 +24,10 @@ class MLKitRepositoryImpl(
             }
             .addOnFailureListener { e ->
                 // Task failed with an exception
-                Log.i("MLKitRepositoryImpl","Task failed")
+                if( e is MlKitException)
+                    Log.i("MLKitRepositoryImpl","MLKitException has occured. ErrorCode:${e.errorCode}")
+                else
+                    Log.i("MLKitRepositoryImpl","Task failed")
                 e.printStackTrace()
             }
     }
