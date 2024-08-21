@@ -1,5 +1,6 @@
 package jp.hibeiko.yarnshelf.ui
 
+import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -232,9 +233,12 @@ fun YarnEditScreenBody(
                     .fillMaxWidth()
             )
             // Image Picker設定
+            val context = LocalContext.current
             val launcher =
                 rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
                     if (it != null) {
+                        // 権限の永続化
+                        context.contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION )
                         updateYarnEditData(it.toString(), YarnParamName.IMAGE_URL)
 //                    Log.d("PhotoPicker", "Selected URI: $it")
                     } else {
@@ -251,12 +255,7 @@ fun YarnEditScreenBody(
                 when (yarnData.imageUrl) {
                     "" ->
                         Image(
-                            painter = painterResource(
-                                when (yarnData.drawableResourceId) {
-                                    0 -> R.drawable.not_found
-                                    else -> yarnData.drawableResourceId
-                                }
-                            ),
+                            painter = painterResource(R.drawable.not_found),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                             alpha = 0.7F,
@@ -269,6 +268,7 @@ fun YarnEditScreenBody(
                             .crossfade(true)
                             .build(),
                         placeholder = painterResource(R.drawable.loading_img),
+                        error = painterResource(R.drawable.not_found),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         alpha = 0.7F,

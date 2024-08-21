@@ -79,7 +79,7 @@ object YahooShoppingWebServiceItemDummyData{
                 parentBrands = listOf(YahooParentBrands(id = 0, name = "")),
                 janCode = "",
                 payment = "",
-                releaseDate = "",
+                releaseDate = 0,
                 seller = YahooSeller(
                     sellerId = "",
                     name = "",
@@ -136,7 +136,7 @@ object YahooShoppingWebServiceItemDummyData{
                 parentBrands = listOf(YahooParentBrands(id = 0, name = "")),
                 janCode = "",
                 payment = "",
-                releaseDate = "",
+                releaseDate = 0,
                 seller = YahooSeller(
                     sellerId = "",
                     name = "",
@@ -193,7 +193,7 @@ object YahooShoppingWebServiceItemDummyData{
                 brand = YahooBrand(id = 0, name = ""),
                 parentBrands = listOf(YahooParentBrands(id = 0, name = "")),
                 payment = "",
-                releaseDate = "",
+                releaseDate = 0,
                 seller = YahooSeller(
                     sellerId = "",
                     name = "",

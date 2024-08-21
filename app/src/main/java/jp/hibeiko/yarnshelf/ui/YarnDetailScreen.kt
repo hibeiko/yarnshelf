@@ -182,6 +182,7 @@ fun YarnDetailScreenBody(
                         .crossfade(true)
                         .build(),
                     placeholder = painterResource(R.drawable.loading_img),
+                    error = painterResource(R.drawable.not_found),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

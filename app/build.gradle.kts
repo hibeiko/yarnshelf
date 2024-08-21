@@ -16,7 +16,7 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -101,7 +101,11 @@ dependencies {
     //バーコードスキャンするのに必要。
     // https://developers.google.com/ml-kit/vision/barcode-scanning/code-scanner?hl=ja
     implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
-
+    constraints{
+        implementation("androidx.fragment:fragment:1.6.2"){
+            because("Gms library depends on outdated androidx fragment")
+        }
+    }
     // テスト
     testImplementation(libs.junit)
 
