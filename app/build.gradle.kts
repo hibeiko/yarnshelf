@@ -8,14 +8,17 @@ plugins {
 }
 
 android {
-    namespace = "jp.hibeiko.yarnshelf"
+    namespace = "jp.naorin.yarnshelf"
     compileSdk = 34
 
+    // Google Play Console「この App Bundle にはネイティブ コードが含まれ、デバッグ シンボルがアップロードされていません。」対応
+//    ndkVersion = "27.0.12077973"
+
     defaultConfig {
-        applicationId = "jp.hibeiko.yarnshelf"
+        applicationId = "jp.naorin.yarnshelf"
         minSdk = 24
         targetSdk = 34
-        versionCode = 2
+        versionCode = 6
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -26,11 +29,28 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            // Enables code shrinking, obfuscation, and optimization for only
+            // your project's release build type. Make sure to use a build
+            // variant with `isDebuggable=false`.
+            isMinifyEnabled = true
+
+            // Enables resource shrinking, which is performed by the
+            // Android Gradle plugin.
+            isShrinkResources = true
+
             proguardFiles(
+                // Includes the default ProGuard rules files that are packaged with
+                // the Android Gradle plugin. To learn more, go to the section about
+                // R8 configuration files.
                 getDefaultProguardFile("proguard-android-optimize.txt"),
+
+                // Includes a local, custom Proguard rules file
                 "proguard-rules.pro"
             )
+            // Google Play Console「この App Bundle にはネイティブ コードが含まれ、デバッグ シンボルがアップロードされていません。」対応
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
         }
     }
     compileOptions {
@@ -100,7 +120,13 @@ dependencies {
 
     //バーコードスキャンするのに必要。
     // https://developers.google.com/ml-kit/vision/barcode-scanning/code-scanner?hl=ja
-    implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
+    implementation(libs.play.services.code.scanner)
+
+    //ML KitでGoogle Play開発者サービスからモジュールをダウンロードするために必要
+    implementation(libs.play.services.base)
+    implementation(libs.play.services.tflite.java)
+
+    // Google Play での警告「androidx.fragment:fragment (androidx.fragment:fragment) により、バージョン 1.0.0 は古いことが報告されています。新しいバージョン（1.1.0+）にアップグレードすることをおすすめします。」対応
     constraints{
         implementation("androidx.fragment:fragment:1.6.2"){
             because("Gms library depends on outdated androidx fragment")

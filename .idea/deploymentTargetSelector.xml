@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-07-26T06:55:47.678207600Z">
+        <DropdownSelection timestamp="2024-08-28T05:06:46.132701100Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="PhysicalDevice" identifier="serial=QV78080Y57" />
@@ -17,9 +17,6 @@
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="yarnShelfNavHost_itemSearchScreen_clickBackIcon_navigatesToHomeScreen()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="yarnShelfNavHost_homeScreen_closeDialog_ViewHomeScreen()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="YarnShelfNavigationTest">
